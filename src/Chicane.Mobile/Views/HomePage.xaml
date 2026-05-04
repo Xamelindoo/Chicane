@@ -2,35 +2,275 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodels="clr-namespace:Chicane.Mobile.ViewModels"
+             xmlns:models="clr-namespace:Chicane.Mobile.Models"
              x:Class="Chicane.Mobile.Views.HomePage"
              x:DataType="viewmodels:HomeViewModel"
-             Title="Home">
+             Title="Home"
+             Shell.NavBarIsVisible="False">
 
     <Grid RowDefinitions="*" BackgroundColor="{StaticResource CarbonBlack}">
-        <VerticalStackLayout
-            VerticalOptions="Center"
-            HorizontalOptions="Center"
-            Spacing="16">
 
-            <Border Style="{StaticResource PlaceholderCard}">
-                <VerticalStackLayout Spacing="12">
-                    <Label
-                        Text="CHICANE"
-                        Style="{StaticResource Headline}"
-                        HorizontalOptions="Center" />
-                    <Label
-                        Text="Hero Section"
-                        Style="{StaticResource SubHeadline}"
-                        HorizontalOptions="Center" />
-                    <Label
-                        Text="Countdown, live data and track map will appear here."
-                        Style="{StaticResource Caption}"
-                        HorizontalOptions="Center"
-                        HorizontalTextAlignment="Center" />
-                </VerticalStackLayout>
-            </Border>
+        <!-- Background Circuit Image -->
+        <Image Source="{Binding CircuitImage}"
+               Aspect="AspectFill"
+               Opacity="0.5"
+               VerticalOptions="Fill"
+               HorizontalOptions="Fill" />
 
+        <!-- Dark Overlay Gradient -->
+        <BoxView Color="{StaticResource CarbonBlack}"
+                 Opacity="0.4"
+                 VerticalOptions="Fill"
+                 HorizontalOptions="Fill" />
+
+        <!-- Loading State -->
+        <VerticalStackLayout IsVisible="{Binding IsBusy}"
+                             VerticalOptions="Center"
+                             HorizontalOptions="Center"
+                             Spacing="12">
+            <ActivityIndicator IsRunning="{Binding IsBusy}"
+                               Color="{StaticResource RacingRed}"
+                               HeightRequest="48"
+                               WidthRequest="48" />
+            <Label Text="Loading race data..."
+                   Style="{StaticResource Caption}"
+                   HorizontalOptions="Center" />
         </VerticalStackLayout>
+
+        <!-- Error State -->
+        <VerticalStackLayout IsVisible="{Binding HasError}"
+                             VerticalOptions="Center"
+                             HorizontalOptions="Center"
+                             Spacing="16"
+                             Padding="32">
+            <Label Text="&#x26A0;"
+                   FontSize="48"
+                   HorizontalOptions="Center"
+                   TextColor="{StaticResource RacingRed}" />
+            <Label Text="{Binding ErrorMessage}"
+                   Style="{StaticResource SubHeadline}"
+                   HorizontalOptions="Center"
+                   HorizontalTextAlignment="Center" />
+            <Button Text="RETRY"
+                    Style="{StaticResource PrimaryButton}"
+                    Command="{Binding LoadCommand}"
+                    HorizontalOptions="Center" />
+        </VerticalStackLayout>
+
+        <!-- Content (visible when HasData) -->
+        <Grid RowDefinitions="Auto,*,Auto"
+              IsVisible="{Binding HasData}"
+              Padding="20,48,20,20">
+
+            <!-- Top: Event Label -->
+            <VerticalStackLayout Grid.Row="0"
+                                 HorizontalOptions="Center"
+                                 Spacing="4">
+                <Label Text="NEXT EVENT"
+                       FontFamily="SpaceMonoRegular"
+                       FontSize="12"
+                       TextColor="{StaticResource TextMuted}"
+                       HorizontalOptions="Center"
+                       CharacterSpacing="4" />
+                <Label Text="{Binding EventName}"
+                       Style="{StaticResource Headline}"
+                       HorizontalOptions="Center" />
+            </VerticalStackLayout>
+
+            <!-- Center: Countdown (Pre-Race) or Live Data -->
+            <Grid Grid.Row="1"
+                  VerticalOptions="Center"
+                  HorizontalOptions="Center">
+
+                <!-- Pre-Race Countdown -->
+                <VerticalStackLayout IsVisible="{Binding IsPreRace}"
+                                     Spacing="10"
+                                     HorizontalOptions="Center">
+                    <Label Text="{Binding Countdown}"
+                           FontFamily="SpaceMonoBold"
+                           FontSize="44"
+                           TextColor="{StaticResource PureWhite}"
+                           HorizontalOptions="Center"
+                           CharacterSpacing="-1" />
+                    <Label Text="DD:HH:MM:SS"
+                           FontFamily="SpaceMonoRegular"
+                           FontSize="11"
+                           TextColor="{StaticResource TextMuted}"
+                           HorizontalOptions="Center"
+                           CharacterSpacing="3" />
+                </VerticalStackLayout>
+
+                <!-- Live Session Data -->
+                <VerticalStackLayout IsVisible="{Binding IsLive}"
+                                     Spacing="12"
+                                     HorizontalOptions="Center">
+                    <Border Stroke="{StaticResource RacingRed}"
+                            StrokeThickness="1"
+                            StrokeShape="RoundRectangle 4"
+                            BackgroundColor="{StaticResource RacingRed}"
+                            Padding="12,4"
+                            HorizontalOptions="Center">
+                        <Label Text="{Binding SessionStatus}"
+                               FontFamily="SpaceMonoBold"
+                               FontSize="14"
+                               TextColor="{StaticResource PureWhite}"
+                               CharacterSpacing="4" />
+                    </Border>
+                    <Label Text="{Binding SessionName}"
+                           FontFamily="SpaceMonoBold"
+                           FontSize="28"
+                           TextColor="{StaticResource PureWhite}"
+                           HorizontalOptions="Center" />
+                    <Label FontFamily="SpaceMonoRegular"
+                           FontSize="36"
+                           TextColor="{StaticResource PureWhite}"
+                           HorizontalOptions="Center">
+                        <Label.Text>
+                            <MultiBinding StringFormat="{}{0}/{1}">
+                                <Binding Path="CurrentLap" />
+                                <Binding Path="TotalLaps" />
+                            </MultiBinding>
+                        </Label.Text>
+                    </Label>
+                    <Label Text="LAPS"
+                           FontFamily="SpaceMonoRegular"
+                           FontSize="11"
+                           TextColor="{StaticResource TextMuted}"
+                           HorizontalOptions="Center"
+                           CharacterSpacing="3" />
+
+                    <CollectionView ItemsSource="{Binding PositionBoard}"
+                                    IsVisible="{Binding IsLive}"
+                                    Margin="0,16,0,0">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="models:DriverGap">
+                                <Grid ColumnDefinitions="40,*,Auto"
+                                      Padding="0,6"
+                                      ColumnSpacing="8">
+                                    <Label Grid.Column="0"
+                                           Text="{Binding Position}"
+                                           FontFamily="SpaceMonoBold"
+                                           FontSize="18"
+                                           TextColor="{StaticResource RacingRed}"
+                                           VerticalOptions="Center" />
+                                    <VerticalStackLayout Grid.Column="1"
+                                                         VerticalOptions="Center"
+                                                         Spacing="2">
+                                        <Label Text="{Binding DriverName}"
+                                               FontFamily="SpaceMonoRegular"
+                                               FontSize="14"
+                                               TextColor="{StaticResource PureWhite}" />
+                                        <Label Text="{Binding TeamName}"
+                                               FontSize="11"
+                                               TextColor="{StaticResource TextMuted}" />
+                                    </VerticalStackLayout>
+                                    <Border Grid.Column="2"
+                                            BackgroundColor="{StaticResource SurfaceHigh}"
+                                            StrokeThickness="0"
+                                            StrokeShape="RoundRectangle 4"
+                                            Padding="10,4"
+                                            VerticalOptions="Center">
+                                        <Label Text="{Binding GapDisplay}"
+                                               FontFamily="SpaceMonoBold"
+                                               FontSize="14"
+                                               TextColor="{StaticResource PureWhite}" />
+                                    </Border>
+                                </Grid>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+            </Grid>
+
+            <!-- Bottom: Weather + Toggle Button -->
+            <VerticalStackLayout Grid.Row="2"
+                                 Spacing="16">
+
+                <!-- Weather Badge -->
+                <Border Stroke="{StaticResource BorderSubtle}"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 4"
+                        BackgroundColor="{StaticResource SurfaceLow}"
+                        Padding="12,8"
+                        HorizontalOptions="Center"
+                        IsVisible="{Binding IsPreRace}">
+                    <HorizontalStackLayout Spacing="8">
+                        <Label Text="{Binding WeatherIcon}"
+                               FontSize="16"
+                               VerticalOptions="Center" />
+                        <Label FontFamily="SpaceMonoRegular"
+                               FontSize="13"
+                               TextColor="{StaticResource CoolSlate}"
+                               VerticalOptions="Center">
+                            <Label.Text>
+                                <MultiBinding StringFormat="{}{0} - {1}°C">
+                                    <Binding Path="WeatherCondition" />
+                                    <Binding Path="WeatherTemperature" />
+                                </MultiBinding>
+                            </Label.Text>
+                        </Label>
+                    </HorizontalStackLayout>
+                </Border>
+
+                <!-- Circuit Name -->
+                <Label Text="{Binding CircuitName}"
+                       FontSize="11"
+                       TextColor="{StaticResource TextMuted}"
+                       HorizontalOptions="Center"
+                       CharacterSpacing="2"
+                       IsVisible="{Binding IsPreRace}" />
+
+                <!-- Simulate Toggle -->
+                <Border Stroke="{StaticResource PureWhite}"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 4"
+                        BackgroundColor="#20FFFFFF"
+                        Padding="0"
+                        HorizontalOptions="Center">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding SimulateLiveCommand}" />
+                    </Border.GestureRecognizers>
+                    <HorizontalStackLayout Spacing="0">
+                        <Border Padding="20,10"
+                                BackgroundColor="{StaticResource RacingRed}"
+                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 4,0,0,4"
+                                IsVisible="{Binding IsPreRace}">
+                            <Label Text="SIMULATE LIVE"
+                                   FontFamily="SpaceMonoRegular"
+                                   FontSize="11"
+                                   TextColor="{StaticResource PureWhite}"
+                                   CharacterSpacing="2" />
+                        </Border>
+                        <Border Padding="20,10"
+                                BackgroundColor="{StaticResource RacingRed}"
+                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 0,4,4,0"
+                                IsVisible="{Binding IsLive}">
+                            <Label Text="SIMULATE PRE-RACE"
+                                   FontFamily="SpaceMonoRegular"
+                                   FontSize="11"
+                                   TextColor="{StaticResource PureWhite}"
+                                   CharacterSpacing="2" />
+                        </Border>
+                        <Label Text="SIMULATE LIVE"
+                               FontFamily="SpaceMonoRegular"
+                               FontSize="11"
+                               TextColor="{StaticResource PureWhite}"
+                               CharacterSpacing="2"
+                               Padding="20,10"
+                               IsVisible="{Binding IsLive}" />
+                        <Label Text="BACK TO PRE-RACE"
+                               FontFamily="SpaceMonoRegular"
+                               FontSize="11"
+                               TextColor="{StaticResource PureWhite}"
+                               CharacterSpacing="2"
+                               Padding="20,10"
+                               IsVisible="{Binding IsPreRace}" />
+                    </HorizontalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+        </Grid>
     </Grid>
 
 </ContentPage>

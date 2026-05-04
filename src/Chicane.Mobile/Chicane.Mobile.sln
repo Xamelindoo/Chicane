@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 18
+VisualStudioVersion = 18.5.11723.231 stable
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chicane.Mobile", "Chicane.Mobile.csproj", "{CD01840C-CC8F-CC39-6D10-79999B0887E9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CD01840C-CC8F-CC39-6D10-79999B0887E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD01840C-CC8F-CC39-6D10-79999B0887E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD01840C-CC8F-CC39-6D10-79999B0887E9}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{CD01840C-CC8F-CC39-6D10-79999B0887E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD01840C-CC8F-CC39-6D10-79999B0887E9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B776E8D1-1DD1-4BAE-B18D-7DA399A8100F}
+	EndGlobalSection
+EndGlobal
