@@ -1,0 +1,9 @@
+namespace Chicane.Mobile.Models;
+
+public class StandingsEntry
+{
+    public int Position { get; init; }
+    public string DriverName { get; init; } = string.Empty;
+    public string TeamName { get; init; } = string.Empty;
+    public int Points { get; init; }
+}

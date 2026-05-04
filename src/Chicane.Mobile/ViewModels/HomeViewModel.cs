@@ -72,6 +72,8 @@ public partial class HomeViewModel : ObservableObject
     private int totalLaps;
 
     public ObservableCollection<DriverGap> PositionBoard { get; } = new();
+    public ObservableCollection<StandingsEntry> Standings { get; } = new();
+    public ObservableCollection<TrackPosition> TrackPositions { get; } = new();
 
     [RelayCommand]
     private async Task LoadAsync()
@@ -95,6 +97,13 @@ public partial class HomeViewModel : ObservableObject
             WeatherCondition = raceEvent.Weather.Condition;
             WeatherIcon = raceEvent.Weather.IconGlyph;
             WeatherTemperature = raceEvent.Weather.TemperatureC;
+
+            var standings = await f1DataService.GetStandingsAsync();
+            Standings.Clear();
+            foreach (var entry in standings)
+            {
+                Standings.Add(entry);
+            }
 
             IsPreRace = true;
             IsLive = false;
@@ -143,6 +152,13 @@ public partial class HomeViewModel : ObservableObject
                     PositionBoard.Add(gap);
                 }
 
+                var trackPositions = await f1DataService.GetTrackPositionsAsync();
+                TrackPositions.Clear();
+                foreach (var tp in trackPositions)
+                {
+                    TrackPositions.Add(tp);
+                }
+
                 StopCountdown();
                 IsPreRace = false;
                 IsLive = true;
@@ -150,6 +166,7 @@ public partial class HomeViewModel : ObservableObject
             else
             {
                 PositionBoard.Clear();
+                TrackPositions.Clear();
                 IsLive = false;
                 IsPreRace = true;
                 StartCountdown();
