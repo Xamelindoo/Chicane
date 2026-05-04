@@ -73,6 +73,7 @@ public partial class HomeViewModel : ObservableObject
 
     public ObservableCollection<DriverGap> PositionBoard { get; } = new();
     public ObservableCollection<StandingsEntry> Standings { get; } = new();
+    public ObservableCollection<ConstructorStandingsEntry> ConstructorStandings { get; } = new();
     public ObservableCollection<TrackPosition> TrackPositions { get; } = new();
 
     [RelayCommand]
@@ -103,6 +104,13 @@ public partial class HomeViewModel : ObservableObject
             foreach (var entry in standings)
             {
                 Standings.Add(entry);
+            }
+
+            var constructorStandings = await f1DataService.GetConstructorStandingsAsync();
+            ConstructorStandings.Clear();
+            foreach (var entry in constructorStandings)
+            {
+                ConstructorStandings.Add(entry);
             }
 
             IsPreRace = true;

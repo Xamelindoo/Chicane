@@ -86,4 +86,23 @@ public class MockF1DataService : IF1DataService
 
         return Task.FromResult(positions);
     }
+
+    public Task<List<ConstructorStandingsEntry>> GetConstructorStandingsAsync()
+    {
+        var standings = new List<ConstructorStandingsEntry>
+        {
+            new() { Position = 1,  TeamName = "Red Bull Racing",  Points = 443 },
+            new() { Position = 2,  TeamName = "Mercedes",         Points = 383 },
+            new() { Position = 3,  TeamName = "Ferrari",          Points = 343 },
+            new() { Position = 4,  TeamName = "McLaren",          Points = 378 },
+            new() { Position = 5,  TeamName = "Aston Martin",     Points = 216 },
+            new() { Position = 6,  TeamName = "Alpine",           Points = 110 },
+            new() { Position = 7,  TeamName = "RB",               Points = 66  },
+            new() { Position = 8,  TeamName = "Haas",             Points = 56  },
+            new() { Position = 9,  TeamName = "Williams",         Points = 22  },
+            new() { Position = 10, TeamName = "Sauber",           Points = 22  }
+        };
+
+        return Task.FromResult(standings);
+    }
 }
