@@ -18,6 +18,8 @@ public static class MauiProgram
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 fonts.AddFont("SpaceMono-Regular.ttf", "SpaceMonoRegular");
                 fonts.AddFont("SpaceMono-Bold.ttf", "SpaceMonoBold");
+                fonts.AddFont("JetBrainsMono-Regular.ttf", "JetBrainsMonoRegular");
+                fonts.AddFont("JetBrainsMono-Bold.ttf", "JetBrainsMonoBold");
             });
 
 #if DEBUG

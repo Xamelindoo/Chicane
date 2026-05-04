@@ -11,7 +11,7 @@
     <Style TargetType="Shell" ApplyToDerivedTypes="True">
         <Setter Property="Shell.BackgroundColor" Value="{StaticResource CarbonBlack}" />
         <Setter Property="Shell.ForegroundColor" Value="{StaticResource PureWhite}" />
-        <Setter Property="Shell.TabBarBackgroundColor" Value="{StaticResource CarbonBlack}" />
+        <Setter Property="Shell.TabBarBackgroundColor" Value="#DD0A0A0A" />
         <Setter Property="Shell.TabBarForegroundColor" Value="{StaticResource RacingRed}" />
         <Setter Property="Shell.TabBarTitleColor" Value="{StaticResource RacingRed}" />
         <Setter Property="Shell.TabBarUnselectedColor" Value="{StaticResource TextMuted}" />

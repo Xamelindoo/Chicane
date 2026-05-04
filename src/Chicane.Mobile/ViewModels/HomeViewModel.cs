@@ -33,6 +33,12 @@ public partial class HomeViewModel : ObservableObject
     public bool HasError => !string.IsNullOrWhiteSpace(ErrorMessage);
 
     [ObservableProperty]
+    private double heroHeight = 800;
+
+    [ObservableProperty]
+    private bool isAtScrollTop = true;
+
+    [ObservableProperty]
     private bool isPreRace = true;
 
     [ObservableProperty]
@@ -89,6 +95,9 @@ public partial class HomeViewModel : ObservableObject
 
         try
         {
+            var displayInfo = DeviceDisplay.Current.MainDisplayInfo;
+            HeroHeight = displayInfo.Height / displayInfo.Density;
+
             var raceEvent = await f1DataService.GetNextEventAsync();
 
             EventName = raceEvent.EventName;
@@ -132,62 +141,9 @@ public partial class HomeViewModel : ObservableObject
         }
     }
 
-    [RelayCommand]
-    private async Task SimulateLiveAsync()
+    public void OnScrolled(double scrollY)
     {
-        if (IsBusy)
-        {
-            return;
-        }
-
-        IsBusy = true;
-        ErrorMessage = null;
-
-        try
-        {
-            if (IsPreRace)
-            {
-                var liveData = await f1DataService.GetLiveSessionDataAsync();
-
-                SessionName = liveData.SessionName;
-                SessionStatus = liveData.Status;
-                CurrentLap = liveData.CurrentLap;
-                TotalLaps = liveData.TotalLaps;
-
-                PositionBoard.Clear();
-                foreach (var gap in liveData.PositionBoard)
-                {
-                    PositionBoard.Add(gap);
-                }
-
-                var trackPositions = await f1DataService.GetTrackPositionsAsync();
-                TrackPositions.Clear();
-                foreach (var tp in trackPositions)
-                {
-                    TrackPositions.Add(tp);
-                }
-
-                StopCountdown();
-                IsPreRace = false;
-                IsLive = true;
-            }
-            else
-            {
-                PositionBoard.Clear();
-                TrackPositions.Clear();
-                IsLive = false;
-                IsPreRace = true;
-                StartCountdown();
-            }
-        }
-        catch (Exception)
-        {
-            ErrorMessage = "Unable to load live session data.";
-        }
-        finally
-        {
-            IsBusy = false;
-        }
+        IsAtScrollTop = scrollY <= 0;
     }
 
     private void StartCountdown()
