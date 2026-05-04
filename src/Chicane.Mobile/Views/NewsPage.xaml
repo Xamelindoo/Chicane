@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:Chicane.Mobile.ViewModels"
+             x:Class="Chicane.Mobile.Views.NewsPage"
+             x:DataType="viewmodels:NewsViewModel"
+             Title="News">
+
+    <Grid RowDefinitions="*" BackgroundColor="{StaticResource CarbonBlack}">
+        <VerticalStackLayout
+            VerticalOptions="Center"
+            HorizontalOptions="Center"
+            Spacing="16">
+
+            <Border Style="{StaticResource PlaceholderCard}">
+                <VerticalStackLayout Spacing="12">
+                    <Label
+                        Text="News"
+                        Style="{StaticResource Headline}"
+                        HorizontalOptions="Center" />
+                    <Label
+                        Text="Motorsport news feed will appear here."
+                        Style="{StaticResource Caption}"
+                        HorizontalOptions="Center"
+                        HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+            </Border>
+
+        </VerticalStackLayout>
+    </Grid>
+
+</ContentPage>
