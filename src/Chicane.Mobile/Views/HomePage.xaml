@@ -63,7 +63,7 @@
             <VerticalStackLayout Spacing="0">
 
                 <!-- ═══════════ HERO SECTION (100vh) ═══════════ -->
-                <Grid RowDefinitions="Auto,*,Auto"
+                <Grid RowDefinitions="Auto,*"
                       HeightRequest="{Binding HeroHeight}"
                       Padding="20,48,20,20">
 
@@ -104,6 +104,33 @@
                                    HorizontalOptions="Center"
                                    CharacterSpacing="3" />
                         </VerticalStackLayout>
+
+                        <!-- Weather Badge -->
+                        <Border Stroke="{StaticResource BorderSubtle}"
+                                StrokeThickness="1"
+                                StrokeShape="RoundRectangle 4"
+                                BackgroundColor="{StaticResource SurfaceLow}"
+                                Padding="12,8"
+                                HorizontalOptions="Center"
+                                IsVisible="{Binding IsPreRace}"
+                                Margin="0,18,0,0">
+                            <HorizontalStackLayout Spacing="8">
+                                <Label Text="{Binding WeatherIcon}"
+                                       FontSize="16"
+                                       VerticalOptions="Center" />
+                                <Label FontFamily="SpaceMonoRegular"
+                                       FontSize="13"
+                                       TextColor="{StaticResource CoolSlate}"
+                                       VerticalOptions="Center">
+                                    <Label.Text>
+                                        <MultiBinding StringFormat="{}{0} - {1}°C">
+                                            <Binding Path="WeatherCondition" />
+                                            <Binding Path="WeatherTemperature" />
+                                        </MultiBinding>
+                                    </Label.Text>
+                                </Label>
+                            </HorizontalStackLayout>
+                        </Border>
 
                         <!-- Live Session Data -->
                         <VerticalStackLayout IsVisible="{Binding IsLive}"
@@ -185,47 +212,12 @@
                             </CollectionView>
                         </VerticalStackLayout>
                     </Grid>
-
-                    <!-- Bottom: Weather Badge -->
-                    <Border Grid.Row="2"
-                            Stroke="{StaticResource BorderSubtle}"
-                            StrokeThickness="1"
-                            StrokeShape="RoundRectangle 4"
-                            BackgroundColor="{StaticResource SurfaceLow}"
-                            Padding="12,8"
-                            HorizontalOptions="Center"
-                            IsVisible="{Binding IsPreRace}"
-                            VerticalOptions="End">
-                        <HorizontalStackLayout Spacing="8">
-                            <Label Text="{Binding WeatherIcon}"
-                                   FontSize="16"
-                                   VerticalOptions="Center" />
-                            <Label FontFamily="SpaceMonoRegular"
-                                   FontSize="13"
-                                   TextColor="{StaticResource CoolSlate}"
-                                   VerticalOptions="Center">
-                                <Label.Text>
-                                    <MultiBinding StringFormat="{}{0} - {1}°C">
-                                        <Binding Path="WeatherCondition" />
-                                        <Binding Path="WeatherTemperature" />
-                                    </MultiBinding>
-                                </Label.Text>
-                            </Label>
-                        </HorizontalStackLayout>
-                    </Border>
                 </Grid>
 
                 <!-- ═══════════ STANDINGS SECTION (Pre-Race scroll) ═══════════ -->
                 <VerticalStackLayout IsVisible="{Binding IsPreRace}"
                                      Padding="20,0,20,40"
                                      Spacing="16">
-                    <Label Text="SCROLL DOWN FOR STANDINGS"
-                           FontFamily="SpaceMonoRegular"
-                           FontSize="10"
-                           TextColor="{StaticResource TextMuted}"
-                           HorizontalOptions="Center"
-                           CharacterSpacing="2"
-                           Margin="0,0,0,8" />
 
                     <Border Stroke="{StaticResource BorderSubtle}"
                             StrokeThickness="1"
