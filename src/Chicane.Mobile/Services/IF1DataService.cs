@@ -7,5 +7,6 @@ public interface IF1DataService
     Task<RaceEvent> GetNextEventAsync();
     Task<LiveSessionData> GetLiveSessionDataAsync();
     Task<List<StandingsEntry>> GetStandingsAsync();
+    Task<List<ConstructorStandingsEntry>> GetConstructorStandingsAsync();
     Task<List<TrackPosition>> GetTrackPositionsAsync();
 }
