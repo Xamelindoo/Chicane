@@ -357,7 +357,6 @@
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
                     </CollectionView>
-                </VerticalStackLayout>
 
                     <!-- Constructor Standings -->
                     <Border Stroke="{StaticResource BorderSubtle}"
@@ -425,6 +424,7 @@
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
                     </CollectionView>
+                </VerticalStackLayout>
 
                 <!-- ═══════════ LIVE TRACK SECTION (Live scroll) ═══════════ -->
                 <VerticalStackLayout IsVisible="{Binding IsLive}"
