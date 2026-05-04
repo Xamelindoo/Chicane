@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 390 844">
+  <defs>
+    <linearGradient id="overlay" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0A0A0A" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#0A0A0A" stop-opacity="0.9"/>
+    </linearGradient>
+  </defs>
+  <rect width="390" height="844" fill="#1A1A1A"/>
+  <path d="M60,200 C60,120 120,60 195,60 C270,60 330,120 330,200 C330,320 270,420 195,420 C120,420 60,320 60,200 Z" fill="none" stroke="#333" stroke-width="2"/>
+  <path d="M80,200 C80,140 130,80 195,80 C260,80 310,140 310,200 C310,300 260,400 195,400 C130,400 80,300 80,200 Z" fill="none" stroke="#E10600" stroke-width="1.5" stroke-dasharray="8,4" opacity="0.4"/>
+  <line x1="195" y1="60" x2="195" y2="140" stroke="#E10600" stroke-width="6"/>
+  <rect x="160" y="55" width="70" height="22" rx="4" fill="#E10600"/>
+  <text x="195" y="70" font-family="Arial" font-size="10" font-weight="bold" fill="white" text-anchor="middle">START</text>
+  <rect x="0" y="0" width="390" height="844" fill="url(#overlay)"/>
+</svg>

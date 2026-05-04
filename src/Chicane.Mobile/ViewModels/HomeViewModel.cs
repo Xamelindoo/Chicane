@@ -1,9 +1,22 @@
+using Chicane.Mobile.Models;
+using Chicane.Mobile.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
+using System.Collections.ObjectModel;
+using CommunityToolkit.Mvvm.Input;
 
 namespace Chicane.Mobile.ViewModels;
 
 public partial class HomeViewModel : ObservableObject
 {
+    private readonly IF1DataService f1DataService;
+    private IDispatcherTimer? countdownTimer;
+    private DateTime eventDateTime;
+
+    public HomeViewModel(IF1DataService f1DataService)
+    {
+        this.f1DataService = f1DataService;
+    }
+
     [ObservableProperty]
     private bool isBusy;
 
@@ -18,4 +31,182 @@ public partial class HomeViewModel : ObservableObject
     private bool isEmptyState;
 
     public bool HasError => !string.IsNullOrWhiteSpace(ErrorMessage);
+
+    [ObservableProperty]
+    private bool isPreRace = true;
+
+    [ObservableProperty]
+    private bool isLive;
+
+    [ObservableProperty]
+    private string eventName = string.Empty;
+
+    [ObservableProperty]
+    private string countdown = "--:--:--:--";
+
+    [ObservableProperty]
+    private string weatherCondition = string.Empty;
+
+    [ObservableProperty]
+    private string weatherIcon = string.Empty;
+
+    [ObservableProperty]
+    private int weatherTemperature;
+
+    [ObservableProperty]
+    private string circuitName = string.Empty;
+
+    [ObservableProperty]
+    private string circuitImage = string.Empty;
+
+    [ObservableProperty]
+    private string sessionName = string.Empty;
+
+    [ObservableProperty]
+    private string sessionStatus = string.Empty;
+
+    [ObservableProperty]
+    private int currentLap;
+
+    [ObservableProperty]
+    private int totalLaps;
+
+    public ObservableCollection<DriverGap> PositionBoard { get; } = new();
+
+    [RelayCommand]
+    private async Task LoadAsync()
+    {
+        if (IsBusy)
+        {
+            return;
+        }
+
+        IsBusy = true;
+        ErrorMessage = null;
+
+        try
+        {
+            var raceEvent = await f1DataService.GetNextEventAsync();
+
+            EventName = raceEvent.EventName;
+            eventDateTime = raceEvent.ScheduledDateTime;
+            CircuitName = raceEvent.Circuit.Name;
+            CircuitImage = raceEvent.Circuit.ImageUrl;
+            WeatherCondition = raceEvent.Weather.Condition;
+            WeatherIcon = raceEvent.Weather.IconGlyph;
+            WeatherTemperature = raceEvent.Weather.TemperatureC;
+
+            IsPreRace = true;
+            IsLive = false;
+            HasData = true;
+            IsEmptyState = false;
+
+            StartCountdown();
+        }
+        catch (Exception)
+        {
+            ErrorMessage = "Unable to load race data.";
+            HasData = false;
+            IsEmptyState = false;
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
+    [RelayCommand]
+    private async Task SimulateLiveAsync()
+    {
+        if (IsBusy)
+        {
+            return;
+        }
+
+        IsBusy = true;
+        ErrorMessage = null;
+
+        try
+        {
+            if (IsPreRace)
+            {
+                var liveData = await f1DataService.GetLiveSessionDataAsync();
+
+                SessionName = liveData.SessionName;
+                SessionStatus = liveData.Status;
+                CurrentLap = liveData.CurrentLap;
+                TotalLaps = liveData.TotalLaps;
+
+                PositionBoard.Clear();
+                foreach (var gap in liveData.PositionBoard)
+                {
+                    PositionBoard.Add(gap);
+                }
+
+                StopCountdown();
+                IsPreRace = false;
+                IsLive = true;
+            }
+            else
+            {
+                PositionBoard.Clear();
+                IsLive = false;
+                IsPreRace = true;
+                StartCountdown();
+            }
+        }
+        catch (Exception)
+        {
+            ErrorMessage = "Unable to load live session data.";
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
+    private void StartCountdown()
+    {
+        StopCountdown();
+
+        countdownTimer = Application.Current?.Dispatcher.CreateTimer();
+        if (countdownTimer is null)
+        {
+            return;
+        }
+
+        countdownTimer.Interval = TimeSpan.FromSeconds(1);
+        countdownTimer.Tick += OnCountdownTick;
+        countdownTimer.Start();
+
+        UpdateCountdown();
+    }
+
+    private void StopCountdown()
+    {
+        if (countdownTimer is not null)
+        {
+            countdownTimer.Stop();
+            countdownTimer.Tick -= OnCountdownTick;
+            countdownTimer = null;
+        }
+    }
+
+    private void OnCountdownTick(object? sender, EventArgs e)
+    {
+        UpdateCountdown();
+    }
+
+    private void UpdateCountdown()
+    {
+        var remaining = eventDateTime - DateTime.UtcNow;
+
+        if (remaining.TotalSeconds <= 0)
+        {
+            Countdown = "00:00:00:00";
+            return;
+        }
+
+        Countdown = $"{(int)remaining.TotalDays:D2}:{remaining.Hours:D2}:{remaining.Minutes:D2}:{remaining.Seconds:D2}";
+    }
 }
