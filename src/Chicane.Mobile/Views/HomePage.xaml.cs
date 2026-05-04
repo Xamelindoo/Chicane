@@ -21,9 +21,4 @@ public partial class HomePage : ContentPage
             viewModel.LoadCommand.Execute(null);
         }
     }
-
-    private void OnScrolled(object? sender, ScrolledEventArgs e)
-    {
-        viewModel.OnScrolled(e.ScrollY);
-    }
 }
