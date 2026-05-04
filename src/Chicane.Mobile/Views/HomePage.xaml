@@ -183,73 +183,6 @@
                                     </DataTemplate>
                                 </CollectionView.ItemTemplate>
                     </CollectionView>
-
-                    <!-- Constructor Standings -->
-                    <Border Stroke="{StaticResource BorderSubtle}"
-                            StrokeThickness="1"
-                            StrokeShape="RoundRectangle 4"
-                            BackgroundColor="{StaticResource SurfaceLow}"
-                            Padding="16"
-                            Margin="0,24,0,0">
-                        <Label Text="CONSTRUCTOR STANDINGS"
-                               FontFamily="SpaceMonoBold"
-                               FontSize="14"
-                               TextColor="{StaticResource PureWhite}"
-                               CharacterSpacing="4"
-                               HorizontalOptions="Center" />
-                    </Border>
-
-                    <Grid ColumnDefinitions="36,*,Auto"
-                          Padding="0,0,0,4"
-                          ColumnSpacing="8">
-                        <Label Grid.Column="0"
-                               Text="#"
-                               FontFamily="SpaceMonoBold"
-                               FontSize="11"
-                               TextColor="{StaticResource TextMuted}"
-                               CharacterSpacing="2" />
-                        <Label Grid.Column="1"
-                               Text="TEAM"
-                               FontFamily="SpaceMonoBold"
-                               FontSize="11"
-                               TextColor="{StaticResource TextMuted}"
-                               CharacterSpacing="2" />
-                        <Label Grid.Column="2"
-                               Text="PTS"
-                               FontFamily="SpaceMonoBold"
-                               FontSize="11"
-                               TextColor="{StaticResource TextMuted}"
-                               CharacterSpacing="2" />
-                    </Grid>
-
-                    <CollectionView ItemsSource="{Binding ConstructorStandings}">
-                        <CollectionView.ItemTemplate>
-                            <DataTemplate x:DataType="models:ConstructorStandingsEntry">
-                                <Grid ColumnDefinitions="36,*,Auto"
-                                      Padding="0,5"
-                                      ColumnSpacing="8">
-                                    <Label Grid.Column="0"
-                                           Text="{Binding Position}"
-                                           FontFamily="SpaceMonoBold"
-                                           FontSize="13"
-                                           TextColor="{StaticResource PureWhite}"
-                                           VerticalOptions="Center" />
-                                    <Label Grid.Column="1"
-                                           Text="{Binding TeamName}"
-                                           FontFamily="SpaceMonoRegular"
-                                           FontSize="13"
-                                           TextColor="{StaticResource PureWhite}"
-                                           VerticalOptions="Center" />
-                                    <Label Grid.Column="2"
-                                           Text="{Binding Points}"
-                                           FontFamily="SpaceMonoBold"
-                                           FontSize="14"
-                                           TextColor="{StaticResource RacingRed}"
-                                           VerticalOptions="Center" />
-                                </Grid>
-                            </DataTemplate>
-                        </CollectionView.ItemTemplate>
-                    </CollectionView>
                 </VerticalStackLayout>
                     </Grid>
 
@@ -425,6 +358,73 @@
                         </CollectionView.ItemTemplate>
                     </CollectionView>
                 </VerticalStackLayout>
+
+                    <!-- Constructor Standings -->
+                    <Border Stroke="{StaticResource BorderSubtle}"
+                            StrokeThickness="1"
+                            StrokeShape="RoundRectangle 4"
+                            BackgroundColor="{StaticResource SurfaceLow}"
+                            Padding="16"
+                            Margin="0,24,0,0">
+                        <Label Text="CONSTRUCTOR STANDINGS"
+                               FontFamily="SpaceMonoBold"
+                               FontSize="14"
+                               TextColor="{StaticResource PureWhite}"
+                               CharacterSpacing="4"
+                               HorizontalOptions="Center" />
+                    </Border>
+
+                    <Grid ColumnDefinitions="36,*,Auto"
+                          Padding="0,0,0,4"
+                          ColumnSpacing="8">
+                        <Label Grid.Column="0"
+                               Text="#"
+                               FontFamily="SpaceMonoBold"
+                               FontSize="11"
+                               TextColor="{StaticResource TextMuted}"
+                               CharacterSpacing="2" />
+                        <Label Grid.Column="1"
+                               Text="TEAM"
+                               FontFamily="SpaceMonoBold"
+                               FontSize="11"
+                               TextColor="{StaticResource TextMuted}"
+                               CharacterSpacing="2" />
+                        <Label Grid.Column="2"
+                               Text="PTS"
+                               FontFamily="SpaceMonoBold"
+                               FontSize="11"
+                               TextColor="{StaticResource TextMuted}"
+                               CharacterSpacing="2" />
+                    </Grid>
+
+                    <CollectionView ItemsSource="{Binding ConstructorStandings}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="models:ConstructorStandingsEntry">
+                                <Grid ColumnDefinitions="36,*,Auto"
+                                      Padding="0,5"
+                                      ColumnSpacing="8">
+                                    <Label Grid.Column="0"
+                                           Text="{Binding Position}"
+                                           FontFamily="SpaceMonoBold"
+                                           FontSize="13"
+                                           TextColor="{StaticResource PureWhite}"
+                                           VerticalOptions="Center" />
+                                    <Label Grid.Column="1"
+                                           Text="{Binding TeamName}"
+                                           FontFamily="SpaceMonoRegular"
+                                           FontSize="13"
+                                           TextColor="{StaticResource PureWhite}"
+                                           VerticalOptions="Center" />
+                                    <Label Grid.Column="2"
+                                           Text="{Binding Points}"
+                                           FontFamily="SpaceMonoBold"
+                                           FontSize="14"
+                                           TextColor="{StaticResource RacingRed}"
+                                           VerticalOptions="Center" />
+                                </Grid>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
 
                 <!-- ═══════════ LIVE TRACK SECTION (Live scroll) ═══════════ -->
                 <VerticalStackLayout IsVisible="{Binding IsLive}"
