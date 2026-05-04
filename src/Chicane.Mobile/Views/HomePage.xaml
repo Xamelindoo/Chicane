@@ -103,34 +103,33 @@
                                    TextColor="{StaticResource TextMuted}"
                                    HorizontalOptions="Center"
                                    CharacterSpacing="3" />
-                        </VerticalStackLayout>
 
-                        <!-- Weather Badge -->
-                        <Border Stroke="{StaticResource BorderSubtle}"
-                                StrokeThickness="1"
-                                StrokeShape="RoundRectangle 4"
-                                BackgroundColor="{StaticResource SurfaceLow}"
-                                Padding="12,8"
-                                HorizontalOptions="Center"
-                                IsVisible="{Binding IsPreRace}"
-                                Margin="0,18,0,0">
-                            <HorizontalStackLayout Spacing="8">
-                                <Label Text="{Binding WeatherIcon}"
-                                       FontSize="16"
-                                       VerticalOptions="Center" />
-                                <Label FontFamily="SpaceMonoRegular"
-                                       FontSize="13"
-                                       TextColor="{StaticResource CoolSlate}"
-                                       VerticalOptions="Center">
-                                    <Label.Text>
-                                        <MultiBinding StringFormat="{}{0} - {1}°C">
-                                            <Binding Path="WeatherCondition" />
-                                            <Binding Path="WeatherTemperature" />
-                                        </MultiBinding>
-                                    </Label.Text>
-                                </Label>
-                            </HorizontalStackLayout>
-                        </Border>
+                            <!-- Weather Badge -->
+                            <Border Stroke="{StaticResource BorderSubtle}"
+                                    StrokeThickness="1"
+                                    StrokeShape="RoundRectangle 4"
+                                    BackgroundColor="{StaticResource SurfaceLow}"
+                                    Padding="8,4"
+                                    HorizontalOptions="Center"
+                                    IsVisible="{Binding IsPreRace}">
+                                <HorizontalStackLayout Spacing="6">
+                                    <Label Text="{Binding WeatherIcon}"
+                                           FontSize="14"
+                                           VerticalOptions="Center" />
+                                    <Label FontFamily="SpaceMonoRegular"
+                                           FontSize="11"
+                                           TextColor="{StaticResource CoolSlate}"
+                                           VerticalOptions="Center">
+                                        <Label.Text>
+                                            <MultiBinding StringFormat="{}{0} - {1}°C">
+                                                <Binding Path="WeatherCondition" />
+                                                <Binding Path="WeatherTemperature" />
+                                            </MultiBinding>
+                                        </Label.Text>
+                                    </Label>
+                                </HorizontalStackLayout>
+                            </Border>
+                        </VerticalStackLayout>
 
                         <!-- Live Session Data -->
                         <VerticalStackLayout IsVisible="{Binding IsLive}"
@@ -453,7 +452,7 @@
                              InputTransparent="True"
                              VerticalOptions="End"
                              HorizontalOptions="Fill"
-                             Margin="0,0,0,80"
+                             Margin="0,0,0,28"
                              Spacing="0">
             <BoxView HeightRequest="60"
                      Color="{StaticResource CarbonBlack}"
