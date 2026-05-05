@@ -64,7 +64,12 @@ public partial class PastRaceDetailViewModel : ObservableObject
             YellowFlagCount = detail.YellowFlagCount;
 
             Results.Clear();
-            foreach (var r in detail.Results)
+            var sorted = detail.Results
+                .OrderBy(r => r.IsDnf ? 1 : 0)
+                .ThenBy(r => r.IsDnf ? r.DriverName : null)
+                .ThenBy(r => r.Position)
+                .ToList();
+            foreach (var r in sorted)
             {
                 Results.Add(r);
             }

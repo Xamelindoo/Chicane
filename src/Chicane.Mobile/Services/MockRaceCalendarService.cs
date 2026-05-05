@@ -22,19 +22,37 @@ public class MockRaceCalendarService : IRaceCalendarService
         return Task.FromResult(races);
     }
 
-    public Task<List<RaceScheduleEntry>> GetPastRacesAsync()
+    public async Task<List<RaceScheduleEntry>> GetPastRacesAsync()
     {
         var races = new List<RaceScheduleEntry>
         {
-            new() { EventName = "AUSTRALIAN GP", CircuitName = "Albert Park Circuit", Country = "Australia", EventDate = DateTime.UtcNow.AddDays(-95), WeatherCondition = "Sunny", WeatherIcon = "\u2600", TemperatureC = 26, Result = "1. VER 2. HAM 3. LEC", IsCompleted = true },
-            new() { EventName = "SAUDI ARABIAN GP", CircuitName = "Jeddah Corniche Circuit", Country = "Saudi Arabia", EventDate = DateTime.UtcNow.AddDays(-80), WeatherCondition = "Clear", WeatherIcon = "\u2600", TemperatureC = 29, Result = "1. VER 2. LEC 3. PER", IsCompleted = true },
-            new() { EventName = "MIAMI GP", CircuitName = "Miami International Autodrome", Country = "USA", EventDate = DateTime.UtcNow.AddDays(-66), WeatherCondition = "Sunny", WeatherIcon = "\u2600", TemperatureC = 31, Result = "1. HAM 2. VER 3. NOR", IsCompleted = true },
-            new() { EventName = "IMOLA GP", CircuitName = "Autodromo Enzo e Dino Ferrari", Country = "Italy", EventDate = DateTime.UtcNow.AddDays(-52), WeatherCondition = "Cloudy", WeatherIcon = "\u2601", TemperatureC = 17, Result = "1. VER 2. PIA 3. LEC", IsCompleted = true },
-            new() { EventName = "BARCELONA GP", CircuitName = "Circuit de Barcelona-Catalunya", Country = "Spain", EventDate = DateTime.UtcNow.AddDays(-38), WeatherCondition = "Sunny", WeatherIcon = "\u2600", TemperatureC = 25, Result = "1. VER 2. HAM 3. RUS", IsCompleted = true },
-            new() { EventName = "MONTREAL GP", CircuitName = "Circuit Gilles Villeneuve", Country = "Canada", EventDate = DateTime.UtcNow.AddDays(-24), WeatherCondition = "Rain", WeatherIcon = "\u26C8", TemperatureC = 15, Result = "1. HAM 2. VER 3. ALO", IsCompleted = true },
-            new() { EventName = "RED BULL RING GP", CircuitName = "Red Bull Ring", Country = "Austria", EventDate = DateTime.UtcNow.AddDays(-10), WeatherCondition = "Sunny", WeatherIcon = "\u2600", TemperatureC = 27, Result = "1. VER 2. NOR 3. SAI", IsCompleted = true }
+            new() { EventName = "AUSTRALIAN GP", CircuitName = "Albert Park Circuit", Country = "Australia", EventDate = DateTime.UtcNow.AddDays(-95), WeatherCondition = "Sunny", WeatherIcon = "\u2600", TemperatureC = 26, IsCompleted = true },
+            new() { EventName = "SAUDI ARABIAN GP", CircuitName = "Jeddah Corniche Circuit", Country = "Saudi Arabia", EventDate = DateTime.UtcNow.AddDays(-80), WeatherCondition = "Clear", WeatherIcon = "\u2600", TemperatureC = 29, IsCompleted = true },
+            new() { EventName = "MIAMI GP", CircuitName = "Miami International Autodrome", Country = "USA", EventDate = DateTime.UtcNow.AddDays(-66), WeatherCondition = "Sunny", WeatherIcon = "\u2600", TemperatureC = 31, IsCompleted = true },
+            new() { EventName = "IMOLA GP", CircuitName = "Autodromo Enzo e Dino Ferrari", Country = "Italy", EventDate = DateTime.UtcNow.AddDays(-52), WeatherCondition = "Cloudy", WeatherIcon = "\u2601", TemperatureC = 17, IsCompleted = true },
+            new() { EventName = "BARCELONA GP", CircuitName = "Circuit de Barcelona-Catalunya", Country = "Spain", EventDate = DateTime.UtcNow.AddDays(-38), WeatherCondition = "Sunny", WeatherIcon = "\u2600", TemperatureC = 25, IsCompleted = true },
+            new() { EventName = "MONTREAL GP", CircuitName = "Circuit Gilles Villeneuve", Country = "Canada", EventDate = DateTime.UtcNow.AddDays(-24), WeatherCondition = "Rain", WeatherIcon = "\u26C8", TemperatureC = 15, IsCompleted = true },
+            new() { EventName = "RED BULL RING GP", CircuitName = "Red Bull Ring", Country = "Austria", EventDate = DateTime.UtcNow.AddDays(-10), WeatherCondition = "Sunny", WeatherIcon = "\u2600", TemperatureC = 27, IsCompleted = true }
         };
-        return Task.FromResult(races);
+
+        foreach (var race in races)
+        {
+            var detail = await GetPastRaceDetailAsync(race.EventName);
+            var top3 = detail.Results
+                .Where(r => !r.IsDnf)
+                .Take(3)
+                .Select(r => $"{r.Position}. {GetLastName(r.DriverName)}")
+                .ToList();
+            race.Result = string.Join(" ", top3);
+        }
+
+        return races;
+    }
+
+    private static string GetLastName(string fullName)
+    {
+        var parts = fullName.Split(' ');
+        return parts.Length > 1 ? parts[^1] : fullName;
     }
 
     public Task<PastRaceDetail> GetPastRaceDetailAsync(string eventName)
@@ -73,9 +91,9 @@ public class MockRaceCalendarService : IRaceCalendarService
                 new() { Position = 15, DriverName = "D. RICCIARDO", TeamName = "RB", TimeOrDnf = "1:27.890", IsFastestLap = false },
                 new() { Position = 16, DriverName = "A. ALBON", TeamName = "Williams", TimeOrDnf = "1:28.220", IsFastestLap = false },
                 new() { Position = 17, DriverName = "V. BOTTAS", TeamName = "Sauber", TimeOrDnf = "1:28.560", IsFastestLap = false },
-                new() { Position = 18, DriverName = "K. MAGNUSSEN", TeamName = "Haas", TimeOrDnf = "DNF", IsDnf = true },
-                new() { Position = 19, DriverName = "Z. GUANYU", TeamName = "Sauber", TimeOrDnf = "1:29.110", IsFastestLap = false },
-                new() { Position = 20, DriverName = "L. SARGEANT", TeamName = "Williams", TimeOrDnf = "1:29.450", IsFastestLap = false }
+                new() { Position = 18, DriverName = "Z. GUANYU", TeamName = "Sauber", TimeOrDnf = "1:29.110", IsFastestLap = false },
+                new() { Position = 19, DriverName = "L. SARGEANT", TeamName = "Williams", TimeOrDnf = "1:29.450", IsFastestLap = false },
+                new() { Position = 20, DriverName = "K. MAGNUSSEN", TeamName = "Haas", TimeOrDnf = "DNF", IsDnf = true, IsFastestLap = false }
             },
             DriverStandings = BuildStandingsAfterAuGp(),
             ConstructorStandings = BuildConstructorAfterAuGp()
@@ -108,8 +126,8 @@ public class MockRaceCalendarService : IRaceCalendarService
                 new() { Position = 16, DriverName = "Z. GUANYU", TeamName = "Sauber", TimeOrDnf = "1:34.450", IsFastestLap = false },
                 new() { Position = 17, DriverName = "K. MAGNUSSEN", TeamName = "Haas", TimeOrDnf = "1:34.780", IsFastestLap = false },
                 new() { Position = 18, DriverName = "V. BOTTAS", TeamName = "Sauber", TimeOrDnf = "1:35.110", IsFastestLap = false },
-                new() { Position = 19, DriverName = "A. ALBON", TeamName = "Williams", TimeOrDnf = "DNF", IsDnf = true },
-                new() { Position = 20, DriverName = "L. SARGEANT", TeamName = "Williams", TimeOrDnf = "1:36.020", IsFastestLap = false }
+                new() { Position = 19, DriverName = "L. SARGEANT", TeamName = "Williams", TimeOrDnf = "1:36.020", IsFastestLap = false },
+                new() { Position = 20, DriverName = "A. ALBON", TeamName = "Williams", TimeOrDnf = "DNF", IsDnf = true, IsFastestLap = false }
             },
             DriverStandings = BuildStandingsAfterAuGp(),
             ConstructorStandings = BuildConstructorAfterAuGp()

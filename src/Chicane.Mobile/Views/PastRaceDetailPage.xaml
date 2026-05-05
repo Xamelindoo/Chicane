@@ -159,9 +159,9 @@
                                FontSize="12"
                                TextColor="{StaticResource CoolSlate}"
                                VerticalOptions="Center">
-                            <Label.Text>
-                                <Binding Path="YellowFlagCount"
-                                         StringFormat="{}{0} yellow flag event(s) during this race" />
+<Label.Text>
+                                                <Binding Path="YellowFlagCount"
+                                                         StringFormat="{}{0} yellow flags" />
                             </Label.Text>
                         </Label>
                     </HorizontalStackLayout>

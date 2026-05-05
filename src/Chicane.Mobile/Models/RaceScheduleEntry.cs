@@ -9,6 +9,6 @@ public class RaceScheduleEntry
     public string WeatherCondition { get; init; } = string.Empty;
     public string WeatherIcon { get; init; } = string.Empty;
     public int TemperatureC { get; init; }
-    public string? Result { get; init; }
+    public string? Result { get; set; }
     public bool IsCompleted { get; init; }
 }
