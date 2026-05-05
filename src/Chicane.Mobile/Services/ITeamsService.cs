@@ -4,7 +4,7 @@ namespace Chicane.Mobile.Services;
 
 public interface ITeamsService
 {
-    Task<List<TeamEntry>> GetTeamsAsync();
-    Task<List<DriverStandingsEntry>> GetDriversAsync();
-    Task<TeamDetail> GetTeamDetailAsync(string teamName);
+    Task<List<TeamEntry>> GetTeamsAsync(string categoryId);
+    Task<List<DriverStandingsEntry>> GetDriversAsync(string categoryId);
+    Task<TeamDetail> GetTeamDetailAsync(string teamName, string categoryId);
 }

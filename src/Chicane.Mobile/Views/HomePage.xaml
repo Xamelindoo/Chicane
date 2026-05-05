@@ -58,19 +58,21 @@
         </VerticalStackLayout>
 
         <!-- Scrollable Content -->
-        <ScrollView IsVisible="{Binding HasData}"
-                    Scrolled="OnScrolled">
+        <ScrollView x:Name="MainScrollView" IsVisible="{Binding HasData}">
             <VerticalStackLayout Spacing="0">
 
                 <!-- ═══════════ HERO SECTION (100vh) ═══════════ -->
                 <Grid RowDefinitions="Auto,*"
                       HeightRequest="{Binding HeroHeight}"
-                      Padding="20,48,20,20">
+                       Padding="20,72,20,20">
 
-                    <!-- Top: Event Label -->
+                    <!-- Top: Category Pill + Event Label -->
                     <VerticalStackLayout Grid.Row="0"
                                          HorizontalOptions="Center"
-                                         Spacing="4">
+                                         Spacing="6">
+                        <Label x:Name="CategoryPill"
+                               HorizontalOptions="Center"
+                               InputTransparent="False" />
                         <Label Text="NEXT EVENT"
                                FontFamily="SpaceMonoRegular"
                                FontSize="12"
@@ -91,12 +93,29 @@
                         <VerticalStackLayout IsVisible="{Binding IsPreRace}"
                                              Spacing="10"
                                              HorizontalOptions="Center">
-                            <Label Text="{Binding Countdown}"
-                                   FontFamily="JetBrainsMonoBold"
-                                   FontSize="48"
-                                   TextColor="{StaticResource PureWhite}"
-                                   HorizontalOptions="Center"
-                                   CharacterSpacing="-1" />
+                            <FlexLayout Direction="Row"
+                                        AlignItems="Center"
+                                        JustifyContent="Center"
+                                        BindableLayout.ItemsSource="{Binding CountdownParts}"
+                                        x:DataType="viewmodels:HomeViewModel">
+                                <BindableLayout.ItemTemplate>
+                                    <DataTemplate x:DataType="models:CountdownPart">
+                                        <Label Text="{Binding Text}"
+                                               FontFamily="JetBrainsMonoBold"
+                                               FontSize="54"
+                                               TextColor="{StaticResource RacingRed}"
+                                               CharacterSpacing="0.7">
+                                            <Label.Triggers>
+                                                <DataTrigger TargetType="Label"
+                                                             Binding="{Binding IsColon}"
+                                                             Value="False">
+                                                    <Setter Property="TextColor" Value="{StaticResource PureWhite}" />
+                                                </DataTrigger>
+                                            </Label.Triggers>
+                                        </Label>
+                                    </DataTemplate>
+                                </BindableLayout.ItemTemplate>
+                            </FlexLayout>
                             <Label Text="DD:HH:MM:SS"
                                    FontFamily="JetBrainsMonoRegular"
                                    FontSize="11"
@@ -488,6 +507,11 @@
                        CharacterSpacing="3" />
             </VerticalStackLayout>
         </VerticalStackLayout>
+
+        <!-- Category Switcher Overlay (on top of everything, z-order last = on top) -->
+        <ContentView x:Name="CategorySwitcherHost"
+                     VerticalOptions="Fill"
+                     HorizontalOptions="Fill" />
     </Grid>
 
 </ContentPage>

@@ -9,10 +9,14 @@ namespace Chicane.Mobile.ViewModels;
 public partial class ScheduleViewModel : ObservableObject
 {
     private readonly IRaceCalendarService calendarService;
+    private readonly ICategoryProvider categoryProvider;
 
-    public ScheduleViewModel(IRaceCalendarService calendarService)
+    public ScheduleViewModel(IRaceCalendarService calendarService, ICategoryProvider categoryProvider)
     {
         this.calendarService = calendarService;
+        this.categoryProvider = categoryProvider;
+
+        categoryProvider.CategoryChanged += async _ => await LoadAsync();
     }
 
     [ObservableProperty]
@@ -93,11 +97,11 @@ public partial class ScheduleViewModel : ObservableObject
 
         if (IsShowingUpcoming)
         {
-            races = await calendarService.GetUpcomingRacesAsync();
+            races = await calendarService.GetUpcomingRacesAsync(categoryProvider.CurrentCategory.Id);
         }
         else
         {
-            races = await calendarService.GetPastRacesAsync();
+            races = await calendarService.GetPastRacesAsync(categoryProvider.CurrentCategory.Id);
         }
 
         Races.Clear();

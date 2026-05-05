@@ -9,10 +9,14 @@ namespace Chicane.Mobile.ViewModels;
 public partial class LeaderboardsViewModel : ObservableObject
 {
     private readonly ITeamsService teamsService;
+    private readonly ICategoryProvider categoryProvider;
 
-    public LeaderboardsViewModel(ITeamsService teamsService)
+    public LeaderboardsViewModel(ITeamsService teamsService, ICategoryProvider categoryProvider)
     {
         this.teamsService = teamsService;
+        this.categoryProvider = categoryProvider;
+
+        categoryProvider.CategoryChanged += async _ => await LoadAsync();
     }
 
     [ObservableProperty]
@@ -85,7 +89,7 @@ public partial class LeaderboardsViewModel : ObservableObject
 
     private async Task LoadTeamsAsync()
     {
-        var teams = await teamsService.GetTeamsAsync();
+        var teams = await teamsService.GetTeamsAsync(categoryProvider.CurrentCategory.Id);
         Teams.Clear();
         foreach (var team in teams)
         {
@@ -96,7 +100,7 @@ public partial class LeaderboardsViewModel : ObservableObject
 
     private async Task LoadDriversAsync()
     {
-        var drivers = await teamsService.GetDriversAsync();
+        var drivers = await teamsService.GetDriversAsync(categoryProvider.CurrentCategory.Id);
         Drivers.Clear();
         foreach (var driver in drivers)
         {

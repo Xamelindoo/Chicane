@@ -10,10 +10,12 @@ namespace Chicane.Mobile.ViewModels;
 public partial class PastRaceDetailViewModel : ObservableObject
 {
     private readonly IRaceCalendarService calendarService;
+    private readonly ICategoryProvider categoryProvider;
 
-    public PastRaceDetailViewModel(IRaceCalendarService calendarService)
+    public PastRaceDetailViewModel(IRaceCalendarService calendarService, ICategoryProvider categoryProvider)
     {
         this.calendarService = calendarService;
+        this.categoryProvider = categoryProvider;
     }
 
     [ObservableProperty]
@@ -62,7 +64,7 @@ public partial class PastRaceDetailViewModel : ObservableObject
 
         try
         {
-            var detail = await calendarService.GetPastRaceDetailAsync(EventName);
+            var detail = await calendarService.GetPastRaceDetailAsync(EventName, categoryProvider.CurrentCategory.Id);
 
             YellowFlagCount = detail.YellowFlagCount;
             EventDateText = detail.EventDate.ToString("dd MMM yyyy");

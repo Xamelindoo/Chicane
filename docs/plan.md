@@ -166,7 +166,7 @@ Permettere il cambio istantaneo tra categorie motorsport (F1, WEC, WRC, MotoGP) 
 **In scope**
 
 - implementare tendina superiore per cambio categoria motorsport;
-- aggiornare Hero Section e accent color in base alla categoria selezionata;
+- aggiornare Hero Section in base alla categoria selezionata;
 - sincronizzare CategoryProvider globale;
 - mock dati per categorie diverse.
 
