@@ -68,7 +68,7 @@
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:TeamEntry">
                     <Grid ColumnDefinitions="4,*"
-                          Margin="20,0,20,8">
+                          Margin="16,0,16,10">
 
                         <!-- Left color bar -->
                         <BoxView Grid.Column="0"
@@ -82,50 +82,78 @@
                                 StrokeThickness="1"
                                 StrokeShape="RoundRectangle 0,4,4,0"
                                 BackgroundColor="{StaticResource SurfaceLow}"
-                                Padding="14,12">
-                            <Grid RowDefinitions="Auto,Auto"
+                                Padding="16,14">
+                            <Grid RowDefinitions="Auto,Auto,Auto,Auto"
                                   ColumnDefinitions="*,Auto"
-                                  RowSpacing="6">
+                                  RowSpacing="8">
 
-                                <!-- Team Name -->
+                                <!-- Row 0: Team Name + Position -->
                                 <Label Grid.Row="0" Grid.Column="0"
                                        Text="{Binding TeamName}"
                                        FontFamily="SpaceMonoBold"
-                                       FontSize="15"
+                                       FontSize="20"
                                        TextColor="{StaticResource PureWhite}"
-                                       VerticalOptions="Start" />
-
-                                <!-- Position -->
+                                       VerticalOptions="Center" />
                                 <Label Grid.Row="0" Grid.Column="1"
                                        Text="{Binding Position, StringFormat='#{0}'}"
                                        FontFamily="SpaceMonoBold"
-                                       FontSize="18"
+                                       FontSize="20"
                                        TextColor="{StaticResource RacingRed}"
-                                       VerticalOptions="Start"
-                                       HorizontalOptions="End" />
+                                       VerticalOptions="Center" />
 
-                                <!-- Drivers -->
-                                <Label Grid.Row="1" Grid.Column="0"
-                                       FontFamily="SpaceMonoRegular"
-                                       FontSize="11"
-                                       TextColor="{StaticResource CoolSlate}"
-                                       VerticalOptions="End">
-                                    <Label.Text>
-                                        <MultiBinding StringFormat="{}{0}, {1}">
-                                            <Binding Path="Drivers[0]" />
-                                            <Binding Path="Drivers[1]" />
-                                        </MultiBinding>
-                                    </Label.Text>
-                                </Label>
+                                <!-- Row 1: Driver 1 -->
+                                <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                                      ColumnDefinitions="*,Auto">
+                                    <Label Grid.Column="0"
+                                           Text="{Binding Drivers[0].Name}"
+                                           FontFamily="SpaceMonoRegular"
+                                           FontSize="13"
+                                           TextColor="{StaticResource CoolSlate}"
+                                           VerticalOptions="Center" />
+                                    <HorizontalStackLayout Grid.Column="1" Spacing="4">
+                                        <Label Text="{Binding Drivers[0].Points}"
+                                               FontFamily="SpaceMonoBold"
+                                               FontSize="13"
+                                               TextColor="{StaticResource PureWhite}"
+                                               VerticalOptions="Center" />
+                                        <Label Text="pts"
+                                               FontFamily="SpaceMonoRegular"
+                                               FontSize="10"
+                                               TextColor="{StaticResource TextMuted}"
+                                               VerticalOptions="Center" />
+                                    </HorizontalStackLayout>
+                                </Grid>
 
-                                <!-- Points -->
-                                <Label Grid.Row="1" Grid.Column="1"
+                                <!-- Row 2: Driver 2 -->
+                                <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+                                      ColumnDefinitions="*,Auto">
+                                    <Label Grid.Column="0"
+                                           Text="{Binding Drivers[1].Name}"
+                                           FontFamily="SpaceMonoRegular"
+                                           FontSize="13"
+                                           TextColor="{StaticResource CoolSlate}"
+                                           VerticalOptions="Center" />
+                                    <HorizontalStackLayout Grid.Column="1" Spacing="4">
+                                        <Label Text="{Binding Drivers[1].Points}"
+                                               FontFamily="SpaceMonoBold"
+                                               FontSize="13"
+                                               TextColor="{StaticResource PureWhite}"
+                                               VerticalOptions="Center" />
+                                        <Label Text="pts"
+                                               FontFamily="SpaceMonoRegular"
+                                               FontSize="10"
+                                               TextColor="{StaticResource TextMuted}"
+                                               VerticalOptions="Center" />
+                                    </HorizontalStackLayout>
+                                </Grid>
+
+                                <!-- Row 3: Total team points -->
+                                <Label Grid.Row="3" Grid.Column="1"
                                        Text="{Binding Points}"
                                        FontFamily="SpaceMonoBold"
-                                       FontSize="16"
+                                       FontSize="20"
                                        TextColor="{StaticResource PureWhite}"
-                                       VerticalOptions="End"
-                                       HorizontalOptions="End" />
+                                       VerticalOptions="Center" />
                             </Grid>
                         </Border>
                     </Grid>
