@@ -57,12 +57,6 @@
                     HorizontalOptions="Center" />
         </VerticalStackLayout>
 
-        <!-- Category Switcher (fixed overlay, out of scroll flow) -->
-        <ContentView x:Name="CategorySwitcherHost"
-                     VerticalOptions="Fill"
-                     HorizontalOptions="Fill"
-                     InputTransparent="True" />
-
         <!-- Scrollable Content -->
         <ScrollView x:Name="MainScrollView" IsVisible="{Binding HasData}">
             <VerticalStackLayout Spacing="0">
@@ -510,6 +504,11 @@
                        CharacterSpacing="3" />
             </VerticalStackLayout>
         </VerticalStackLayout>
+
+        <!-- Category Switcher Overlay (on top of everything, z-order last = on top) -->
+        <ContentView x:Name="CategorySwitcherHost"
+                     VerticalOptions="Fill"
+                     HorizontalOptions="Fill" />
     </Grid>
 
 </ContentPage>

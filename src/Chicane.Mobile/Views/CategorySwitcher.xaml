@@ -6,7 +6,6 @@
              xmlns:models="clr-namespace:Chicane.Mobile.Models"
              x:Class="Chicane.Mobile.Views.CategorySwitcher"
              x:DataType="viewmodels:CategorySwitcherViewModel"
-             InputTransparent="True"
              VerticalOptions="Fill"
              HorizontalOptions="Fill">
 
