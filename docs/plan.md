@@ -33,9 +33,9 @@ La prima iterazione prevede il bootstrap del progetto MAUI reale in `src/Chicane
 
 | Iterazione | Obiettivo verificabile | Dipendenze | Rischio | Stato |
 | --- | --- | --- | --- | --- |
-| IT-01 | Bootstrap MAUI, Shell e CategoryProvider | Nessuna | basso | pianificata |
-| IT-02 | Hero Section Dinamica (F1) con countdown, meteo e immagine circuito | IT-01 | medio | pianificata |
-| IT-03 | Multi-Series Switcher, tendina categorie e temi dinamici | IT-02 | medio | pianificata |
+| IT-01 | Bootstrap MAUI, Shell e CategoryProvider | Nessuna | basso | completata |
+| IT-02 | Hero Section Dinamica (F1) con countdown, meteo e immagine circuito | IT-01 | medio | completata |
+| IT-03 | Multi-Series Switcher, tendina categorie e temi dinamici | IT-02 | medio | completata |
 | IT-04 | Standings & Teams con persistenza SQLite | IT-03 | basso | pianificata |
 | IT-05 | Live Track Widget (SkiaSharp) e News Feed | IT-02, IT-04 | alto | pianificata |
 | IT-06 | Hardening MVP e gestione stati UI | IT-01, IT-02, IT-03, IT-04, IT-05 | medio | pianificata |
