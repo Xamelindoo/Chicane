@@ -33,7 +33,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<OpenF1Service>();
 
         // News service
-        builder.Services.AddSingleton<INewsService, NewsApiService>();
+        builder.Services.AddSingleton<INewsService, Rss2JsonService>();
 
         // SQLite infrastructure
         builder.Services.AddSingleton<DatabaseService>();
