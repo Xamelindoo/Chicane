@@ -9,13 +9,28 @@ namespace Chicane.Mobile.ViewModels;
 public partial class HomeViewModel : ObservableObject
 {
     private readonly IF1DataService f1DataService;
+    private readonly ICategoryProvider categoryProvider;
     private IDispatcherTimer? countdownTimer;
     private DateTime eventDateTime;
 
-    public HomeViewModel(IF1DataService f1DataService)
+    public HomeViewModel(IF1DataService f1DataService, ICategoryProvider categoryProvider)
     {
         this.f1DataService = f1DataService;
+        this.categoryProvider = categoryProvider;
+
+        categoryProvider.CategoryChanged += OnCategoryChanged;
     }
+
+    private async void OnCategoryChanged(MotorsportCategory category)
+    {
+        if (HasData)
+        {
+            await LoadAsync();
+        }
+    }
+
+    [ObservableProperty]
+    private MotorsportCategory currentCategory = MotorsportCategory.F1;
 
     [ObservableProperty]
     private bool isBusy;
@@ -98,7 +113,10 @@ public partial class HomeViewModel : ObservableObject
             var displayInfo = DeviceDisplay.Current.MainDisplayInfo;
             HeroHeight = displayInfo.Height / displayInfo.Density;
 
-            var raceEvent = await f1DataService.GetNextEventAsync();
+            var categoryId = categoryProvider.CurrentCategory.Id;
+            CurrentCategory = categoryProvider.CurrentCategory;
+
+            var raceEvent = await f1DataService.GetNextEventAsync(categoryId);
 
             EventName = raceEvent.EventName;
             eventDateTime = raceEvent.ScheduledDateTime;
@@ -108,14 +126,14 @@ public partial class HomeViewModel : ObservableObject
             WeatherIcon = raceEvent.Weather.IconGlyph;
             WeatherTemperature = raceEvent.Weather.TemperatureC;
 
-            var standings = await f1DataService.GetStandingsAsync();
+            var standings = await f1DataService.GetStandingsAsync(categoryId);
             Standings.Clear();
             foreach (var entry in standings)
             {
                 Standings.Add(entry);
             }
 
-            var constructorStandings = await f1DataService.GetConstructorStandingsAsync();
+            var constructorStandings = await f1DataService.GetConstructorStandingsAsync(categoryId);
             ConstructorStandings.Clear();
             foreach (var entry in constructorStandings)
             {
@@ -156,7 +174,7 @@ public partial class HomeViewModel : ObservableObject
         {
             if (IsPreRace)
             {
-                var liveData = await f1DataService.GetLiveSessionDataAsync();
+                var liveData = await f1DataService.GetLiveSessionDataAsync(categoryProvider.CurrentCategory.Id);
 
                 SessionName = liveData.SessionName;
                 SessionStatus = liveData.Status;
@@ -169,7 +187,7 @@ public partial class HomeViewModel : ObservableObject
                     PositionBoard.Add(gap);
                 }
 
-                var trackPositions = await f1DataService.GetTrackPositionsAsync();
+                var trackPositions = await f1DataService.GetTrackPositionsAsync(categoryProvider.CurrentCategory.Id);
                 TrackPositions.Clear();
                 foreach (var tp in trackPositions)
                 {

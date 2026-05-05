@@ -4,9 +4,9 @@ namespace Chicane.Mobile.Services;
 
 public interface IF1DataService
 {
-    Task<RaceEvent> GetNextEventAsync();
-    Task<LiveSessionData> GetLiveSessionDataAsync();
-    Task<List<StandingsEntry>> GetStandingsAsync();
-    Task<List<ConstructorStandingsEntry>> GetConstructorStandingsAsync();
-    Task<List<TrackPosition>> GetTrackPositionsAsync();
+    Task<RaceEvent> GetNextEventAsync(string categoryId);
+    Task<LiveSessionData> GetLiveSessionDataAsync(string categoryId);
+    Task<List<StandingsEntry>> GetStandingsAsync(string categoryId);
+    Task<List<ConstructorStandingsEntry>> GetConstructorStandingsAsync(string categoryId);
+    Task<List<TrackPosition>> GetTrackPositionsAsync(string categoryId);
 }

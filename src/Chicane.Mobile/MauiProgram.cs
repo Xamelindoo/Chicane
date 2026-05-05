@@ -18,6 +18,8 @@ public static class MauiProgram
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 fonts.AddFont("SpaceMono-Regular.ttf", "SpaceMonoRegular");
                 fonts.AddFont("SpaceMono-Bold.ttf", "SpaceMonoBold");
+                fonts.AddFont("JetBrainsMono-Regular.ttf", "JetBrainsMonoRegular");
+                fonts.AddFont("JetBrainsMono-Bold.ttf", "JetBrainsMonoBold");
             });
 
 #if DEBUG
@@ -27,6 +29,10 @@ public static class MauiProgram
         builder.Services.AddSingleton<IF1DataService, MockF1DataService>();
         builder.Services.AddSingleton<IRaceCalendarService, MockRaceCalendarService>();
         builder.Services.AddSingleton<ITeamsService, MockTeamsService>();
+        builder.Services.AddSingleton<ICategoryProvider, CategoryProvider>();
+
+        builder.Services.AddTransient<CategorySwitcherViewModel>();
+        builder.Services.AddTransient<CategorySwitcher>();
 
         builder.Services.AddTransient<HomeViewModel>();
         builder.Services.AddTransient<HomePage>();

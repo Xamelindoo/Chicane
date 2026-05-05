@@ -67,9 +67,9 @@
                       Padding="20,48,20,20">
 
                     <!-- Top: Event Label -->
-                    <VerticalStackLayout Grid.Row="0"
+                    <VerticalStackLayout x:Name="CategorySwitcherHost" Grid.Row="0"
                                          HorizontalOptions="Center"
-                                         Spacing="4">
+                                         Spacing="8">
                         <Label Text="NEXT EVENT"
                                FontFamily="SpaceMonoRegular"
                                FontSize="12"

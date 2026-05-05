@@ -6,13 +6,14 @@ public partial class HomePage : ContentPage
 {
     private readonly HomeViewModel viewModel;
 
-    public HomePage(HomeViewModel viewModel)
+    public HomePage(HomeViewModel viewModel, CategorySwitcher categorySwitcher)
     {
         InitializeComponent();
         BindingContext = viewModel;
         this.viewModel = viewModel;
 
         MainScrollView.Scrolled += OnScrolled;
+        CategorySwitcherHost.Children.Insert(0, categorySwitcher);
     }
 
     protected override void OnAppearing()
