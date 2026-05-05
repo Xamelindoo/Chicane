@@ -212,12 +212,13 @@ public class MockTeamsService : ITeamsService
 
     private static TeamDetail BuildGenericTeamDetail(string teamName)
     {
+        var colors = GetTeamColors(teamName);
         return BuildFerrariDetail() with
         {
             TeamName = teamName,
-            BorderColor = "#333333",
-            GradientColor = "#333333",
-            Emoji = "🏎️",
+            BorderColor = colors.Border,
+            GradientColor = colors.Gradient,
+            Emoji = colors.Emoji,
             TotalPoints = 0,
             SeasonStats = new TeamSeasonStats(),
             Profile = new TeamProfile
@@ -226,6 +227,24 @@ public class MockTeamsService : ITeamsService
                 History = "Team details coming soon.",
                 PreviousSeasonSummary = "Season data not available yet."
             }
+        };
+    }
+
+    private static (string Border, string Gradient, string Emoji) GetTeamColors(string teamName)
+    {
+        return teamName switch
+        {
+            "Ferrari" => ("#E10600", "#E10600", "🏎️"),
+            "Red Bull Racing" => ("#1A3A5C", "#1A3A5C", "🐂"),
+            "Mercedes" => ("#00A19C", "#00A19C", "⚡"),
+            "McLaren" => ("#FF8700", "#FF8700", "🔶"),
+            "Aston Martin" => ("#006F62", "#006F62", "💚"),
+            "Alpine" => ("#005BAA", "#005BAA", "🔷"),
+            "RB" => ("#6699FF", "#6699FF", "🔹"),
+            "Haas" => ("#B6B6B6", "#B6B6B6", "🔘"),
+            "Williams" => ("#005AFF", "#005AFF", "🔵"),
+            "Sauber" => ("#00E600", "#00E600", "🟢"),
+            _ => ("#333333", "#333333", "🏎️")
         };
     }
 }
