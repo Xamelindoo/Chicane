@@ -1,27 +1,31 @@
 <?xml version="1.0" encoding="utf-8" ?>
+<!-- ROOT: fixed, full-screen, pointer-events: none (pass through when closed) -->
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodels="clr-namespace:Chicane.Mobile.ViewModels"
              xmlns:models="clr-namespace:Chicane.Mobile.Models"
              x:Class="Chicane.Mobile.Views.CategorySwitcher"
-             x:DataType="viewmodels:CategorySwitcherViewModel">
+             x:DataType="viewmodels:CategorySwitcherViewModel"
+             InputTransparent="True"
+             VerticalOptions="Fill"
+             HorizontalOptions="Fill">
 
     <Grid>
 
-        <!-- Backdrop (fills entire grid, tap to close) -->
-        <Border IsVisible="{Binding IsMenuOpen}"
-                BackgroundColor="#99000000"
-                StrokeThickness="0"
-                InputTransparent="False">
-            <Border.GestureRecognizers>
+        <!-- BACKDROP: visible only when menu open; pointer-events: auto -->
+        <BoxView IsVisible="{Binding IsMenuOpen}"
+                 Color="#66000000"
+                 InputTransparent="False">
+            <BoxView.GestureRecognizers>
                 <TapGestureRecognizer Command="{Binding CloseMenuCommand}" />
-            </Border.GestureRecognizers>
-        </Border>
+            </BoxView.GestureRecognizers>
+        </BoxView>
 
-        <!-- Pill (always visible, top center) -->
+        <!-- PILL: position absolute top center; pointer-events: auto; z-index 10 -->
         <Label VerticalOptions="Start"
                HorizontalOptions="Center"
-               Padding="0,52,0,0">
+               Padding="0,52,0,0"
+               InputTransparent="False">
             <Label.GestureRecognizers>
                 <TapGestureRecognizer Command="{Binding ToggleMenuCommand}" />
             </Label.GestureRecognizers>
@@ -38,7 +42,7 @@
             </Label.FormattedText>
         </Label>
 
-        <!-- Dropdown (below pill, centered) -->
+        <!-- DROPDOWN: visible only when menu open; pointer-events: auto; z-index 10 -->
         <Border IsVisible="{Binding IsMenuOpen}"
                 StrokeThickness="0"
                 StrokeShape="RoundRectangle 8"
@@ -47,7 +51,8 @@
                 WidthRequest="220"
                 VerticalOptions="Start"
                 HorizontalOptions="Center"
-                Margin="0,90,0,0">
+                Margin="0,88,0,0"
+                InputTransparent="False">
             <VerticalStackLayout Spacing="0">
                 <CollectionView ItemsSource="{Binding Categories}"
                                 x:DataType="viewmodels:CategorySwitcherViewModel"
