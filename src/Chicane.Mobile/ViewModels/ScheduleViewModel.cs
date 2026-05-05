@@ -79,9 +79,12 @@ public partial class ScheduleViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task NavigateToDetailAsync(string eventName)
+    private async Task NavigateToDetailAsync(RaceScheduleEntry entry)
     {
-        await Shell.Current.GoToAsync($"past-race-detail?eventName={Uri.EscapeDataString(eventName)}");
+        if (!entry.IsCompleted)
+            return;
+
+        await Shell.Current.GoToAsync($"past-race-detail?eventName={Uri.EscapeDataString(entry.EventName)}");
     }
 
     private async Task LoadRacesAsync()

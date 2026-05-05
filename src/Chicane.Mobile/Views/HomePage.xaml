@@ -452,7 +452,7 @@
                              InputTransparent="True"
                              VerticalOptions="End"
                              HorizontalOptions="Fill"
-                             Margin="0,0,0,28"
+                             Margin="0,0,0,8"
                              Spacing="0">
             <BoxView HeightRequest="60"
                      Color="{StaticResource CarbonBlack}"

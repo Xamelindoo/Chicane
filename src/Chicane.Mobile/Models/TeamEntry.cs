@@ -7,4 +7,5 @@ public class TeamEntry
     public int Points { get; init; }
     public List<DriverEntry> Drivers { get; init; } = new();
     public string BorderColor { get; init; } = "#333333";
+    public string GradientColor { get; init; } = "#0A0A0A";
 }
