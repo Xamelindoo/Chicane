@@ -27,12 +27,13 @@ public static class MauiProgram
 #endif
 
         builder.Services.AddSingleton<IF1DataService, MockF1DataService>();
+        builder.Services.AddSingleton<IRaceCalendarService, MockRaceCalendarService>();
 
         builder.Services.AddTransient<HomeViewModel>();
         builder.Services.AddTransient<HomePage>();
 
-        builder.Services.AddTransient<StandingsViewModel>();
-        builder.Services.AddTransient<StandingsPage>();
+        builder.Services.AddTransient<ScheduleViewModel>();
+        builder.Services.AddTransient<SchedulePage>();
 
         builder.Services.AddTransient<TeamsViewModel>();
         builder.Services.AddTransient<TeamsPage>();
