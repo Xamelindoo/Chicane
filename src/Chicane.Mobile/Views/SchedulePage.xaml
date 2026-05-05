@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:Chicane.Mobile.ViewModels"
+             xmlns:models="clr-namespace:Chicane.Mobile.Models"
+             x:Class="Chicane.Mobile.Views.SchedulePage"
+             x:DataType="viewmodels:ScheduleViewModel"
+             Title="Schedule"
+             Shell.NavBarIsVisible="False">
+
+    <Grid RowDefinitions="Auto,*" BackgroundColor="{StaticResource CarbonBlack}">
+
+        <!-- Segmented Control -->
+        <Grid Grid.Row="0"
+              ColumnDefinitions="*,*"
+              Padding="20,48,20,12"
+              ColumnSpacing="0">
+            <Border Grid.Column="0"
+                    Stroke="{StaticResource RacingRed}"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 4,0,0,4"
+                    Padding="0">
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Setter Property="BackgroundColor" Value="{StaticResource SurfaceLow}" />
+                        <Style.Triggers>
+                            <DataTrigger TargetType="Border" Binding="{Binding IsShowingUpcoming}" Value="True">
+                                <Setter Property="BackgroundColor" Value="{StaticResource RacingRed}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding ShowUpcomingCommand}" />
+                </Border.GestureRecognizers>
+                <Label Text="UPCOMING"
+                       FontFamily="SpaceMonoBold"
+                       FontSize="12"
+                       VerticalOptions="Center"
+                       HorizontalOptions="Center"
+                       CharacterSpacing="3"
+                       Padding="0,10">
+                    <Label.Style>
+                        <Style TargetType="Label">
+                            <Setter Property="TextColor" Value="{StaticResource TextMuted}" />
+                            <Style.Triggers>
+                                <DataTrigger TargetType="Label" Binding="{Binding IsShowingUpcoming}" Value="True">
+                                    <Setter Property="TextColor" Value="{StaticResource PureWhite}" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Label.Style>
+                </Label>
+            </Border>
+
+            <Border Grid.Column="1"
+                    Stroke="{StaticResource RacingRed}"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 0,4,4,0"
+                    Padding="0">
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Setter Property="BackgroundColor" Value="{StaticResource SurfaceLow}" />
+                        <Style.Triggers>
+                            <DataTrigger TargetType="Border" Binding="{Binding IsShowingPast}" Value="True">
+                                <Setter Property="BackgroundColor" Value="{StaticResource RacingRed}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding ShowPastCommand}" />
+                </Border.GestureRecognizers>
+                <Label Text="PAST"
+                       FontFamily="SpaceMonoBold"
+                       FontSize="12"
+                       VerticalOptions="Center"
+                       HorizontalOptions="Center"
+                       CharacterSpacing="3"
+                       Padding="0,10">
+                    <Label.Style>
+                        <Style TargetType="Label">
+                            <Setter Property="TextColor" Value="{StaticResource TextMuted}" />
+                            <Style.Triggers>
+                                <DataTrigger TargetType="Label" Binding="{Binding IsShowingPast}" Value="True">
+                                    <Setter Property="TextColor" Value="{StaticResource PureWhite}" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Label.Style>
+                </Label>
+            </Border>
+        </Grid>
+
+        <!-- Loading -->
+        <VerticalStackLayout Grid.Row="1"
+                             IsVisible="{Binding IsBusy}"
+                             VerticalOptions="Center"
+                             HorizontalOptions="Center"
+                             Spacing="12">
+            <ActivityIndicator IsRunning="{Binding IsBusy}"
+                               Color="{StaticResource RacingRed}"
+                               HeightRequest="48"
+                               WidthRequest="48" />
+            <Label Text="Loading schedule..."
+                   Style="{StaticResource Caption}"
+                   HorizontalOptions="Center" />
+        </VerticalStackLayout>
+
+        <!-- Error -->
+        <VerticalStackLayout Grid.Row="1"
+                             IsVisible="{Binding HasError}"
+                             VerticalOptions="Center"
+                             HorizontalOptions="Center"
+                             Spacing="16"
+                             Padding="32">
+            <Label Text="&#x26A0;"
+                   FontSize="48"
+                   HorizontalOptions="Center"
+                   TextColor="{StaticResource RacingRed}" />
+            <Label Text="{Binding ErrorMessage}"
+                   Style="{StaticResource SubHeadline}"
+                   HorizontalOptions="Center" />
+            <Button Text="RETRY"
+                    Style="{StaticResource PrimaryButton}"
+                    Command="{Binding LoadCommand}"
+                    HorizontalOptions="Center" />
+        </VerticalStackLayout>
+
+        <!-- Race List -->
+        <CollectionView Grid.Row="1"
+                        ItemsSource="{Binding Races}"
+                        IsVisible="{Binding HasData}"
+                        Margin="0,0,0,0">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:RaceScheduleEntry">
+                    <Border Stroke="{StaticResource BorderSubtle}"
+                            StrokeThickness="1"
+                            StrokeShape="RoundRectangle 4"
+                            BackgroundColor="{StaticResource SurfaceLow}"
+                            Padding="16"
+                            Margin="20,0,20,10">
+                        <Grid RowDefinitions="Auto,Auto,Auto"
+                              ColumnDefinitions="*,Auto"
+                              RowSpacing="6">
+
+                            <!-- Event Name -->
+                            <Label Grid.Row="0" Grid.Column="0"
+                                   Text="{Binding EventName}"
+                                   FontFamily="SpaceMonoBold"
+                                   FontSize="16"
+                                   TextColor="{StaticResource PureWhite}"
+                                   VerticalOptions="Center" />
+
+                            <!-- Date -->
+                            <Label Grid.Row="1" Grid.Column="0"
+                                   Text="{Binding EventDate, StringFormat='{0:dd MMM yyyy}'}"
+                                   FontFamily="SpaceMonoRegular"
+                                   FontSize="12"
+                                   TextColor="{StaticResource CoolSlate}" />
+
+                            <!-- Weather -->
+                            <HorizontalStackLayout Grid.Row="1" Grid.Column="1"
+                                                   Spacing="6"
+                                                   VerticalOptions="Center">
+                                <Label Text="{Binding WeatherIcon}"
+                                       FontSize="14"
+                                       VerticalOptions="Center" />
+                                <Label FontFamily="SpaceMonoRegular"
+                                       FontSize="11"
+                                       TextColor="{StaticResource CoolSlate}"
+                                       VerticalOptions="Center">
+                                    <Label.Text>
+                                        <MultiBinding StringFormat="{}{0} - {1}°C">
+                                            <Binding Path="WeatherCondition" />
+                                            <Binding Path="TemperatureC" />
+                                        </MultiBinding>
+                                    </Label.Text>
+                                </Label>
+                            </HorizontalStackLayout>
+
+                            <!-- Circuit + Country -->
+                            <Label Grid.Row="2" Grid.Column="0"
+                                   FontFamily="SpaceMonoRegular"
+                                   FontSize="10"
+                                   TextColor="{StaticResource TextMuted}">
+                                <Label.Text>
+                                    <MultiBinding StringFormat="{}{0}, {1}">
+                                        <Binding Path="CircuitName" />
+                                        <Binding Path="Country" />
+                                    </MultiBinding>
+                                </Label.Text>
+                            </Label>
+
+                            <!-- Result (past races only) -->
+                            <Label Grid.Row="2" Grid.Column="1"
+                                   Text="{Binding Result}"
+                                   FontFamily="SpaceMonoBold"
+                                   FontSize="11"
+                                   TextColor="{StaticResource RacingRed}"
+                                   HorizontalTextAlignment="End"
+                                   VerticalOptions="Center" />
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </Grid>
+
+</ContentPage>

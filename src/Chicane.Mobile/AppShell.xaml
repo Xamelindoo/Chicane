@@ -13,9 +13,9 @@
             Route="home" />
 
         <ShellContent
-            Title="Standings"
-            ContentTemplate="{DataTemplate views:StandingsPage}"
-            Route="standings" />
+            Title="Schedule"
+            ContentTemplate="{DataTemplate views:SchedulePage}"
+            Route="schedule" />
 
         <ShellContent
             Title="Teams"
