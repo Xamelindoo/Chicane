@@ -27,19 +27,6 @@
         <ScrollView IsVisible="{Binding HasData}">
             <VerticalStackLayout Spacing="0" Padding="0,0,0,0">
 
-                <!-- Manual Back Header -->
-                <Grid Padding="20,48,20,8" BackgroundColor="{StaticResource CarbonBlack}">
-                    <Border StrokeThickness="0" HorizontalOptions="Start" VerticalOptions="Center">
-                        <Border.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="OnBackTapped" />
-                        </Border.GestureRecognizers>
-                        <HorizontalStackLayout Spacing="4">
-                            <Label Text="&#x2190;" FontSize="16" TextColor="{StaticResource CoolSlate}" VerticalOptions="Center" />
-                            <Label Text="Leaderboards" FontFamily="SpaceMonoRegular" FontSize="12" TextColor="{StaticResource CoolSlate}" VerticalOptions="Center" />
-                        </HorizontalStackLayout>
-                    </Border>
-                </Grid>
-
                 <!-- Gradient Factory Image Placeholder -->
                 <Border StrokeThickness="0" HeightRequest="180">
                     <Border.Background>

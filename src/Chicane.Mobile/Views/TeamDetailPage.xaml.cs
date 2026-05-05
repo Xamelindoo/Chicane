@@ -9,9 +9,4 @@ public partial class TeamDetailPage : ContentPage
         InitializeComponent();
         BindingContext = viewModel;
     }
-
-    private async void OnBackTapped(object? sender, EventArgs e)
-    {
-        await Shell.Current.GoToAsync("..");
-    }
 }
