@@ -37,6 +37,9 @@ public partial class PastRaceDetailViewModel : ObservableObject
     [ObservableProperty]
     private int yellowFlagCount;
 
+    [ObservableProperty]
+    private string eventDateText = string.Empty;
+
     public ObservableCollection<RaceResultEntry> Results { get; } = new();
     public ObservableCollection<StandingsEntry> DriverStandings { get; } = new();
     public ObservableCollection<ConstructorStandingsEntry> ConstructorStandings { get; } = new();
@@ -62,6 +65,7 @@ public partial class PastRaceDetailViewModel : ObservableObject
             var detail = await calendarService.GetPastRaceDetailAsync(EventName);
 
             YellowFlagCount = detail.YellowFlagCount;
+            EventDateText = detail.EventDate.ToString("dd MMM yyyy");
 
             Results.Clear();
             var sorted = detail.Results

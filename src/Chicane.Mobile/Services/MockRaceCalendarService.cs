@@ -72,6 +72,7 @@ public class MockRaceCalendarService : IRaceCalendarService
         return new PastRaceDetail
         {
             EventName = "AUSTRALIAN GP",
+            EventDate = DateTime.UtcNow.AddDays(-95),
             YellowFlagCount = 2,
             Results = new List<RaceResultEntry>
             {
@@ -106,6 +107,7 @@ public class MockRaceCalendarService : IRaceCalendarService
         return new PastRaceDetail
         {
             EventName = "SAUDI ARABIAN GP",
+            EventDate = DateTime.UtcNow.AddDays(-80),
             YellowFlagCount = 0,
             Results = new List<RaceResultEntry>
             {
@@ -140,6 +142,7 @@ public class MockRaceCalendarService : IRaceCalendarService
         return new PastRaceDetail
         {
             EventName = "MIAMI GP",
+            EventDate = DateTime.UtcNow.AddDays(-66),
             YellowFlagCount = 1,
             Results = new List<RaceResultEntry>
             {
@@ -171,7 +174,7 @@ public class MockRaceCalendarService : IRaceCalendarService
 
     private static PastRaceDetail BuildGenericPastRaceDetail(string eventName)
     {
-        return BuildAustralianGp() with { EventName = eventName };
+        return BuildAustralianGp() with { EventName = eventName, EventDate = DateTime.UtcNow.AddDays(-95) };
     }
 
     private static List<StandingsEntry> BuildStandingsAfterAuGp()

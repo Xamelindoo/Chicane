@@ -141,6 +141,10 @@
                                                 </MultiBinding>
                                             </Label.Text>
                                         </Label>
+                                        <Label Text="{Binding EventDate, StringFormat='{0:dd MMM}'}"
+                                               FontFamily="SpaceMonoBold" FontSize="11"
+                                               TextColor="{StaticResource CoolSlate}"
+                                               HorizontalTextAlignment="End" />
                                     </VerticalStackLayout>
                                 </Border>
                             </DataTemplate>

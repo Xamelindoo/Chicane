@@ -47,6 +47,12 @@
             <VerticalStackLayout Spacing="0" Padding="0,0,0,20">
 
                 <!-- RACE RESULTS -->
+                <Label Text="{Binding EventDateText}"
+                       FontFamily="SpaceMonoRegular"
+                       FontSize="11"
+                       TextColor="{StaticResource TextMuted}"
+                       HorizontalOptions="Center"
+                       Margin="0,16,0,0" />
                 <Border Stroke="{StaticResource BorderSubtle}"
                         StrokeThickness="1"
                         StrokeShape="RoundRectangle 4"
