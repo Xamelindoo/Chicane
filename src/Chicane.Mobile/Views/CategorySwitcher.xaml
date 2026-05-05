@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<!-- ROOT: fixed, full-screen, pointer-events: none (pass through when closed) -->
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodels="clr-namespace:Chicane.Mobile.ViewModels"
@@ -9,21 +8,22 @@
              VerticalOptions="Fill"
              HorizontalOptions="Fill">
 
-    <Grid>
+    <AbsoluteLayout>
 
-        <!-- BACKDROP: visible only when menu open; pointer-events: auto -->
+        <!-- BACKDROP: full screen, visible only when menu open -->
         <BoxView IsVisible="{Binding IsMenuOpen}"
                  Color="#66000000"
-                 InputTransparent="False">
+                 InputTransparent="False"
+                 AbsoluteLayout.LayoutBounds="0,0,1,1"
+                 AbsoluteLayout.LayoutFlags="All">
             <BoxView.GestureRecognizers>
                 <TapGestureRecognizer Command="{Binding CloseMenuCommand}" />
             </BoxView.GestureRecognizers>
         </BoxView>
 
-        <!-- PILL: position absolute top center; pointer-events: auto; z-index 10 -->
-        <Label VerticalOptions="Start"
-               HorizontalOptions="Center"
-               Padding="0,52,0,0"
+        <!-- PILL: fixed at top center -->
+        <Label AbsoluteLayout.LayoutBounds="0.5,52,-1,-1"
+               AbsoluteLayout.LayoutFlags="PositionProportional"
                InputTransparent="False">
             <Label.GestureRecognizers>
                 <TapGestureRecognizer Command="{Binding ToggleMenuCommand}" />
@@ -41,17 +41,16 @@
             </Label.FormattedText>
         </Label>
 
-        <!-- DROPDOWN: visible only when menu open; pointer-events: auto; z-index 10 -->
+        <!-- DROPDOWN: below pill, centered -->
         <Border IsVisible="{Binding IsMenuOpen}"
                 StrokeThickness="0"
                 StrokeShape="RoundRectangle 8"
                 BackgroundColor="#F20A0A0A"
                 Padding="10"
                 WidthRequest="220"
-                VerticalOptions="Start"
-                HorizontalOptions="Center"
-                Margin="0,88,0,0"
-                InputTransparent="False">
+                InputTransparent="False"
+                AbsoluteLayout.LayoutBounds="0.5,90,-1,-1"
+                AbsoluteLayout.LayoutFlags="PositionProportional">
             <VerticalStackLayout Spacing="0">
                 <CollectionView ItemsSource="{Binding Categories}"
                                 x:DataType="viewmodels:CategorySwitcherViewModel"
@@ -115,6 +114,6 @@
             </VerticalStackLayout>
         </Border>
 
-    </Grid>
+    </AbsoluteLayout>
 
 </ContentView>
