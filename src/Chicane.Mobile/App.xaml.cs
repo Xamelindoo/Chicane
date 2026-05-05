@@ -1,6 +1,4 @@
-﻿using Chicane.Mobile.Services;
-
-namespace Chicane.Mobile;
+﻿namespace Chicane.Mobile;
 
 public partial class App : Application
 {
@@ -11,7 +9,6 @@ public partial class App : Application
 
     protected override Window CreateWindow(IActivationState? activationState)
     {
-        SecretsConfig.InitializeAsync().ConfigureAwait(false);
         return new Window(new AppShell());
     }
 }
