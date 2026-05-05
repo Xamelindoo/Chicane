@@ -8,7 +8,7 @@ namespace Chicane.Mobile.Services;
 public class ErgastApiService : IF1DataService
 {
     private readonly HttpClient _http;
-    private const string BaseUrl = "https://ergast.com/api/f1";
+    private const string BaseUrl = "https://ergast.com/api/f1/2025";
 
     public ErgastApiService(HttpClient http)
     {
@@ -22,7 +22,7 @@ public class ErgastApiService : IF1DataService
         try
         {
             var response = await _http.GetFromJsonAsync<ErgastResponse>(
-                $"{BaseUrl}/current/next.json",
+                $"{BaseUrl}/next.json",
                 JsonOptions);
             return response is not null ? ErgastMapper.ToRaceEvent(response) : DefaultRaceEvent();
         }
@@ -44,7 +44,7 @@ public class ErgastApiService : IF1DataService
         try
         {
             var response = await _http.GetFromJsonAsync<ErgastResponse>(
-                $"{BaseUrl}/current/driverStandings.json",
+                $"{BaseUrl}/driverStandings.json",
                 JsonOptions);
             return response is not null ? ErgastMapper.ToDriverStandings(response) : new();
         }
@@ -61,7 +61,7 @@ public class ErgastApiService : IF1DataService
         try
         {
             var response = await _http.GetFromJsonAsync<ErgastResponse>(
-                $"{BaseUrl}/current/constructorStandings.json",
+                $"{BaseUrl}/constructorStandings.json",
                 JsonOptions);
             return response is not null ? ErgastMapper.ToConstructorStandings(response) : new();
         }
