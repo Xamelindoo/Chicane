@@ -4,7 +4,6 @@
              xmlns:viewmodels="clr-namespace:Chicane.Mobile.ViewModels"
              xmlns:models="clr-namespace:Chicane.Mobile.Models"
              x:Class="Chicane.Mobile.Views.NewsPage"
-             x:Name="newsPage"
              x:DataType="viewmodels:NewsViewModel"
              Title="News"
              Shell.NavBarIsVisible="False"
@@ -42,7 +41,8 @@
         </VerticalStackLayout>
 
         <!-- News List -->
-        <CollectionView ItemsSource="{Binding Articles}"
+        <CollectionView Grid.Row="1"
+                        ItemsSource="{Binding Articles}"
                         IsVisible="{Binding HasData}"
                         x:DataType="viewmodels:NewsViewModel"
                         Margin="0,8,0,0">
@@ -56,10 +56,11 @@
                             Padding="0">
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer
-                                Command="{Binding Source={x:Reference newsPage}, Path=BindingContext.OpenArticleCommand}"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:NewsViewModel}}, Path=OpenArticleCommand}"
                                 CommandParameter="{Binding SourceUrl}" />
                         </Border.GestureRecognizers>
                         <Grid RowDefinitions="Auto,Auto">
+
                             <VerticalStackLayout Grid.Row="0"
                                                  Padding="14,10,14,0"
                                                  Spacing="4">
@@ -74,7 +75,7 @@
                                            FontFamily="SpaceMonoRegular"
                                            FontSize="10"
                                            TextColor="{StaticResource RacingRed}" />
-                                    <Label Text="•"
+                                    <Label Text="ÔÇó"
                                            FontSize="10"
                                            TextColor="{StaticResource TextMuted}"
                                            VerticalOptions="Center" />
@@ -84,6 +85,7 @@
                                            TextColor="{StaticResource TextMuted}" />
                                 </HorizontalStackLayout>
                             </VerticalStackLayout>
+
                             <Label Grid.Row="1"
                                    Text="{Binding Description}"
                                    FontFamily="SpaceMonoRegular"
