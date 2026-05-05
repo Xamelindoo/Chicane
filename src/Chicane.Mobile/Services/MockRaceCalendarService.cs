@@ -52,7 +52,8 @@ public class MockRaceCalendarService : IRaceCalendarService
     private static string GetLastName(string fullName)
     {
         var parts = fullName.Split(' ');
-        return parts.Length > 1 ? parts[^1] : fullName;
+        var lastName = parts.Length > 1 ? parts[^1] : fullName;
+        return lastName.Length > 3 ? lastName[..3] : lastName.ToUpper();
     }
 
     public Task<PastRaceDetail> GetPastRaceDetailAsync(string eventName)
