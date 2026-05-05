@@ -6,4 +6,5 @@ public interface IRaceCalendarService
 {
     Task<List<RaceScheduleEntry>> GetUpcomingRacesAsync();
     Task<List<RaceScheduleEntry>> GetPastRacesAsync();
+    Task<PastRaceDetail> GetPastRaceDetailAsync(string eventName);
 }

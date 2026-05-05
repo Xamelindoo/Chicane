@@ -140,6 +140,11 @@
                             BackgroundColor="{StaticResource SurfaceLow}"
                             Padding="16"
                             Margin="20,0,20,10">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:ScheduleViewModel}}, Path=NavigateToDetailCommand}"
+                                CommandParameter="{Binding EventName}" />
+                        </Border.GestureRecognizers>
                         <Grid RowDefinitions="Auto,Auto,Auto"
                               ColumnDefinitions="*,Auto"
                               RowSpacing="6">

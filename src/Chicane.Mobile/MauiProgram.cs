@@ -35,6 +35,9 @@ public static class MauiProgram
         builder.Services.AddTransient<ScheduleViewModel>();
         builder.Services.AddTransient<SchedulePage>();
 
+        builder.Services.AddTransient<PastRaceDetailViewModel>();
+        builder.Services.AddTransient<PastRaceDetailPage>();
+
         builder.Services.AddTransient<TeamsViewModel>();
         builder.Services.AddTransient<TeamsPage>();
 
