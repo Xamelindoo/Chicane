@@ -103,13 +103,13 @@
                 <CollectionView ItemsSource="{Binding RaceResults}" x:DataType="viewmodels:TeamDetailViewModel"
                                 Margin="20,10,20,0" HeightRequest="140">
                     <CollectionView.ItemsLayout>
-                        <LinearItemsLayout Orientation="Horizontal" ItemSpacing="4" />
+                        <LinearItemsLayout Orientation="Horizontal" ItemSpacing="0" />
                     </CollectionView.ItemsLayout>
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="models:TeamRaceResult">
                             <Border Stroke="{StaticResource BorderSubtle}" StrokeThickness="1"
                                     StrokeShape="RoundRectangle 4" BackgroundColor="{StaticResource SurfaceLow}"
-                                    Padding="12,10" WidthRequest="173">
+                                    Padding="12,10" WidthRequest="175">
                                 <Border.GestureRecognizers>
                                     <TapGestureRecognizer
                                         Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:TeamDetailViewModel}}, Path=NavigateToRaceCommand}"
