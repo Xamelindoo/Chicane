@@ -4,20 +4,22 @@
              xmlns:viewmodels="clr-namespace:Chicane.Mobile.ViewModels"
              xmlns:models="clr-namespace:Chicane.Mobile.Models"
              x:Class="Chicane.Mobile.Views.CategorySwitcher"
-             x:DataType="viewmodels:CategorySwitcherViewModel">
+             x:DataType="viewmodels:CategorySwitcherViewModel"
+             InputTransparent="False">
 
-    <Grid>
-        <!-- Tap Target: selected category name -->
+    <VerticalStackLayout Spacing="0" HorizontalOptions="Center">
+
+        <!-- Tap Target: selected category (fixed width) -->
         <Border Stroke="{StaticResource PureWhite}"
                 StrokeThickness="1"
                 StrokeShape="RoundRectangle 4"
                 BackgroundColor="#20FFFFFF"
                 Padding="16,6"
-                HorizontalOptions="Center">
+                WidthRequest="170">
             <Border.GestureRecognizers>
                 <TapGestureRecognizer Command="{Binding ToggleMenuCommand}" />
             </Border.GestureRecognizers>
-            <HorizontalStackLayout Spacing="6">
+            <HorizontalStackLayout Spacing="6" HorizontalOptions="Center">
                 <Label Text="{Binding SelectedEmoji}"
                        FontSize="14"
                        VerticalOptions="Center" />
@@ -33,15 +35,14 @@
             </HorizontalStackLayout>
         </Border>
 
-        <!-- Dropdown Overlay -->
+        <!-- Dropdown (overlay below trigger, absolute positioned) -->
         <Border IsVisible="{Binding IsMenuOpen}"
                 StrokeThickness="0"
                 StrokeShape="RoundRectangle 8"
-                BackgroundColor="#E60A0A0A"
-                Padding="8"
-                Margin="0,4,0,0"
-                VerticalOptions="Start"
-                HorizontalOptions="Center">
+                BackgroundColor="#F00A0A0A"
+                Padding="12"
+                Margin="0,6,0,0"
+                WidthRequest="200">
             <VerticalStackLayout Spacing="0">
                 <CollectionView ItemsSource="{Binding Categories}"
                                 x:DataType="viewmodels:CategorySwitcherViewModel"
@@ -50,8 +51,9 @@
                         <DataTemplate x:DataType="models:MotorsportCategory">
                             <Border StrokeThickness="0"
                                     StrokeShape="RoundRectangle 4"
-                                    Padding="12,8"
-                                    Margin="0,2">
+                                    Padding="12,10"
+                                    Margin="0,2"
+                                    HorizontalOptions="Start">
                                 <Border.Style>
                                     <Style TargetType="Border">
                                         <Setter Property="BackgroundColor" Value="Transparent" />
@@ -59,7 +61,7 @@
                                             <DataTrigger TargetType="Border"
                                                          Binding="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:CategorySwitcherViewModel}}, Path=SelectedId}"
                                                          Value="{Binding Id}">
-                                                <Setter Property="BackgroundColor" Value="{StaticResource SurfaceLow}" />
+                                                <Setter Property="BackgroundColor" Value="#30FFFFFF" />
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
@@ -69,9 +71,12 @@
                                         Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:CategorySwitcherViewModel}}, Path=SelectCategoryCommand}"
                                         CommandParameter="{Binding Id}" />
                                 </Border.GestureRecognizers>
-                                <Grid ColumnDefinitions="28,*,Auto" ColumnSpacing="10">
-                                    <Label Grid.Column="0" Text="{Binding Emoji}" FontSize="16" VerticalOptions="Center" />
-                                    <Label Grid.Column="1" Text="{Binding Name}" FontFamily="SpaceMonoBold" FontSize="13"
+                                <Grid ColumnDefinitions="28,*,Auto" ColumnSpacing="12">
+                                    <Label Grid.Column="0" Text="{Binding Emoji}"
+                                           FontSize="16" VerticalOptions="Center"
+                                           HorizontalOptions="Start" />
+                                    <Label Grid.Column="1" Text="{Binding Name}"
+                                           FontFamily="SpaceMonoBold" FontSize="13"
                                            VerticalOptions="Center">
                                         <Label.Style>
                                             <Style TargetType="Label">
@@ -87,7 +92,8 @@
                                         </Label.Style>
                                     </Label>
                                     <Border Grid.Column="2" WidthRequest="12" HeightRequest="12"
-                                            StrokeThickness="0" StrokeShape="RoundRectangle 6">
+                                            StrokeThickness="0" StrokeShape="RoundRectangle 6"
+                                            VerticalOptions="Center">
                                         <Border.Style>
                                             <Style TargetType="Border">
                                                 <Setter Property="BackgroundColor" Value="{Binding AccentColor}" />
@@ -102,14 +108,6 @@
             </VerticalStackLayout>
         </Border>
 
-        <!-- Backdrop tap to close -->
-        <BoxView IsVisible="{Binding IsMenuOpen}"
-                 Color="Transparent"
-                 InputTransparent="False">
-            <BoxView.GestureRecognizers>
-                <TapGestureRecognizer Command="{Binding CloseMenuCommand}" />
-            </BoxView.GestureRecognizers>
-        </BoxView>
-    </Grid>
+    </VerticalStackLayout>
 
 </ContentView>

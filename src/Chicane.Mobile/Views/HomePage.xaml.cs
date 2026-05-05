@@ -5,15 +5,25 @@ namespace Chicane.Mobile.Views;
 public partial class HomePage : ContentPage
 {
     private readonly HomeViewModel viewModel;
+    private readonly CategorySwitcherViewModel categorySwitcherViewModel;
 
-    public HomePage(HomeViewModel viewModel, CategorySwitcher categorySwitcher)
+    public HomePage(HomeViewModel viewModel, CategorySwitcher categorySwitcher, CategorySwitcherViewModel categorySwitcherViewModel)
     {
         InitializeComponent();
         BindingContext = viewModel;
         this.viewModel = viewModel;
+        this.categorySwitcherViewModel = categorySwitcherViewModel;
 
         MainScrollView.Scrolled += OnScrolled;
         CategorySwitcherHost.Children.Insert(0, categorySwitcher);
+
+        categorySwitcherViewModel.PropertyChanged += (s, e) =>
+        {
+            if (e.PropertyName == nameof(CategorySwitcherViewModel.IsMenuOpen))
+            {
+                MenuBackdrop.IsVisible = categorySwitcherViewModel.IsMenuOpen;
+            }
+        };
     }
 
     protected override void OnAppearing()

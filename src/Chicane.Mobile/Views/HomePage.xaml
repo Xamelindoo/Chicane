@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodels="clr-namespace:Chicane.Mobile.ViewModels"
              xmlns:models="clr-namespace:Chicane.Mobile.Models"
+             xmlns:views="clr-namespace:Chicane.Mobile.Views"
              x:Class="Chicane.Mobile.Views.HomePage"
              x:DataType="viewmodels:HomeViewModel"
              Title="Home"
@@ -57,6 +58,34 @@
                     HorizontalOptions="Center" />
         </VerticalStackLayout>
 
+        <!-- Menu Open Backdrop (blocks scroll) -->
+        <BoxView x:Name="MenuBackdrop"
+                 Color="#80000000"
+                 IsVisible="False"
+                 InputTransparent="False" />
+
+        <!-- Category Switcher (overlay, above scroll) -->
+        <VerticalStackLayout x:Name="CategorySwitcherHost"
+                             Padding="0,48,0,0"
+                             HorizontalOptions="Center"
+                             VerticalOptions="Start" />
+
+        <!-- Sticky Standings Bar (visible when scrolled) -->
+        <VerticalStackLayout VerticalOptions="Start"
+                             HorizontalOptions="Fill"
+                             Padding="20,52,20,0"
+                             Spacing="0"
+                             IsVisible="False"
+                             BackgroundColor="#F00A0A0A">
+            <VerticalStackLayout.Triggers>
+                <DataTrigger TargetType="VerticalStackLayout"
+                             Binding="{Binding IsAtScrollTop}"
+                             Value="False">
+                    <Setter Property="IsVisible" Value="True" />
+                </DataTrigger>
+            </VerticalStackLayout.Triggers>
+        </VerticalStackLayout>
+
         <!-- Scrollable Content -->
         <ScrollView x:Name="MainScrollView" IsVisible="{Binding HasData}">
             <VerticalStackLayout Spacing="0">
@@ -67,9 +96,9 @@
                       Padding="20,48,20,20">
 
                     <!-- Top: Event Label -->
-                    <VerticalStackLayout x:Name="CategorySwitcherHost" Grid.Row="0"
+                    <VerticalStackLayout Grid.Row="0"
                                          HorizontalOptions="Center"
-                                         Spacing="8">
+                                         Spacing="4">
                         <Label Text="NEXT EVENT"
                                FontFamily="SpaceMonoRegular"
                                FontSize="12"
