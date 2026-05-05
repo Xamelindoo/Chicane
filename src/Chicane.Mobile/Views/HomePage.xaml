@@ -10,7 +10,7 @@
 
     <Grid RowDefinitions="*" BackgroundColor="{StaticResource CarbonBlack}">
 
-        <!-- Background Circuit Image (fixed behind scroll) -->
+        <!-- Background Circuit Image (fixed behind everything) -->
         <Image Source="{Binding CircuitImage}"
                Aspect="AspectFill"
                Opacity="0.5"
@@ -58,12 +58,13 @@
         </VerticalStackLayout>
 
         <!-- Scrollable Content -->
-        <ScrollView IsVisible="{Binding HasData}">
+        <ScrollView IsVisible="{Binding HasData}"
+                    Scrolled="OnScrolled">
             <VerticalStackLayout Spacing="0">
 
-                <!-- ═══════════ HERO SECTION ═══════════ -->
-                <Grid RowDefinitions="Auto,*,Auto"
-                      MinimumHeightRequest="620"
+                <!-- ═══════════ HERO SECTION (100vh) ═══════════ -->
+                <Grid RowDefinitions="Auto,*"
+                      HeightRequest="{Binding HeroHeight}"
                       Padding="20,48,20,20">
 
                     <!-- Top: Event Label -->
@@ -91,17 +92,43 @@
                                              Spacing="10"
                                              HorizontalOptions="Center">
                             <Label Text="{Binding Countdown}"
-                                   FontFamily="SpaceMonoBold"
-                                   FontSize="44"
+                                   FontFamily="JetBrainsMonoBold"
+                                   FontSize="48"
                                    TextColor="{StaticResource PureWhite}"
                                    HorizontalOptions="Center"
                                    CharacterSpacing="-1" />
                             <Label Text="DD:HH:MM:SS"
-                                   FontFamily="SpaceMonoRegular"
+                                   FontFamily="JetBrainsMonoRegular"
                                    FontSize="11"
                                    TextColor="{StaticResource TextMuted}"
                                    HorizontalOptions="Center"
                                    CharacterSpacing="3" />
+
+                            <!-- Weather Badge -->
+                            <Border Stroke="{StaticResource BorderSubtle}"
+                                    StrokeThickness="1"
+                                    StrokeShape="RoundRectangle 4"
+                                    BackgroundColor="{StaticResource SurfaceLow}"
+                                    Padding="8,4"
+                                    HorizontalOptions="Center"
+                                    IsVisible="{Binding IsPreRace}">
+                                <HorizontalStackLayout Spacing="6">
+                                    <Label Text="{Binding WeatherIcon}"
+                                           FontSize="14"
+                                           VerticalOptions="Center" />
+                                    <Label FontFamily="SpaceMonoRegular"
+                                           FontSize="11"
+                                           TextColor="{StaticResource CoolSlate}"
+                                           VerticalOptions="Center">
+                                        <Label.Text>
+                                            <MultiBinding StringFormat="{}{0} - {1}°C">
+                                                <Binding Path="WeatherCondition" />
+                                                <Binding Path="WeatherTemperature" />
+                                            </MultiBinding>
+                                        </Label.Text>
+                                    </Label>
+                                </HorizontalStackLayout>
+                            </Border>
                         </VerticalStackLayout>
 
                         <!-- Live Session Data -->
@@ -143,7 +170,6 @@
                                    HorizontalOptions="Center"
                                    CharacterSpacing="3" />
 
-                            <!-- Top 3 Position Board (inside Hero) -->
                             <CollectionView ItemsSource="{Binding PositionBoard}"
                                             Margin="0,12,0,0">
                                 <CollectionView.ItemTemplate>
@@ -182,110 +208,15 @@
                                         </Grid>
                                     </DataTemplate>
                                 </CollectionView.ItemTemplate>
-                    </CollectionView>
-                </VerticalStackLayout>
+                            </CollectionView>
+                        </VerticalStackLayout>
                     </Grid>
-
-                    <!-- Bottom: Weather + Toggle -->
-                    <VerticalStackLayout Grid.Row="2" Spacing="16">
-
-                        <!-- Weather Badge -->
-                        <Border Stroke="{StaticResource BorderSubtle}"
-                                StrokeThickness="1"
-                                StrokeShape="RoundRectangle 4"
-                                BackgroundColor="{StaticResource SurfaceLow}"
-                                Padding="12,8"
-                                HorizontalOptions="Center"
-                                IsVisible="{Binding IsPreRace}">
-                            <HorizontalStackLayout Spacing="8">
-                                <Label Text="{Binding WeatherIcon}"
-                                       FontSize="16"
-                                       VerticalOptions="Center" />
-                                <Label FontFamily="SpaceMonoRegular"
-                                       FontSize="13"
-                                       TextColor="{StaticResource CoolSlate}"
-                                       VerticalOptions="Center">
-                                    <Label.Text>
-                                        <MultiBinding StringFormat="{}{0} - {1}°C">
-                                            <Binding Path="WeatherCondition" />
-                                            <Binding Path="WeatherTemperature" />
-                                        </MultiBinding>
-                                    </Label.Text>
-                                </Label>
-                            </HorizontalStackLayout>
-                        </Border>
-
-                        <!-- Circuit Name -->
-                        <Label Text="{Binding CircuitName}"
-                               FontSize="11"
-                               TextColor="{StaticResource TextMuted}"
-                               HorizontalOptions="Center"
-                               CharacterSpacing="2"
-                               IsVisible="{Binding IsPreRace}" />
-
-                        <!-- Simulate Toggle -->
-                        <Border Stroke="{StaticResource PureWhite}"
-                                StrokeThickness="1"
-                                StrokeShape="RoundRectangle 4"
-                                BackgroundColor="#20FFFFFF"
-                                Padding="0"
-                                HorizontalOptions="Center">
-                            <Border.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding SimulateLiveCommand}" />
-                            </Border.GestureRecognizers>
-                            <HorizontalStackLayout Spacing="0">
-                                <Border Padding="20,10"
-                                        BackgroundColor="{StaticResource RacingRed}"
-                                        StrokeThickness="0"
-                                        StrokeShape="RoundRectangle 4,0,0,4"
-                                        IsVisible="{Binding IsPreRace}">
-                                    <Label Text="SIMULATE LIVE"
-                                           FontFamily="SpaceMonoRegular"
-                                           FontSize="11"
-                                           TextColor="{StaticResource PureWhite}"
-                                           CharacterSpacing="2" />
-                                </Border>
-                                <Border Padding="20,10"
-                                        BackgroundColor="{StaticResource RacingRed}"
-                                        StrokeThickness="0"
-                                        StrokeShape="RoundRectangle 0,4,4,0"
-                                        IsVisible="{Binding IsLive}">
-                                    <Label Text="SIMULATE PRE-RACE"
-                                           FontFamily="SpaceMonoRegular"
-                                           FontSize="11"
-                                           TextColor="{StaticResource PureWhite}"
-                                           CharacterSpacing="2" />
-                                </Border>
-                                <Label Text="SIMULATE LIVE"
-                                       FontFamily="SpaceMonoRegular"
-                                       FontSize="11"
-                                       TextColor="{StaticResource PureWhite}"
-                                       CharacterSpacing="2"
-                                       Padding="20,10"
-                                       IsVisible="{Binding IsLive}" />
-                                <Label Text="BACK TO PRE-RACE"
-                                       FontFamily="SpaceMonoRegular"
-                                       FontSize="11"
-                                       TextColor="{StaticResource PureWhite}"
-                                       CharacterSpacing="2"
-                                       Padding="20,10"
-                                       IsVisible="{Binding IsPreRace}" />
-                            </HorizontalStackLayout>
-                        </Border>
-                    </VerticalStackLayout>
                 </Grid>
 
                 <!-- ═══════════ STANDINGS SECTION (Pre-Race scroll) ═══════════ -->
                 <VerticalStackLayout IsVisible="{Binding IsPreRace}"
                                      Padding="20,0,20,40"
                                      Spacing="16">
-                    <Label Text="SCROLL DOWN FOR STANDINGS"
-                           FontFamily="SpaceMonoRegular"
-                           FontSize="10"
-                           TextColor="{StaticResource TextMuted}"
-                           HorizontalOptions="Center"
-                           CharacterSpacing="2"
-                           Margin="0,0,0,8" />
 
                     <Border Stroke="{StaticResource BorderSubtle}"
                             StrokeThickness="1"
@@ -300,7 +231,6 @@
                                HorizontalOptions="Center" />
                     </Border>
 
-                    <!-- Standings Header -->
                     <Grid ColumnDefinitions="36,*,Auto"
                           Padding="0,0,0,4"
                           ColumnSpacing="8">
@@ -451,7 +381,6 @@
                                HorizontalOptions="Center" />
                     </Border>
 
-                    <!-- Circuit Map Placeholder -->
                     <Border Stroke="{StaticResource BorderSubtle}"
                             StrokeThickness="1"
                             StrokeShape="RoundRectangle 4"
@@ -463,7 +392,6 @@
                                Opacity="0.6" />
                     </Border>
 
-                    <!-- Track Position List -->
                     <Label Text="TRACK POSITIONS"
                            FontFamily="SpaceMonoBold"
                            FontSize="12"
@@ -518,6 +446,48 @@
 
             </VerticalStackLayout>
         </ScrollView>
+
+        <!-- ═══════════ SCROLL AFFORDANCE OVERLAY ═══════════ -->
+        <VerticalStackLayout IsVisible="{Binding IsAtScrollTop}"
+                             InputTransparent="True"
+                             VerticalOptions="End"
+                             HorizontalOptions="Fill"
+                             Margin="0,0,0,8"
+                             Spacing="0">
+            <BoxView HeightRequest="60"
+                     Color="{StaticResource CarbonBlack}"
+                     Opacity="0.0">
+                <BoxView.Behaviors>
+                    <!-- Gradient scrim effect via layered opacity -->
+                </BoxView.Behaviors>
+            </BoxView>
+            <BoxView HeightRequest="40"
+                     VerticalOptions="Start"
+                     HorizontalOptions="Fill"
+                     Color="{StaticResource CarbonBlack}"
+                     Opacity="0.7" />
+            <BoxView HeightRequest="1"
+                     VerticalOptions="Start"
+                     HorizontalOptions="Fill"
+                     Color="{StaticResource BorderSubtle}"
+                     Opacity="0.5" />
+            <VerticalStackLayout VerticalOptions="End"
+                                 HorizontalOptions="Center"
+                                 Spacing="6"
+                                 Padding="0,16,0,20"
+                                 BackgroundColor="#E60A0A0A">
+                <Label Text="&#x2304;"
+                       FontSize="20"
+                       TextColor="{StaticResource CoolSlate}"
+                       HorizontalOptions="Center" />
+                <Label Text="SCROLL FOR STANDINGS"
+                       FontFamily="SpaceMonoRegular"
+                       FontSize="10"
+                       TextColor="{StaticResource TextMuted}"
+                       HorizontalOptions="Center"
+                       CharacterSpacing="3" />
+            </VerticalStackLayout>
+        </VerticalStackLayout>
     </Grid>
 
 </ContentPage>

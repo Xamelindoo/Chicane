@@ -2,9 +2,9 @@ using Chicane.Mobile.ViewModels;
 
 namespace Chicane.Mobile.Views;
 
-public partial class TeamsPage : ContentPage
+public partial class TeamDetailPage : ContentPage
 {
-    public TeamsPage(TeamsViewModel viewModel)
+    public TeamDetailPage(TeamDetailViewModel viewModel)
     {
         InitializeComponent();
         BindingContext = viewModel;

@@ -2,9 +2,9 @@ using Chicane.Mobile.ViewModels;
 
 namespace Chicane.Mobile.Views;
 
-public partial class StandingsPage : ContentPage
+public partial class PastRaceDetailPage : ContentPage
 {
-    public StandingsPage(StandingsViewModel viewModel)
+    public PastRaceDetailPage(PastRaceDetailViewModel viewModel)
     {
         InitializeComponent();
         BindingContext = viewModel;

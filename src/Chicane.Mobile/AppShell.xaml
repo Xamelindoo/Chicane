@@ -9,21 +9,25 @@
     <TabBar>
         <ShellContent
             Title="Home"
+            Icon="icon_home.png"
             ContentTemplate="{DataTemplate views:HomePage}"
             Route="home" />
 
         <ShellContent
-            Title="Standings"
-            ContentTemplate="{DataTemplate views:StandingsPage}"
-            Route="standings" />
+            Title="Schedule"
+            Icon="icon_schedule.png"
+            ContentTemplate="{DataTemplate views:SchedulePage}"
+            Route="schedule" />
 
         <ShellContent
-            Title="Teams"
-            ContentTemplate="{DataTemplate views:TeamsPage}"
-            Route="teams" />
+            Title="Leaderboards"
+            Icon="icon_leaderboards.png"
+            ContentTemplate="{DataTemplate views:LeaderboardsPage}"
+            Route="leaderboards" />
 
         <ShellContent
             Title="News"
+            Icon="icon_news.png"
             ContentTemplate="{DataTemplate views:NewsPage}"
             Route="news" />
     </TabBar>

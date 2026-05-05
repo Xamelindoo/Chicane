@@ -25,15 +25,26 @@ public static class MauiProgram
 #endif
 
         builder.Services.AddSingleton<IF1DataService, MockF1DataService>();
+        builder.Services.AddSingleton<IRaceCalendarService, MockRaceCalendarService>();
+        builder.Services.AddSingleton<ITeamsService, MockTeamsService>();
 
         builder.Services.AddTransient<HomeViewModel>();
         builder.Services.AddTransient<HomePage>();
 
-        builder.Services.AddTransient<StandingsViewModel>();
-        builder.Services.AddTransient<StandingsPage>();
+        builder.Services.AddTransient<ScheduleViewModel>();
+        builder.Services.AddTransient<SchedulePage>();
 
-        builder.Services.AddTransient<TeamsViewModel>();
-        builder.Services.AddTransient<TeamsPage>();
+        builder.Services.AddTransient<PastRaceDetailViewModel>();
+        builder.Services.AddTransient<PastRaceDetailPage>();
+
+        builder.Services.AddTransient<LeaderboardsViewModel>();
+        builder.Services.AddTransient<LeaderboardsPage>();
+
+        builder.Services.AddTransient<TeamDetailViewModel>();
+        builder.Services.AddTransient<TeamDetailPage>();
+
+        builder.Services.AddTransient<TeamRaceListViewModel>();
+        builder.Services.AddTransient<TeamRaceListPage>();
 
         builder.Services.AddTransient<NewsViewModel>();
         builder.Services.AddTransient<NewsPage>();
