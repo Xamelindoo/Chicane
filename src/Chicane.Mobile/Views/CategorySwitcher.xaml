@@ -22,7 +22,7 @@
         </BoxView>
 
         <!-- PILL: fixed at top center -->
-        <Label                 AbsoluteLayout.LayoutBounds="0.5,52,-1,-1"
+        <Label                 AbsoluteLayout.LayoutBounds="0.5,54,-1,-1"
                AbsoluteLayout.LayoutFlags="XProportional"
                InputTransparent="False">
             <Label.GestureRecognizers>
