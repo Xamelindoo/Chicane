@@ -148,6 +148,11 @@
                 <DataTemplate x:DataType="models:TeamEntry">
                     <Grid ColumnDefinitions="4,*"
                           Margin="16,0,16,10">
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:LeaderboardsViewModel}}, Path=NavigateToDetailCommand}"
+                                CommandParameter="{Binding TeamName}" />
+                        </Grid.GestureRecognizers>
                         <BoxView Grid.Column="0"
                                  WidthRequest="4"
                                  Color="{Binding BorderColor}"

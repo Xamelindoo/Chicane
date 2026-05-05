@@ -77,6 +77,12 @@ public partial class LeaderboardsViewModel : ObservableObject
         IsShowingPilots = true;
     }
 
+    [RelayCommand]
+    private async Task NavigateToDetailAsync(string teamName)
+    {
+        await Shell.Current.GoToAsync($"team-detail?teamName={Uri.EscapeDataString(teamName)}");
+    }
+
     private async Task LoadTeamsAsync()
     {
         var teams = await teamsService.GetTeamsAsync();

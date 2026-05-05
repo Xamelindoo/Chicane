@@ -42,6 +42,12 @@ public static class MauiProgram
         builder.Services.AddTransient<LeaderboardsViewModel>();
         builder.Services.AddTransient<LeaderboardsPage>();
 
+        builder.Services.AddTransient<TeamDetailViewModel>();
+        builder.Services.AddTransient<TeamDetailPage>();
+
+        builder.Services.AddTransient<TeamRaceListViewModel>();
+        builder.Services.AddTransient<TeamRaceListPage>();
+
         builder.Services.AddTransient<NewsViewModel>();
         builder.Services.AddTransient<NewsPage>();
 
