@@ -177,7 +177,8 @@
                                        FontFamily="SpaceMonoBold"
                                        FontSize="20"
                                        TextColor="{StaticResource RacingRed}"
-                                       VerticalOptions="Center" />
+                                       VerticalOptions="Center"
+                                       HorizontalOptions="End" />
                                 <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
                                       ColumnDefinitions="*,Auto">
                                     <Label Grid.Column="0"
@@ -225,7 +226,8 @@
                                        FontFamily="SpaceMonoBold"
                                        FontSize="20"
                                        TextColor="{StaticResource PureWhite}"
-                                       VerticalOptions="Center" />
+                                       VerticalOptions="Center"
+                                       HorizontalOptions="End" />
                             </Grid>
                         </Border>
                     </Grid>

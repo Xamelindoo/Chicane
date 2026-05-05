@@ -99,52 +99,54 @@
                     </Grid>
                 </Border>
 
-                <!-- Horizontal Race Scroll - aligned left with RACE RESULTS -->
-                <CollectionView ItemsSource="{Binding RaceResults}" x:DataType="viewmodels:TeamDetailViewModel"
-                                Margin="20,10,18,0" HeightRequest="140">
-                    <CollectionView.ItemsLayout>
-                        <LinearItemsLayout Orientation="Horizontal" ItemSpacing="0" />
-                    </CollectionView.ItemsLayout>
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate x:DataType="models:TeamRaceResult">
-                            <Border Stroke="{StaticResource BorderSubtle}" StrokeThickness="1"
-                                    StrokeShape="RoundRectangle 4" BackgroundColor="{StaticResource SurfaceLow}"
-                                    Padding="10,8" WidthRequest="176">
-                                <Border.GestureRecognizers>
-                                    <TapGestureRecognizer
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:TeamDetailViewModel}}, Path=NavigateToRaceCommand}"
-                                        CommandParameter="{Binding EventName}" />
-                                </Border.GestureRecognizers>
-                                <VerticalStackLayout Spacing="6">
-                                    <Label Text="{Binding EventName}" FontFamily="SpaceMonoBold" FontSize="11"
-                                           TextColor="{StaticResource PureWhite}" LineBreakMode="TailTruncation" />
-                                    <Grid ColumnDefinitions="Auto,Auto">
-                                        <Label Grid.Column="0" Text="{Binding TotalPoints}" FontFamily="SpaceMonoBold" FontSize="18"
-                                               TextColor="{StaticResource PureWhite}" VerticalOptions="Center" />
-                                        <Label Grid.Column="1" Text=" pts" FontFamily="SpaceMonoRegular" FontSize="10"
-                                               TextColor="{StaticResource TextMuted}" VerticalOptions="Center" Margin="2,0,0,0" />
-                                    </Grid>
-                                    <Label FontFamily="SpaceMonoRegular" FontSize="10" TextColor="{StaticResource CoolSlate}">
-                                        <Label.Text>
-                                            <MultiBinding StringFormat="{}{0} {1} pts">
-                                                <Binding Path="Driver1Position" StringFormat="P{0}" />
-                                                <Binding Path="Driver1Points" />
-                                            </MultiBinding>
-                                        </Label.Text>
-                                    </Label>
-                                    <Label FontFamily="SpaceMonoRegular" FontSize="10" TextColor="{StaticResource CoolSlate}">
-                                        <Label.Text>
-                                            <MultiBinding StringFormat="{}{0} {1} pts">
-                                                <Binding Path="Driver2Position" StringFormat="P{0}" />
-                                                <Binding Path="Driver2Points" />
-                                            </MultiBinding>
-                                        </Label.Text>
-                                    </Label>
-                                </VerticalStackLayout>
-                            </Border>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
+                <!-- Horizontal Race Scroll -->
+                <ScrollView Orientation="Horizontal"
+                            Margin="20,10,20,0"
+                            HeightRequest="140">
+                    <HorizontalStackLayout Spacing="0"
+                                           BindableLayout.ItemsSource="{Binding RaceResults}"
+                                           x:DataType="viewmodels:TeamDetailViewModel">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="models:TeamRaceResult">
+                                <Border Stroke="{StaticResource BorderSubtle}" StrokeThickness="1"
+                                        StrokeShape="RoundRectangle 4" BackgroundColor="{StaticResource SurfaceLow}"
+                                        Padding="10,8" WidthRequest="175">
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:TeamDetailViewModel}}, Path=NavigateToRaceCommand}"
+                                            CommandParameter="{Binding EventName}" />
+                                    </Border.GestureRecognizers>
+                                    <VerticalStackLayout Spacing="6">
+                                        <Label Text="{Binding EventName}" FontFamily="SpaceMonoBold" FontSize="11"
+                                               TextColor="{StaticResource PureWhite}" LineBreakMode="TailTruncation" />
+                                        <Grid ColumnDefinitions="Auto,Auto">
+                                            <Label Grid.Column="0" Text="{Binding TotalPoints}" FontFamily="SpaceMonoBold" FontSize="18"
+                                                   TextColor="{StaticResource PureWhite}" VerticalOptions="Center" />
+                                            <Label Grid.Column="1" Text=" pts" FontFamily="SpaceMonoRegular" FontSize="10"
+                                                   TextColor="{StaticResource TextMuted}" VerticalOptions="Center" Margin="2,0,0,0" />
+                                        </Grid>
+                                        <Label FontFamily="SpaceMonoRegular" FontSize="10" TextColor="{StaticResource CoolSlate}">
+                                            <Label.Text>
+                                                <MultiBinding StringFormat="{}{0} {1} pts">
+                                                    <Binding Path="Driver1Position" StringFormat="P{0}" />
+                                                    <Binding Path="Driver1Points" />
+                                                </MultiBinding>
+                                            </Label.Text>
+                                        </Label>
+                                        <Label FontFamily="SpaceMonoRegular" FontSize="10" TextColor="{StaticResource CoolSlate}">
+                                            <Label.Text>
+                                                <MultiBinding StringFormat="{}{0} {1} pts">
+                                                    <Binding Path="Driver2Position" StringFormat="P{0}" />
+                                                    <Binding Path="Driver2Points" />
+                                                </MultiBinding>
+                                            </Label.Text>
+                                        </Label>
+                                    </VerticalStackLayout>
+                                </Border>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </HorizontalStackLayout>
+                </ScrollView>
 
                 <!-- ═══════════ SEASON RECORDS ═══════════ -->
                 <Border Stroke="{StaticResource BorderSubtle}" StrokeThickness="1"
