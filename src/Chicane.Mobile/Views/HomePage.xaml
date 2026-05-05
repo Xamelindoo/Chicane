@@ -57,11 +57,11 @@
                     HorizontalOptions="Center" />
         </VerticalStackLayout>
 
-        <!-- Category Switcher (overlay, above scroll) -->
-        <VerticalStackLayout x:Name="CategorySwitcherHost"
-                             Padding="0,52,0,0"
-                             HorizontalOptions="Center"
-                             VerticalOptions="Start" />
+        <!-- Category Switcher (fixed overlay, out of scroll flow) -->
+        <ContentView x:Name="CategorySwitcherHost"
+                     VerticalOptions="Fill"
+                     HorizontalOptions="Fill"
+                     InputTransparent="True" />
 
         <!-- Scrollable Content -->
         <ScrollView x:Name="MainScrollView" IsVisible="{Binding HasData}">

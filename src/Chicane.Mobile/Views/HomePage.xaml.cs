@@ -15,7 +15,7 @@ public partial class HomePage : ContentPage
         this.categorySwitcherViewModel = categorySwitcherViewModel;
 
         MainScrollView.Scrolled += OnScrolled;
-        CategorySwitcherHost.Children.Insert(0, categorySwitcher);
+        CategorySwitcherHost.Content = categorySwitcher;
 
         categorySwitcherViewModel.PropertyChanged += OnMenuStateChanged;
     }
