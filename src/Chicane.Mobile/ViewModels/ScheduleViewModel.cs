@@ -15,6 +15,8 @@ public partial class ScheduleViewModel : ObservableObject
     {
         this.calendarService = calendarService;
         this.categoryProvider = categoryProvider;
+
+        categoryProvider.CategoryChanged += async _ => await LoadAsync();
     }
 
     [ObservableProperty]

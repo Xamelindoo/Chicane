@@ -15,6 +15,8 @@ public partial class LeaderboardsViewModel : ObservableObject
     {
         this.teamsService = teamsService;
         this.categoryProvider = categoryProvider;
+
+        categoryProvider.CategoryChanged += async _ => await LoadAsync();
     }
 
     [ObservableProperty]
