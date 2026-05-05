@@ -8,4 +8,6 @@ public class NewsItem
     public string SourceUrl { get; init; } = string.Empty;
     public DateTime PublishedAt { get; init; }
     public string Source { get; init; } = string.Empty;
+
+    public bool HasImage => !string.IsNullOrWhiteSpace(ImageUrl);
 }

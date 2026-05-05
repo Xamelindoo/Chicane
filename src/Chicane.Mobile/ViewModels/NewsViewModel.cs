@@ -9,10 +9,14 @@ namespace Chicane.Mobile.ViewModels;
 public partial class NewsViewModel : ObservableObject
 {
     private readonly INewsService newsService;
+    private readonly ICategoryProvider categoryProvider;
 
-    public NewsViewModel(INewsService newsService)
+    public NewsViewModel(INewsService newsService, ICategoryProvider categoryProvider)
     {
         this.newsService = newsService;
+        this.categoryProvider = categoryProvider;
+
+        categoryProvider.CategoryChanged += async _ => await LoadAsync();
     }
 
     [ObservableProperty]
@@ -42,7 +46,7 @@ public partial class NewsViewModel : ObservableObject
 
         try
         {
-            var articles = await newsService.GetNewsAsync("f1");
+            var articles = await newsService.GetNewsAsync(categoryProvider.CurrentCategory.Id);
 
             Articles.Clear();
             foreach (var article in articles)

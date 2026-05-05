@@ -8,6 +8,23 @@ public class Rss2JsonService : INewsService
 {
     private readonly HttpClient _http;
 
+    private static readonly Dictionary<string, (string Url, string Label)[]> FeedMap = new()
+    {
+        ["f1"] = new[] {
+            ("https://www.skysports.com/rss/12433", "Sky Sports F1"),
+            ("https://it.motorsport.com/rss/f1/news/", "Motorsport Italia")
+        },
+        ["wec"] = new[] {
+            ("https://www.motorsport.com/rss/wec/news/", "Motorsport WEC")
+        },
+        ["wrc"] = new[] {
+            ("https://www.motorsport.com/rss/wrc/news/", "Motorsport WRC")
+        },
+        ["motogp"] = new[] {
+            ("https://www.motorsport.com/rss/motogp/news/", "Motorsport MotoGP")
+        },
+    };
+
     public Rss2JsonService(HttpClient http)
     {
         _http = http;
@@ -15,20 +32,16 @@ public class Rss2JsonService : INewsService
 
     public async Task<List<NewsItem>> GetNewsAsync(string categoryId)
     {
-        if (categoryId != "f1") return await GetMockNewsAsync(categoryId);
+        if (!FeedMap.TryGetValue(categoryId, out var feeds))
+            return await GetMockNewsAsync(categoryId);
 
         try
         {
-            var ukTask = FetchFeedAsync(
-                "https://www.skysports.com/rss/12433", "Sky Sports F1");
+            var tasks = feeds.Select(f => FetchFeedAsync(f.Url, f.Label));
+            var results = await Task.WhenAll(tasks);
 
-            var itTask = FetchFeedAsync(
-                "https://it.motorsport.com/rss/f1/news/", "Motorsport Italia");
-
-            await Task.WhenAll(ukTask, itTask);
-
-            return ukTask.Result
-                .Concat(itTask.Result)
+            return results
+                .SelectMany(r => r)
                 .OrderByDescending(i => i.PublishedAt)
                 .Take(25)
                 .ToList();
