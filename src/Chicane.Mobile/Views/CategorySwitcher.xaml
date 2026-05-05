@@ -22,8 +22,8 @@
         </BoxView>
 
         <!-- PILL: fixed at top center -->
-        <Label AbsoluteLayout.LayoutBounds="0.5,52,-1,-1"
-               AbsoluteLayout.LayoutFlags="PositionProportional"
+        <Label                 AbsoluteLayout.LayoutBounds="0.5,52,-1,-1"
+               AbsoluteLayout.LayoutFlags="XProportional"
                InputTransparent="False">
             <Label.GestureRecognizers>
                 <TapGestureRecognizer Command="{Binding ToggleMenuCommand}" />
@@ -50,7 +50,7 @@
                 WidthRequest="220"
                 InputTransparent="False"
                 AbsoluteLayout.LayoutBounds="0.5,90,-1,-1"
-                AbsoluteLayout.LayoutFlags="PositionProportional">
+                AbsoluteLayout.LayoutFlags="XProportional">
             <VerticalStackLayout Spacing="0">
                 <CollectionView ItemsSource="{Binding Categories}"
                                 x:DataType="viewmodels:CategorySwitcherViewModel"
