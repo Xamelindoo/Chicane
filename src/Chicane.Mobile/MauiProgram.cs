@@ -28,6 +28,7 @@ public static class MauiProgram
 
         builder.Services.AddSingleton<IF1DataService, MockF1DataService>();
         builder.Services.AddSingleton<IRaceCalendarService, MockRaceCalendarService>();
+        builder.Services.AddSingleton<ITeamsService, MockTeamsService>();
 
         builder.Services.AddTransient<HomeViewModel>();
         builder.Services.AddTransient<HomePage>();

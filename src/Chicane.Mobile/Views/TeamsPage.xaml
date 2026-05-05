@@ -2,31 +2,137 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodels="clr-namespace:Chicane.Mobile.ViewModels"
+             xmlns:models="clr-namespace:Chicane.Mobile.Models"
              x:Class="Chicane.Mobile.Views.TeamsPage"
              x:DataType="viewmodels:TeamsViewModel"
-             Title="Teams">
+             Title="Teams"
+             Shell.NavBarIsVisible="False">
 
-    <Grid RowDefinitions="*" BackgroundColor="{StaticResource CarbonBlack}">
-        <VerticalStackLayout
-            VerticalOptions="Center"
-            HorizontalOptions="Center"
-            Spacing="16">
+    <Grid RowDefinitions="Auto,*" BackgroundColor="{StaticResource CarbonBlack}">
 
-            <Border Style="{StaticResource PlaceholderCard}">
-                <VerticalStackLayout Spacing="12">
-                    <Label
-                        Text="Teams"
-                        Style="{StaticResource Headline}"
-                        HorizontalOptions="Center" />
-                    <Label
-                        Text="Team details, stats and dedicated news will appear here."
-                        Style="{StaticResource Caption}"
-                        HorizontalOptions="Center"
-                        HorizontalTextAlignment="Center" />
-                </VerticalStackLayout>
-            </Border>
+        <!-- Header -->
+        <Border Grid.Row="0"
+                Stroke="{StaticResource BorderSubtle}"
+                StrokeThickness="0"
+                StrokeShape="RoundRectangle 0"
+                BackgroundColor="{StaticResource SurfaceLow}"
+                Padding="20,48,20,12">
+            <Label Text="CONSTRUCTOR STANDINGS"
+                   FontFamily="SpaceMonoBold"
+                   FontSize="14"
+                   TextColor="{StaticResource PureWhite}"
+                   CharacterSpacing="4"
+                   HorizontalOptions="Center" />
+        </Border>
 
+        <!-- Loading -->
+        <VerticalStackLayout Grid.Row="1"
+                             IsVisible="{Binding IsBusy}"
+                             VerticalOptions="Center"
+                             HorizontalOptions="Center"
+                             Spacing="12">
+            <ActivityIndicator IsRunning="{Binding IsBusy}"
+                               Color="{StaticResource RacingRed}"
+                               HeightRequest="48"
+                               WidthRequest="48" />
+            <Label Text="Loading teams..."
+                   Style="{StaticResource Caption}"
+                   HorizontalOptions="Center" />
         </VerticalStackLayout>
+
+        <!-- Error -->
+        <VerticalStackLayout Grid.Row="1"
+                             IsVisible="{Binding HasError}"
+                             VerticalOptions="Center"
+                             HorizontalOptions="Center"
+                             Spacing="16"
+                             Padding="32">
+            <Label Text="&#x26A0;"
+                   FontSize="48"
+                   HorizontalOptions="Center"
+                   TextColor="{StaticResource RacingRed}" />
+            <Label Text="{Binding ErrorMessage}"
+                   Style="{StaticResource SubHeadline}"
+                   HorizontalOptions="Center" />
+            <Button Text="RETRY"
+                    Style="{StaticResource PrimaryButton}"
+                    Command="{Binding LoadCommand}"
+                    HorizontalOptions="Center" />
+        </VerticalStackLayout>
+
+        <!-- Teams List -->
+        <CollectionView Grid.Row="1"
+                        ItemsSource="{Binding Teams}"
+                        IsVisible="{Binding HasData}"
+                        Margin="0,0,0,0">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:TeamEntry">
+                    <Grid ColumnDefinitions="4,*"
+                          Margin="20,0,20,8">
+
+                        <!-- Left color bar -->
+                        <BoxView Grid.Column="0"
+                                 WidthRequest="4"
+                                 Color="{Binding BorderColor}"
+                                 VerticalOptions="Fill" />
+
+                        <!-- Team card content -->
+                        <Border Grid.Column="1"
+                                Stroke="{StaticResource BorderSubtle}"
+                                StrokeThickness="1"
+                                StrokeShape="RoundRectangle 0,4,4,0"
+                                BackgroundColor="{StaticResource SurfaceLow}"
+                                Padding="14,12">
+                            <Grid RowDefinitions="Auto,Auto"
+                                  ColumnDefinitions="*,Auto"
+                                  RowSpacing="6">
+
+                                <!-- Team Name -->
+                                <Label Grid.Row="0" Grid.Column="0"
+                                       Text="{Binding TeamName}"
+                                       FontFamily="SpaceMonoBold"
+                                       FontSize="15"
+                                       TextColor="{StaticResource PureWhite}"
+                                       VerticalOptions="Start" />
+
+                                <!-- Position -->
+                                <Label Grid.Row="0" Grid.Column="1"
+                                       Text="{Binding Position, StringFormat='#{0}'}"
+                                       FontFamily="SpaceMonoBold"
+                                       FontSize="18"
+                                       TextColor="{StaticResource RacingRed}"
+                                       VerticalOptions="Start"
+                                       HorizontalOptions="End" />
+
+                                <!-- Drivers -->
+                                <Label Grid.Row="1" Grid.Column="0"
+                                       FontFamily="SpaceMonoRegular"
+                                       FontSize="11"
+                                       TextColor="{StaticResource CoolSlate}"
+                                       VerticalOptions="End">
+                                    <Label.Text>
+                                        <MultiBinding StringFormat="{}{0}, {1}">
+                                            <Binding Path="Drivers[0]" />
+                                            <Binding Path="Drivers[1]" />
+                                        </MultiBinding>
+                                    </Label.Text>
+                                </Label>
+
+                                <!-- Points -->
+                                <Label Grid.Row="1" Grid.Column="1"
+                                       Text="{Binding Points}"
+                                       FontFamily="SpaceMonoBold"
+                                       FontSize="16"
+                                       TextColor="{StaticResource PureWhite}"
+                                       VerticalOptions="End"
+                                       HorizontalOptions="End" />
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
     </Grid>
 
 </ContentPage>
