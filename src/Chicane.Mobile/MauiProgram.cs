@@ -27,6 +27,10 @@ public static class MauiProgram
         builder.Logging.AddDebug();
 #endif
 
+        // API infrastructure
+        builder.Services.AddSingleton<HttpClient>();
+        builder.Services.AddSingleton<ErgastApiService>();
+
         // SQLite infrastructure
         builder.Services.AddSingleton<DatabaseService>();
         builder.Services.AddSingleton<StandingsRepository>();
@@ -34,13 +38,19 @@ public static class MauiProgram
         builder.Services.AddSingleton<ScheduleRepository>();
         builder.Services.AddSingleton<TeamsRepository>();
 
-        // Mock services (dependencies for cached wrappers)
+        // Mock services (dependencies for cached wrappers, fallback for non-F1)
         builder.Services.AddSingleton<MockF1DataService>();
         builder.Services.AddSingleton<MockTeamsService>();
         builder.Services.AddSingleton<MockRaceCalendarService>();
 
-        // Cached services (mock → SQLite → return)
-        builder.Services.AddSingleton<IF1DataService, CachedF1DataService>();
+        // Data dispatching: F1 → real API, others → mock
+        builder.Services.AddSingleton<DispatchingF1DataService>();
+
+        // Cached services (real/mock → SQLite → return)
+        builder.Services.AddSingleton<IF1DataService>(sp => new CachedF1DataService(
+            sp.GetRequiredService<DispatchingF1DataService>(),
+            sp.GetRequiredService<StandingsRepository>(),
+            sp.GetRequiredService<ConstructorStandingsRepository>()));
         builder.Services.AddSingleton<IRaceCalendarService, CachedScheduleService>();
         builder.Services.AddSingleton<ITeamsService, CachedTeamsService>();
         builder.Services.AddSingleton<ICategoryProvider, CategoryProvider>();

@@ -6,34 +6,36 @@ namespace Chicane.Mobile.Services;
 
 public class CachedF1DataService : IF1DataService
 {
-    private readonly MockF1DataService _mock;
+    private readonly IF1DataService _primary;
     private readonly StandingsRepository _standingsRepo;
     private readonly ConstructorStandingsRepository _constructorRepo;
-    private readonly ReadWriteLock _lock = new();
 
     public CachedF1DataService(
-        MockF1DataService mock,
+        IF1DataService primary,
         StandingsRepository standingsRepo,
         ConstructorStandingsRepository constructorRepo)
     {
-        _mock = mock;
+        _primary = primary;
         _standingsRepo = standingsRepo;
         _constructorRepo = constructorRepo;
     }
 
     public async Task<RaceEvent> GetNextEventAsync(string categoryId)
-        => await _mock.GetNextEventAsync(categoryId);
+        => await _primary.GetNextEventAsync(categoryId);
 
     public async Task<LiveSessionData> GetLiveSessionDataAsync(string categoryId)
-        => await _mock.GetLiveSessionDataAsync(categoryId);
+        => await _primary.GetLiveSessionDataAsync(categoryId);
 
     public async Task<List<StandingsEntry>> GetStandingsAsync(string categoryId)
     {
         try
         {
-            var standings = await _mock.GetStandingsAsync(categoryId);
-            var records = standings.Select(s => StorageMapper.ToRecord(s, categoryId)).ToList();
-            await _standingsRepo.UpsertAsync(categoryId, records);
+            var standings = await _primary.GetStandingsAsync(categoryId);
+            if (standings.Count > 0)
+            {
+                var records = standings.Select(s => StorageMapper.ToRecord(s, categoryId)).ToList();
+                await _standingsRepo.UpsertAsync(categoryId, records);
+            }
             return standings;
         }
         catch
@@ -47,9 +49,12 @@ public class CachedF1DataService : IF1DataService
     {
         try
         {
-            var standings = await _mock.GetConstructorStandingsAsync(categoryId);
-            var records = standings.Select(s => StorageMapper.ToRecord(s, categoryId)).ToList();
-            await _constructorRepo.UpsertAsync(categoryId, records);
+            var standings = await _primary.GetConstructorStandingsAsync(categoryId);
+            if (standings.Count > 0)
+            {
+                var records = standings.Select(s => StorageMapper.ToRecord(s, categoryId)).ToList();
+                await _constructorRepo.UpsertAsync(categoryId, records);
+            }
             return standings;
         }
         catch
@@ -60,7 +65,5 @@ public class CachedF1DataService : IF1DataService
     }
 
     public async Task<List<TrackPosition>> GetTrackPositionsAsync(string categoryId)
-        => await _mock.GetTrackPositionsAsync(categoryId);
-
-    private class ReadWriteLock { }
+        => await _primary.GetTrackPositionsAsync(categoryId);
 }
