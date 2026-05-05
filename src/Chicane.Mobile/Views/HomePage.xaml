@@ -92,10 +92,10 @@
                                              HorizontalOptions="Center">
                             <Label Text="{Binding Countdown}"
                                    FontFamily="JetBrainsMonoBold"
-                                   FontSize="60"
+                                   FontSize="54"
                                    TextColor="{StaticResource PureWhite}"
                                    HorizontalOptions="Center"
-                                   CharacterSpacing="2" />
+                                   CharacterSpacing="0.7" />
                             <Label Text="DD:HH:MM:SS"
                                    FontFamily="JetBrainsMonoRegular"
                                    FontSize="11"
