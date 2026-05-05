@@ -2,31 +2,112 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodels="clr-namespace:Chicane.Mobile.ViewModels"
+             xmlns:models="clr-namespace:Chicane.Mobile.Models"
              x:Class="Chicane.Mobile.Views.NewsPage"
              x:DataType="viewmodels:NewsViewModel"
-             Title="News">
+             Title="News"
+             BackgroundColor="{StaticResource CarbonBlack}">
 
-    <Grid RowDefinitions="*" BackgroundColor="{StaticResource CarbonBlack}">
-        <VerticalStackLayout
-            VerticalOptions="Center"
-            HorizontalOptions="Center"
-            Spacing="16">
+    <Grid RowDefinitions="Auto,*">
 
-            <Border Style="{StaticResource PlaceholderCard}">
-                <VerticalStackLayout Spacing="12">
-                    <Label
-                        Text="News"
-                        Style="{StaticResource Headline}"
-                        HorizontalOptions="Center" />
-                    <Label
-                        Text="Motorsport news feed will appear here."
-                        Style="{StaticResource Caption}"
-                        HorizontalOptions="Center"
-                        HorizontalTextAlignment="Center" />
-                </VerticalStackLayout>
-            </Border>
+        <!-- Header -->
+        <Border Grid.Row="0"
+                Stroke="{StaticResource BorderSubtle}"
+                StrokeThickness="0"
+                BackgroundColor="{StaticResource SurfaceLow}"
+                Padding="20,48,20,12">
+            <Label Text="NEWS"
+                   FontFamily="SpaceMonoBold"
+                   FontSize="14"
+                   TextColor="{StaticResource PureWhite}"
+                   CharacterSpacing="4"
+                   HorizontalOptions="Center" />
+        </Border>
 
+        <!-- Loading -->
+        <VerticalStackLayout Grid.Row="1" IsVisible="{Binding IsBusy}"
+                             VerticalOptions="Center" HorizontalOptions="Center" Spacing="12">
+            <ActivityIndicator IsRunning="{Binding IsBusy}" Color="{StaticResource RacingRed}" HeightRequest="48" WidthRequest="48" />
+            <Label Text="Loading news..." Style="{StaticResource Caption}" HorizontalOptions="Center" />
         </VerticalStackLayout>
+
+        <!-- Error -->
+        <VerticalStackLayout Grid.Row="1" IsVisible="{Binding HasError}"
+                             VerticalOptions="Center" HorizontalOptions="Center" Spacing="16" Padding="32">
+            <Label Text="&#x26A0;" FontSize="48" HorizontalOptions="Center" TextColor="{StaticResource RacingRed}" />
+            <Label Text="{Binding ErrorMessage}" Style="{StaticResource SubHeadline}" HorizontalOptions="Center" />
+            <Button Text="RETRY" Style="{StaticResource PrimaryButton}" Command="{Binding LoadCommand}" HorizontalOptions="Center" />
+        </VerticalStackLayout>
+
+        <!-- News List -->
+        <CollectionView Grid.Row="1"
+                        ItemsSource="{Binding Articles}"
+                        IsVisible="{Binding HasData}"
+                        x:DataType="viewmodels:NewsViewModel"
+                        Margin="0,0,0,0">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:NewsItem">
+                    <Border Stroke="{StaticResource BorderSubtle}"
+                            StrokeThickness="1"
+                            StrokeShape="RoundRectangle 4"
+                            BackgroundColor="{StaticResource SurfaceLow}"
+                            Margin="16,0,16,10"
+                            Padding="0">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:NewsViewModel}}, Path=OpenArticleCommand}"
+                                CommandParameter="{Binding SourceUrl}" />
+                        </Border.GestureRecognizers>
+                        <Grid RowDefinitions="Auto,Auto"
+                              ColumnDefinitions="100,*"
+                              ColumnSpacing="0">
+
+                            <!-- Image -->
+                            <Image Grid.Row="0" Grid.Column="0" Grid.RowSpan="2"
+                                   Source="{Binding ImageUrl}"
+                                   Aspect="AspectFill"
+                                   WidthRequest="100"
+                                   HeightRequest="100" />
+
+                            <VerticalStackLayout Grid.Row="0" Grid.Column="1"
+                                                 Padding="12,10,12,0"
+                                                 Spacing="4">
+                                <Label Text="{Binding Title}"
+                                       FontFamily="SpaceMonoBold"
+                                       FontSize="13"
+                                       TextColor="{StaticResource PureWhite}"
+                                       MaxLines="2"
+                                       LineBreakMode="TailTruncation" />
+                                <HorizontalStackLayout Spacing="6">
+                                    <Label Text="{Binding Source}"
+                                           FontFamily="SpaceMonoRegular"
+                                           FontSize="10"
+                                           TextColor="{StaticResource RacingRed}" />
+                                    <Label Text="•"
+                                           FontSize="10"
+                                           TextColor="{StaticResource TextMuted}"
+                                           VerticalOptions="Center" />
+                                    <Label Text="{Binding PublishedAt, StringFormat='{0:dd MMM}'}"
+                                           FontFamily="SpaceMonoRegular"
+                                           FontSize="10"
+                                           TextColor="{StaticResource TextMuted}" />
+                                </HorizontalStackLayout>
+                            </VerticalStackLayout>
+
+                            <Label Grid.Row="1" Grid.Column="1"
+                                   Text="{Binding Description}"
+                                   FontFamily="SpaceMonoRegular"
+                                   FontSize="11"
+                                   TextColor="{StaticResource CoolSlate}"
+                                   MaxLines="2"
+                                   LineBreakMode="TailTruncation"
+                                   Padding="12,4,12,10" />
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
     </Grid>
 
 </ContentPage>

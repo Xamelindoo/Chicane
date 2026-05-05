@@ -8,11 +8,13 @@ public class CachedTeamsService : ITeamsService
 {
     private readonly MockTeamsService _mock;
     private readonly TeamsRepository _teamsRepo;
+    private readonly IF1DataService _f1Data;
 
-    public CachedTeamsService(MockTeamsService mock, TeamsRepository teamsRepo)
+    public CachedTeamsService(MockTeamsService mock, TeamsRepository teamsRepo, IF1DataService f1Data)
     {
         _mock = mock;
         _teamsRepo = teamsRepo;
+        _f1Data = f1Data;
     }
 
     public async Task<List<TeamEntry>> GetTeamsAsync(string categoryId)
@@ -32,8 +34,37 @@ public class CachedTeamsService : ITeamsService
     }
 
     public async Task<List<DriverStandingsEntry>> GetDriversAsync(string categoryId)
-        => await _mock.GetDriversAsync(categoryId);
+    {
+        if (categoryId == "f1")
+        {
+            var standings = await _f1Data.GetStandingsAsync(categoryId);
+            return standings.Select(s => new DriverStandingsEntry
+            {
+                Position = s.Position,
+                DriverName = s.DriverName,
+                TeamName = s.TeamName,
+                Points = s.Points,
+                BorderColor = GetTeamColor(s.TeamName),
+            }).ToList();
+        }
+        return await _mock.GetDriversAsync(categoryId);
+    }
 
     public async Task<TeamDetail> GetTeamDetailAsync(string teamName, string categoryId)
         => await _mock.GetTeamDetailAsync(teamName, categoryId);
+
+    private static string GetTeamColor(string teamName) => teamName switch
+    {
+        "Red Bull" or "Red Bull Racing" => "#1A3A5C",
+        "Mercedes" => "#00A19C",
+        "Ferrari" => "#E10600",
+        "McLaren" => "#FF8700",
+        "Aston Martin" => "#006F62",
+        "Alpine" => "#005BAA",
+        "RB" => "#6699FF",
+        "Haas F1 Team" or "Haas" => "#B6B6B6",
+        "Williams" => "#005AFF",
+        "Sauber" or "Kick Sauber" => "#00E600",
+        _ => "#333333",
+    };
 }

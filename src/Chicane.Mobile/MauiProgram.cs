@@ -30,6 +30,10 @@ public static class MauiProgram
         // API infrastructure
         builder.Services.AddSingleton<HttpClient>();
         builder.Services.AddSingleton<ErgastApiService>();
+        builder.Services.AddSingleton<OpenF1Service>();
+
+        // News service
+        builder.Services.AddSingleton<INewsService, RssNewsService>();
 
         // SQLite infrastructure
         builder.Services.AddSingleton<DatabaseService>();
