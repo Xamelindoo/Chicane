@@ -41,13 +41,11 @@
         </VerticalStackLayout>
 
         <!-- News List -->
-        <ListView ItemsSource="{Binding Articles}"
-                  IsVisible="{Binding HasData}"
-                  x:DataType="viewmodels:NewsViewModel"
-                  HasUnevenRows="True"
-                  SeparatorVisibility="None"
-                  Margin="0,8,0,0">
-            <ListView.ItemTemplate>
+        <CollectionView ItemsSource="{Binding Articles}"
+                        IsVisible="{Binding HasData}"
+                        x:DataType="viewmodels:NewsViewModel"
+                        Margin="0,8,0,0">
+            <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:NewsItem">
                     <Border Stroke="{StaticResource BorderSubtle}"
                             StrokeThickness="1"
@@ -96,8 +94,8 @@
                         </Grid>
                     </Border>
                 </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
 
     </Grid>
 
