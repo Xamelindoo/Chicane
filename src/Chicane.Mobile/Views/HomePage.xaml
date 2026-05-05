@@ -57,6 +57,21 @@
                     HorizontalOptions="Center" />
         </VerticalStackLayout>
 
+        <!-- Offline Banner -->
+        <Border IsVisible="{Binding IsOffline}"
+                BackgroundColor="{StaticResource RacingRed}"
+                StrokeThickness="0"
+                Padding="8,4"
+                VerticalOptions="Start"
+                HorizontalOptions="Start"
+                Margin="8,52,0,0">
+            <Label Text="OFFLINE"
+                   FontFamily="SpaceMonoBold"
+                   FontSize="10"
+                   TextColor="{StaticResource PureWhite}"
+                   CharacterSpacing="3" />
+        </Border>
+
         <!-- Scrollable Content -->
         <ScrollView x:Name="MainScrollView" IsVisible="{Binding HasData}">
             <VerticalStackLayout Spacing="0">

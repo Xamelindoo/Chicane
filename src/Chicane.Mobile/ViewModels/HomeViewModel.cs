@@ -45,6 +45,9 @@ public partial class HomeViewModel : ObservableObject
     [ObservableProperty]
     private bool isEmptyState;
 
+    [ObservableProperty]
+    private bool isOffline;
+
     public bool HasError => !string.IsNullOrWhiteSpace(ErrorMessage);
 
     [ObservableProperty]
@@ -112,6 +115,8 @@ public partial class HomeViewModel : ObservableObject
 
         try
         {
+            IsOffline = Connectivity.Current.NetworkAccess != NetworkAccess.Internet;
+
             var displayInfo = DeviceDisplay.Current.MainDisplayInfo;
             HeroHeight = displayInfo.Height / displayInfo.Density;
 
