@@ -18,9 +18,9 @@
             Route="schedule" />
 
         <ShellContent
-            Title="Teams"
-            ContentTemplate="{DataTemplate views:TeamsPage}"
-            Route="teams" />
+            Title="Leaderboards"
+            ContentTemplate="{DataTemplate views:LeaderboardsPage}"
+            Route="leaderboards" />
 
         <ShellContent
             Title="News"

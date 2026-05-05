@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:Chicane.Mobile.ViewModels"
+             xmlns:models="clr-namespace:Chicane.Mobile.Models"
+             x:Class="Chicane.Mobile.Views.LeaderboardsPage"
+             x:DataType="viewmodels:LeaderboardsViewModel"
+             Title="Leaderboards"
+             Shell.NavBarIsVisible="False">
+
+    <Grid RowDefinitions="Auto,*" BackgroundColor="{StaticResource CarbonBlack}">
+
+        <!-- Header + Segmented Control -->
+        <VerticalStackLayout Grid.Row="0"
+                             Padding="20,48,20,12"
+                             Spacing="12">
+            <Label Text="LEADERBOARDS"
+                   FontFamily="SpaceMonoBold"
+                   FontSize="14"
+                   TextColor="{StaticResource PureWhite}"
+                   CharacterSpacing="4"
+                   HorizontalOptions="Center" />
+
+            <Grid ColumnDefinitions="*,*"
+                  ColumnSpacing="0">
+                <!-- TEAMS button -->
+                <Border Grid.Column="0"
+                        Stroke="{StaticResource RacingRed}"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 4,0,0,4"
+                        Padding="0">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="BackgroundColor" Value="{StaticResource SurfaceLow}" />
+                            <Style.Triggers>
+                                <DataTrigger TargetType="Border" Binding="{Binding IsShowingTeams}" Value="True">
+                                    <Setter Property="BackgroundColor" Value="{StaticResource RacingRed}" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ShowTeamsCommand}" />
+                    </Border.GestureRecognizers>
+                    <Label Text="TEAMS"
+                           FontFamily="SpaceMonoBold"
+                           FontSize="12"
+                           VerticalOptions="Center"
+                           HorizontalOptions="Center"
+                           CharacterSpacing="3"
+                           Padding="0,10">
+                        <Label.Style>
+                            <Style TargetType="Label">
+                                <Setter Property="TextColor" Value="{StaticResource TextMuted}" />
+                                <Style.Triggers>
+                                    <DataTrigger TargetType="Label" Binding="{Binding IsShowingTeams}" Value="True">
+                                        <Setter Property="TextColor" Value="{StaticResource PureWhite}" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Label.Style>
+                    </Label>
+                </Border>
+
+                <!-- PILOTS button -->
+                <Border Grid.Column="1"
+                        Stroke="{StaticResource RacingRed}"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 0,4,4,0"
+                        Padding="0">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="BackgroundColor" Value="{StaticResource SurfaceLow}" />
+                            <Style.Triggers>
+                                <DataTrigger TargetType="Border" Binding="{Binding IsShowingPilots}" Value="True">
+                                    <Setter Property="BackgroundColor" Value="{StaticResource RacingRed}" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ShowPilotsCommand}" />
+                    </Border.GestureRecognizers>
+                    <Label Text="PILOTS"
+                           FontFamily="SpaceMonoBold"
+                           FontSize="12"
+                           VerticalOptions="Center"
+                           HorizontalOptions="Center"
+                           CharacterSpacing="3"
+                           Padding="0,10">
+                        <Label.Style>
+                            <Style TargetType="Label">
+                                <Setter Property="TextColor" Value="{StaticResource TextMuted}" />
+                                <Style.Triggers>
+                                    <DataTrigger TargetType="Label" Binding="{Binding IsShowingPilots}" Value="True">
+                                        <Setter Property="TextColor" Value="{StaticResource PureWhite}" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Label.Style>
+                    </Label>
+                </Border>
+            </Grid>
+        </VerticalStackLayout>
+
+        <!-- Loading -->
+        <VerticalStackLayout Grid.Row="1"
+                             IsVisible="{Binding IsBusy}"
+                             VerticalOptions="Center"
+                             HorizontalOptions="Center"
+                             Spacing="12">
+            <ActivityIndicator IsRunning="{Binding IsBusy}"
+                               Color="{StaticResource RacingRed}"
+                               HeightRequest="48"
+                               WidthRequest="48" />
+            <Label Text="Loading leaderboards..."
+                   Style="{StaticResource Caption}"
+                   HorizontalOptions="Center" />
+        </VerticalStackLayout>
+
+        <!-- Error -->
+        <VerticalStackLayout Grid.Row="1"
+                             IsVisible="{Binding HasError}"
+                             VerticalOptions="Center"
+                             HorizontalOptions="Center"
+                             Spacing="16"
+                             Padding="32">
+            <Label Text="&#x26A0;"
+                   FontSize="48"
+                   HorizontalOptions="Center"
+                   TextColor="{StaticResource RacingRed}" />
+            <Label Text="{Binding ErrorMessage}"
+                   Style="{StaticResource SubHeadline}"
+                   HorizontalOptions="Center" />
+            <Button Text="RETRY"
+                    Style="{StaticResource PrimaryButton}"
+                    Command="{Binding LoadCommand}"
+                    HorizontalOptions="Center" />
+        </VerticalStackLayout>
+
+        <!-- ═══════════ TEAMS VIEW ═══════════ -->
+        <CollectionView Grid.Row="1"
+                        ItemsSource="{Binding Teams}"
+                        IsVisible="{Binding IsShowingTeams}"
+                        x:DataType="viewmodels:LeaderboardsViewModel"
+                        Margin="0,0,0,0">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:TeamEntry">
+                    <Grid ColumnDefinitions="4,*"
+                          Margin="16,0,16,10">
+                        <BoxView Grid.Column="0"
+                                 WidthRequest="4"
+                                 Color="{Binding BorderColor}"
+                                 VerticalOptions="Fill" />
+                        <Border Grid.Column="1"
+                                Stroke="{StaticResource BorderSubtle}"
+                                StrokeThickness="1"
+                                StrokeShape="RoundRectangle 0,4,4,0"
+                                BackgroundColor="{StaticResource SurfaceLow}"
+                                Padding="16,14">
+                            <Grid RowDefinitions="Auto,Auto,Auto,Auto"
+                                  ColumnDefinitions="*,Auto"
+                                  RowSpacing="8">
+                                <Label Grid.Row="0" Grid.Column="0"
+                                       Text="{Binding TeamName}"
+                                       FontFamily="SpaceMonoBold"
+                                       FontSize="20"
+                                       TextColor="{StaticResource PureWhite}"
+                                       VerticalOptions="Center" />
+                                <Label Grid.Row="0" Grid.Column="1"
+                                       Text="{Binding Position, StringFormat='#{0}'}"
+                                       FontFamily="SpaceMonoBold"
+                                       FontSize="20"
+                                       TextColor="{StaticResource RacingRed}"
+                                       VerticalOptions="Center" />
+                                <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                                      ColumnDefinitions="*,Auto">
+                                    <Label Grid.Column="0"
+                                           Text="{Binding Drivers[0].Name}"
+                                           FontFamily="SpaceMonoRegular"
+                                           FontSize="13"
+                                           TextColor="{StaticResource CoolSlate}"
+                                           VerticalOptions="Center" />
+                                    <HorizontalStackLayout Grid.Column="1" Spacing="4">
+                                        <Label Text="{Binding Drivers[0].Points}"
+                                               FontFamily="SpaceMonoBold"
+                                               FontSize="13"
+                                               TextColor="{StaticResource PureWhite}"
+                                               VerticalOptions="Center" />
+                                        <Label Text="pts"
+                                               FontFamily="SpaceMonoRegular"
+                                               FontSize="10"
+                                               TextColor="{StaticResource TextMuted}"
+                                               VerticalOptions="Center" />
+                                    </HorizontalStackLayout>
+                                </Grid>
+                                <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+                                      ColumnDefinitions="*,Auto">
+                                    <Label Grid.Column="0"
+                                           Text="{Binding Drivers[1].Name}"
+                                           FontFamily="SpaceMonoRegular"
+                                           FontSize="13"
+                                           TextColor="{StaticResource CoolSlate}"
+                                           VerticalOptions="Center" />
+                                    <HorizontalStackLayout Grid.Column="1" Spacing="4">
+                                        <Label Text="{Binding Drivers[1].Points}"
+                                               FontFamily="SpaceMonoBold"
+                                               FontSize="13"
+                                               TextColor="{StaticResource PureWhite}"
+                                               VerticalOptions="Center" />
+                                        <Label Text="pts"
+                                               FontFamily="SpaceMonoRegular"
+                                               FontSize="10"
+                                               TextColor="{StaticResource TextMuted}"
+                                               VerticalOptions="Center" />
+                                    </HorizontalStackLayout>
+                                </Grid>
+                                <Label Grid.Row="3" Grid.Column="1"
+                                       Text="{Binding Points}"
+                                       FontFamily="SpaceMonoBold"
+                                       FontSize="20"
+                                       TextColor="{StaticResource PureWhite}"
+                                       VerticalOptions="Center" />
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!-- ═══════════ PILOTS VIEW ═══════════ -->
+        <CollectionView Grid.Row="1"
+                        ItemsSource="{Binding Drivers}"
+                        IsVisible="{Binding IsShowingPilots}"
+                        x:DataType="viewmodels:LeaderboardsViewModel"
+                        Margin="0,0,0,0">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:DriverStandingsEntry">
+                    <Grid ColumnDefinitions="4,*"
+                          Margin="16,0,16,6">
+                        <BoxView Grid.Column="0"
+                                 WidthRequest="4"
+                                 Color="{Binding BorderColor}"
+                                 VerticalOptions="Fill" />
+                        <Border Grid.Column="1"
+                                Stroke="{StaticResource BorderSubtle}"
+                                StrokeThickness="1"
+                                StrokeShape="RoundRectangle 0,4,4,0"
+                                BackgroundColor="{StaticResource SurfaceLow}"
+                                Padding="12,8">
+                            <Grid RowDefinitions="Auto,Auto"
+                                  ColumnDefinitions="*,Auto"
+                                  RowSpacing="4">
+                                <Label Grid.Row="0" Grid.Column="0"
+                                       Text="{Binding DriverName}"
+                                       FontFamily="SpaceMonoBold"
+                                       FontSize="16"
+                                       TextColor="{StaticResource PureWhite}"
+                                       VerticalOptions="Center" />
+                                <Label Grid.Row="0" Grid.Column="1"
+                                       Text="{Binding Position, StringFormat='#{0}'}"
+                                       FontFamily="SpaceMonoBold"
+                                       FontSize="16"
+                                       TextColor="{StaticResource RacingRed}"
+                                       VerticalOptions="Center" />
+                                <Label Grid.Row="1" Grid.Column="0"
+                                       Text="{Binding TeamName}"
+                                       FontFamily="SpaceMonoRegular"
+                                       FontSize="11"
+                                       TextColor="{StaticResource CoolSlate}"
+                                       VerticalOptions="Center" />
+                                <Label Grid.Row="1" Grid.Column="1"
+                                       Text="{Binding Points}"
+                                       FontFamily="SpaceMonoBold"
+                                       FontSize="14"
+                                       TextColor="{StaticResource PureWhite}"
+                                       VerticalOptions="Center" />
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </Grid>
+
+</ContentPage>

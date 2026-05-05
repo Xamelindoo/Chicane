@@ -2,11 +2,11 @@ using Chicane.Mobile.ViewModels;
 
 namespace Chicane.Mobile.Views;
 
-public partial class TeamsPage : ContentPage
+public partial class LeaderboardsPage : ContentPage
 {
-    private readonly TeamsViewModel viewModel;
+    private readonly LeaderboardsViewModel viewModel;
 
-    public TeamsPage(TeamsViewModel viewModel)
+    public LeaderboardsPage(LeaderboardsViewModel viewModel)
     {
         InitializeComponent();
         BindingContext = viewModel;

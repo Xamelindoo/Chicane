@@ -39,8 +39,8 @@ public static class MauiProgram
         builder.Services.AddTransient<PastRaceDetailViewModel>();
         builder.Services.AddTransient<PastRaceDetailPage>();
 
-        builder.Services.AddTransient<TeamsViewModel>();
-        builder.Services.AddTransient<TeamsPage>();
+        builder.Services.AddTransient<LeaderboardsViewModel>();
+        builder.Services.AddTransient<LeaderboardsPage>();
 
         builder.Services.AddTransient<NewsViewModel>();
         builder.Services.AddTransient<NewsPage>();
