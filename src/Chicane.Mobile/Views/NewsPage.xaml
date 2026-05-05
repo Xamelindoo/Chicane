@@ -4,6 +4,7 @@
              xmlns:viewmodels="clr-namespace:Chicane.Mobile.ViewModels"
              xmlns:models="clr-namespace:Chicane.Mobile.Models"
              x:Class="Chicane.Mobile.Views.NewsPage"
+             x:Name="newsPage"
              x:DataType="viewmodels:NewsViewModel"
              Title="News"
              Shell.NavBarIsVisible="False"
@@ -55,7 +56,7 @@
                             Padding="0">
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer
-                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:NewsViewModel}}, Path=OpenArticleCommand}"
+                                Command="{Binding Source={x:Reference newsPage}, Path=BindingContext.OpenArticleCommand}"
                                 CommandParameter="{Binding SourceUrl}" />
                         </Border.GestureRecognizers>
                         <Grid RowDefinitions="Auto,Auto">
