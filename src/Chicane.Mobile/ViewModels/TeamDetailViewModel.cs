@@ -10,10 +10,12 @@ namespace Chicane.Mobile.ViewModels;
 public partial class TeamDetailViewModel : ObservableObject
 {
     private readonly ITeamsService teamsService;
+    private readonly ICategoryProvider categoryProvider;
 
-    public TeamDetailViewModel(ITeamsService teamsService)
+    public TeamDetailViewModel(ITeamsService teamsService, ICategoryProvider categoryProvider)
     {
         this.teamsService = teamsService;
+        this.categoryProvider = categoryProvider;
     }
 
     [ObservableProperty]
@@ -73,7 +75,7 @@ public partial class TeamDetailViewModel : ObservableObject
 
         try
         {
-            var detail = await teamsService.GetTeamDetailAsync(TeamName);
+            var detail = await teamsService.GetTeamDetailAsync(TeamName, categoryProvider.CurrentCategory.Id);
 
             TeamName = detail.TeamName;
             BorderColor = detail.BorderColor;
