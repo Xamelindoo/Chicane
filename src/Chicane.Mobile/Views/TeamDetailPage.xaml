@@ -101,7 +101,7 @@
 
                 <!-- Horizontal Race Scroll - aligned left with RACE RESULTS -->
                 <CollectionView ItemsSource="{Binding RaceResults}" x:DataType="viewmodels:TeamDetailViewModel"
-                                ItemsLayout="HorizontalList" Margin="12,10,0,0" HeightRequest="140">
+                                ItemsLayout="HorizontalList" Margin="12,10,12,0" HeightRequest="140">
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="models:TeamRaceResult">
                             <Border Stroke="{StaticResource BorderSubtle}" StrokeThickness="1"
