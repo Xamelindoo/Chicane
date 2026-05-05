@@ -17,13 +17,15 @@ public partial class HomePage : ContentPage
         MainScrollView.Scrolled += OnScrolled;
         CategorySwitcherHost.Children.Insert(0, categorySwitcher);
 
-        categorySwitcherViewModel.PropertyChanged += (s, e) =>
+        categorySwitcherViewModel.PropertyChanged += OnMenuStateChanged;
+    }
+
+    private void OnMenuStateChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(CategorySwitcherViewModel.IsMenuOpen))
         {
-            if (e.PropertyName == nameof(CategorySwitcherViewModel.IsMenuOpen))
-            {
-                MenuBackdrop.IsVisible = categorySwitcherViewModel.IsMenuOpen;
-            }
-        };
+            MainScrollView.IsEnabled = !categorySwitcherViewModel.IsMenuOpen;
+        }
     }
 
     protected override void OnAppearing()

@@ -27,7 +27,10 @@ public partial class CategorySwitcherViewModel : ObservableObject
     private string selectedEmoji = "🏎️";
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ArrowIndicator))]
     private bool isMenuOpen;
+
+    public string ArrowIndicator => IsMenuOpen ? "▲" : "▼";
 
     public ObservableCollection<MotorsportCategory> Categories { get; } = new(MotorsportCategory.All);
 
