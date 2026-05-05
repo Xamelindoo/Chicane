@@ -65,6 +65,8 @@ public partial class HomeViewModel : ObservableObject
     [ObservableProperty]
     private string countdown = "--:--:--:--";
 
+    public ObservableCollection<CountdownPart> CountdownParts { get; } = new();
+
     [ObservableProperty]
     private string weatherCondition = string.Empty;
 
@@ -256,10 +258,26 @@ public partial class HomeViewModel : ObservableObject
         if (remaining.TotalSeconds <= 0)
         {
             Countdown = "00:00:00:00";
+            BuildCountdownParts("00:00:00:00");
             return;
         }
 
-        Countdown = $"{(int)remaining.TotalDays:D2}:{remaining.Hours:D2}:{remaining.Minutes:D2}:{remaining.Seconds:D2}";
+        var text = $"{(int)remaining.TotalDays:D2}:{remaining.Hours:D2}:{remaining.Minutes:D2}:{remaining.Seconds:D2}";
+        Countdown = text;
+        BuildCountdownParts(text);
+    }
+
+    private void BuildCountdownParts(string text)
+    {
+        CountdownParts.Clear();
+        foreach (var ch in text)
+        {
+            CountdownParts.Add(new CountdownPart
+            {
+                Text = ch.ToString(),
+                IsColon = ch == ':'
+            });
+        }
     }
 
     public void OnScrolled(double scrollY)

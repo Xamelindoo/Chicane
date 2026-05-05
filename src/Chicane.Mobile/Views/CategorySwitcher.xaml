@@ -6,61 +6,110 @@
              x:Class="Chicane.Mobile.Views.CategorySwitcher"
              x:DataType="viewmodels:CategorySwitcherViewModel">
 
-    <FlexLayout Direction="Row"
-                JustifyContent="Center"
-                AlignItems="Center"
-                Wrap="NoWrap">
+    <Grid>
+        <!-- Tap Target: selected category name -->
+        <Border Stroke="{StaticResource PureWhite}"
+                StrokeThickness="1"
+                StrokeShape="RoundRectangle 4"
+                BackgroundColor="#20FFFFFF"
+                Padding="16,6"
+                HorizontalOptions="Center">
+            <Border.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding ToggleMenuCommand}" />
+            </Border.GestureRecognizers>
+            <HorizontalStackLayout Spacing="6">
+                <Label Text="{Binding SelectedEmoji}"
+                       FontSize="14"
+                       VerticalOptions="Center" />
+                <Label Text="{Binding SelectedName}"
+                       FontFamily="SpaceMonoBold"
+                       FontSize="12"
+                       TextColor="{StaticResource PureWhite}"
+                       VerticalOptions="Center" />
+                <Label Text="▼"
+                       FontSize="9"
+                       TextColor="{StaticResource TextMuted}"
+                       VerticalOptions="Center" />
+            </HorizontalStackLayout>
+        </Border>
 
-        <BindableLayout.ItemsSource>
-            <Binding Path="Categories" />
-        </BindableLayout.ItemsSource>
+        <!-- Dropdown Overlay -->
+        <Border IsVisible="{Binding IsMenuOpen}"
+                StrokeThickness="0"
+                StrokeShape="RoundRectangle 8"
+                BackgroundColor="#E60A0A0A"
+                Padding="8"
+                Margin="0,4,0,0"
+                VerticalOptions="Start"
+                HorizontalOptions="Center">
+            <VerticalStackLayout Spacing="0">
+                <CollectionView ItemsSource="{Binding Categories}"
+                                x:DataType="viewmodels:CategorySwitcherViewModel"
+                                SelectionMode="None">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:MotorsportCategory">
+                            <Border StrokeThickness="0"
+                                    StrokeShape="RoundRectangle 4"
+                                    Padding="12,8"
+                                    Margin="0,2">
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="BackgroundColor" Value="Transparent" />
+                                        <Style.Triggers>
+                                            <DataTrigger TargetType="Border"
+                                                         Binding="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:CategorySwitcherViewModel}}, Path=SelectedId}"
+                                                         Value="{Binding Id}">
+                                                <Setter Property="BackgroundColor" Value="{StaticResource SurfaceLow}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:CategorySwitcherViewModel}}, Path=SelectCategoryCommand}"
+                                        CommandParameter="{Binding Id}" />
+                                </Border.GestureRecognizers>
+                                <Grid ColumnDefinitions="28,*,Auto" ColumnSpacing="10">
+                                    <Label Grid.Column="0" Text="{Binding Emoji}" FontSize="16" VerticalOptions="Center" />
+                                    <Label Grid.Column="1" Text="{Binding Name}" FontFamily="SpaceMonoBold" FontSize="13"
+                                           VerticalOptions="Center">
+                                        <Label.Style>
+                                            <Style TargetType="Label">
+                                                <Setter Property="TextColor" Value="{StaticResource PureWhite}" />
+                                                <Style.Triggers>
+                                                    <DataTrigger TargetType="Label"
+                                                                 Binding="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:CategorySwitcherViewModel}}, Path=SelectedId}"
+                                                                 Value="{Binding Id}">
+                                                        <Setter Property="TextColor" Value="{Binding AccentColor}" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Label.Style>
+                                    </Label>
+                                    <Border Grid.Column="2" WidthRequest="12" HeightRequest="12"
+                                            StrokeThickness="0" StrokeShape="RoundRectangle 6">
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Setter Property="BackgroundColor" Value="{Binding AccentColor}" />
+                                            </Style>
+                                        </Border.Style>
+                                    </Border>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+        </Border>
 
-        <BindableLayout.ItemTemplate>
-            <DataTemplate x:DataType="models:MotorsportCategory">
-                <Border StrokeThickness="0"
-                        StrokeShape="RoundRectangle 4"
-                        Padding="14,8"
-                        Margin="4,0">
-                    <Border.Style>
-                        <Style TargetType="Border">
-                            <Setter Property="BackgroundColor" Value="Transparent" />
-                            <Style.Triggers>
-                                <DataTrigger TargetType="Border"
-                                             Binding="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:CategorySwitcherViewModel}}, Path=SelectedId}"
-                                             Value="{Binding Id}">
-                                    <Setter Property="BackgroundColor" Value="{StaticResource SurfaceLow}" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Border.Style>
-                    <Border.GestureRecognizers>
-                        <TapGestureRecognizer
-                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:CategorySwitcherViewModel}}, Path=SelectCategoryCommand}"
-                            CommandParameter="{Binding Id}" />
-                    </Border.GestureRecognizers>
-                    <VerticalStackLayout Spacing="4" HorizontalOptions="Center">
-                        <Label Text="{Binding Emoji}" FontSize="20" HorizontalOptions="Center" />
-                        <Label Text="{Binding Name}"
-                               FontFamily="SpaceMonoBold"
-                               FontSize="10"
-                               HorizontalOptions="Center">
-                            <Label.Style>
-                                <Style TargetType="Label">
-                                    <Setter Property="TextColor" Value="{StaticResource TextMuted}" />
-                                    <Style.Triggers>
-                                        <DataTrigger TargetType="Label"
-                                                     Binding="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:CategorySwitcherViewModel}}, Path=SelectedId}"
-                                                     Value="{Binding Id}">
-                                            <Setter Property="TextColor" Value="{StaticResource RacingRed}" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Label.Style>
-                        </Label>
-                    </VerticalStackLayout>
-                </Border>
-            </DataTemplate>
-        </BindableLayout.ItemTemplate>
-    </FlexLayout>
+        <!-- Backdrop tap to close -->
+        <BoxView IsVisible="{Binding IsMenuOpen}"
+                 Color="Transparent"
+                 InputTransparent="False">
+            <BoxView.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding CloseMenuCommand}" />
+            </BoxView.GestureRecognizers>
+        </BoxView>
+    </Grid>
 
 </ContentView>

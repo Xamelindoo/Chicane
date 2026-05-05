@@ -14,12 +14,34 @@ public partial class CategorySwitcherViewModel : ObservableObject
     {
         this.categoryProvider = categoryProvider;
         SelectedId = categoryProvider.CurrentCategory.Id;
+        UpdateSelectedVisual();
     }
 
     [ObservableProperty]
     private string selectedId = "f1";
 
+    [ObservableProperty]
+    private string selectedName = "Formula 1";
+
+    [ObservableProperty]
+    private string selectedEmoji = "🏎️";
+
+    [ObservableProperty]
+    private bool isMenuOpen;
+
     public ObservableCollection<MotorsportCategory> Categories { get; } = new(MotorsportCategory.All);
+
+    [RelayCommand]
+    private void ToggleMenu()
+    {
+        IsMenuOpen = !IsMenuOpen;
+    }
+
+    [RelayCommand]
+    private void CloseMenu()
+    {
+        IsMenuOpen = false;
+    }
 
     [RelayCommand]
     private void SelectCategory(string categoryId)
@@ -28,6 +50,16 @@ public partial class CategorySwitcherViewModel : ObservableObject
         if (category is null) return;
 
         SelectedId = category.Id;
+        SelectedName = category.Name;
+        SelectedEmoji = category.Emoji;
+        IsMenuOpen = false;
         categoryProvider.SetCategory(category);
+    }
+
+    private void UpdateSelectedVisual()
+    {
+        var current = categoryProvider.CurrentCategory;
+        SelectedName = current.Name;
+        SelectedEmoji = current.Emoji;
     }
 }

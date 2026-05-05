@@ -90,12 +90,29 @@
                         <VerticalStackLayout IsVisible="{Binding IsPreRace}"
                                              Spacing="10"
                                              HorizontalOptions="Center">
-                            <Label Text="{Binding Countdown}"
-                                   FontFamily="JetBrainsMonoBold"
-                                   FontSize="54"
-                                   TextColor="{StaticResource PureWhite}"
-                                   HorizontalOptions="Center"
-                                   CharacterSpacing="0.7" />
+                            <FlexLayout Direction="Row"
+                                        AlignItems="Center"
+                                        JustifyContent="Center"
+                                        BindableLayout.ItemsSource="{Binding CountdownParts}"
+                                        x:DataType="viewmodels:HomeViewModel">
+                                <BindableLayout.ItemTemplate>
+                                    <DataTemplate x:DataType="models:CountdownPart">
+                                        <Label Text="{Binding Text}"
+                                               FontFamily="JetBrainsMonoBold"
+                                               FontSize="54"
+                                               TextColor="{StaticResource RacingRed}"
+                                               CharacterSpacing="0.7">
+                                            <Label.Triggers>
+                                                <DataTrigger TargetType="Label"
+                                                             Binding="{Binding IsColon}"
+                                                             Value="False">
+                                                    <Setter Property="TextColor" Value="{StaticResource PureWhite}" />
+                                                </DataTrigger>
+                                            </Label.Triggers>
+                                        </Label>
+                                    </DataTemplate>
+                                </BindableLayout.ItemTemplate>
+                            </FlexLayout>
                             <Label Text="DD:HH:MM:SS"
                                    FontFamily="JetBrainsMonoRegular"
                                    FontSize="11"
