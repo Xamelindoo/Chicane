@@ -19,10 +19,34 @@ public class Rss2JsonService : INewsService
 
         try
         {
-            var rssUrl = Uri.EscapeDataString("https://www.skysports.com/rss/12433");
-            var url = $"https://api.rss2json.com/v1/api.json?rss_url={rssUrl}&api_key={SecretsConfig.Rss2JsonApiKey}";
+            var ukTask = FetchFeedAsync(
+                "https://www.skysports.com/rss/12433", "Sky Sports F1");
 
-            var json = await _http.GetStringAsync(url);
+            var itTask = FetchFeedAsync(
+                "https://it.motorsport.com/rss/f1/news/", "Motorsport Italia");
+
+            await Task.WhenAll(ukTask, itTask);
+
+            return ukTask.Result
+                .Concat(itTask.Result)
+                .OrderByDescending(i => i.PublishedAt)
+                .Take(25)
+                .ToList();
+        }
+        catch
+        {
+            return await GetMockNewsAsync(categoryId);
+        }
+    }
+
+    private async Task<List<NewsItem>> FetchFeedAsync(string rssUrl, string sourceName)
+    {
+        try
+        {
+            var encodedUrl = Uri.EscapeDataString(rssUrl);
+            var apiUrl = $"https://api.rss2json.com/v1/api.json?rss_url={encodedUrl}&api_key={SecretsConfig.Rss2JsonApiKey}";
+
+            var json = await _http.GetStringAsync(apiUrl);
             var response = JsonSerializer.Deserialize<Rss2JsonResponse>(json);
 
             return response?.Items.Select(i => new NewsItem
@@ -32,12 +56,12 @@ public class Rss2JsonService : INewsService
                 ImageUrl = i.Thumbnail ?? "",
                 SourceUrl = i.Link ?? "",
                 PublishedAt = DateTime.TryParse(i.PubDate, out var d) ? d : DateTime.UtcNow,
-                Source = i.Author ?? "Sky Sports F1",
+                Source = sourceName,
             }).ToList() ?? new();
         }
         catch
         {
-            return await GetMockNewsAsync(categoryId);
+            return new();
         }
     }
 
