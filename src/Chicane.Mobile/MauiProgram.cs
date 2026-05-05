@@ -31,7 +31,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<ITeamsService, MockTeamsService>();
         builder.Services.AddSingleton<ICategoryProvider, CategoryProvider>();
 
-        builder.Services.AddTransient<CategorySwitcherViewModel>();
+        builder.Services.AddSingleton<CategorySwitcherViewModel>();
         builder.Services.AddTransient<CategorySwitcher>();
 
         builder.Services.AddTransient<HomeViewModel>();
