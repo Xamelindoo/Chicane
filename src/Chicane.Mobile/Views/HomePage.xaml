@@ -66,10 +66,13 @@
                       HeightRequest="{Binding HeroHeight}"
                        Padding="20,72,20,20">
 
-                    <!-- Top: Event Label -->
+                    <!-- Top: Category Pill + Event Label -->
                     <VerticalStackLayout Grid.Row="0"
                                          HorizontalOptions="Center"
-                                         Spacing="4">
+                                         Spacing="6">
+                        <Label x:Name="CategoryPill"
+                               HorizontalOptions="Center"
+                               InputTransparent="False" />
                         <Label Text="NEXT EVENT"
                                FontFamily="SpaceMonoRegular"
                                FontSize="12"

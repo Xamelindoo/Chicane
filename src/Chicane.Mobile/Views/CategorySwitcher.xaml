@@ -10,7 +10,7 @@
 
     <AbsoluteLayout>
 
-        <!-- BACKDROP: full screen, visible only when menu open -->
+        <!-- BACKDROP: full screen, tap to close -->
         <BoxView IsVisible="{Binding IsMenuOpen}"
                  Color="#66000000"
                  InputTransparent="False"
@@ -21,27 +21,7 @@
             </BoxView.GestureRecognizers>
         </BoxView>
 
-        <!-- PILL: fixed at top center -->
-        <Label                 AbsoluteLayout.LayoutBounds="0.5,54,-1,-1"
-               AbsoluteLayout.LayoutFlags="XProportional"
-               InputTransparent="False">
-            <Label.GestureRecognizers>
-                <TapGestureRecognizer Command="{Binding ToggleMenuCommand}" />
-            </Label.GestureRecognizers>
-            <Label.FormattedText>
-                <FormattedString>
-                    <Span Text="{Binding SelectedEmoji}" FontSize="14" />
-                    <Span Text=" " />
-                    <Span Text="{Binding SelectedName}" FontFamily="SpaceMonoBold" FontSize="12"
-                          TextColor="{StaticResource PureWhite}" />
-                    <Span Text=" " />
-                    <Span Text="{Binding ArrowIndicator}" FontSize="9"
-                          TextColor="{StaticResource TextMuted}" />
-                </FormattedString>
-            </Label.FormattedText>
-        </Label>
-
-        <!-- DROPDOWN: below pill, centered -->
+        <!-- DROPDOWN: below pill area, centered -->
         <Border IsVisible="{Binding IsMenuOpen}"
                 StrokeThickness="0"
                 StrokeShape="RoundRectangle 8"
@@ -49,7 +29,7 @@
                 Padding="10"
                 WidthRequest="220"
                 InputTransparent="False"
-                AbsoluteLayout.LayoutBounds="0.5,90,-1,-1"
+                AbsoluteLayout.LayoutBounds="0.5,88,-1,-1"
                 AbsoluteLayout.LayoutFlags="XProportional">
             <VerticalStackLayout Spacing="0">
                 <CollectionView ItemsSource="{Binding Categories}"
