@@ -43,6 +43,15 @@ public partial class TeamDetailViewModel : ObservableObject
     [ObservableProperty]
     private string emoji = "🏎️";
 
+    [ObservableProperty]
+    private string gradientColor = "#333333";
+
+    [ObservableProperty]
+    private TeamSeasonStats? seasonStats;
+
+    [ObservableProperty]
+    private TeamProfile? profile;
+
     public ObservableCollection<DriverEntry> Drivers { get; } = new();
     public ObservableCollection<TeamRaceResult> RaceResults { get; } = new();
 
@@ -69,7 +78,10 @@ public partial class TeamDetailViewModel : ObservableObject
             TeamName = detail.TeamName;
             BorderColor = detail.BorderColor;
             Emoji = detail.Emoji;
+            GradientColor = detail.GradientColor;
             TotalPoints = detail.TotalPoints;
+            SeasonStats = detail.SeasonStats;
+            Profile = detail.Profile;
 
             Drivers.Clear();
             foreach (var d in detail.Drivers)

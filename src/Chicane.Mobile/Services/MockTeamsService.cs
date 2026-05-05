@@ -70,6 +70,7 @@ public class MockTeamsService : ITeamsService
             TeamName = "Ferrari",
             BorderColor = "#E10600",
             Emoji = "🏎️",
+            GradientColor = "#E10600",
             TotalPoints = 343,
             Drivers = new List<DriverEntry>
             {
@@ -85,6 +86,28 @@ public class MockTeamsService : ITeamsService
                 new() { EventName = "MIAMI GP", EventDate = DateTime.UtcNow.AddDays(-66), Driver1Name = "C. LECLERC", Driver1Points = 10, Driver1Position = 4, Driver1BestLap = null, Driver2Name = "C. SAINZ", Driver2Points = 0, Driver2Position = 9, Driver2BestLap = null, TotalPoints = 10 },
                 new() { EventName = "SAUDI ARABIAN GP", EventDate = DateTime.UtcNow.AddDays(-80), Driver1Name = "C. LECLERC", Driver1Points = 18, Driver1Position = 2, Driver1BestLap = null, Driver2Name = "C. SAINZ", Driver2Points = 0, Driver2Position = 11, Driver2BestLap = null, TotalPoints = 18 },
                 new() { EventName = "AUSTRALIAN GP", EventDate = DateTime.UtcNow.AddDays(-95), Driver1Name = "C. LECLERC", Driver1Points = 15, Driver1Position = 1, Driver1BestLap = null, Driver2Name = "C. SAINZ", Driver2Points = 8, Driver2Position = 6, Driver2BestLap = null, TotalPoints = 23 },
+            },
+            SeasonStats = new TeamSeasonStats
+            {
+                Championships = 16,
+                RaceWins = 242,
+                Podiums = 804,
+                PolePositions = 249,
+                FastestLaps = 259,
+                FirstSeason = "1950",
+                HomeRace = "Italian GP"
+            },
+            Profile = new TeamProfile
+            {
+                FullName = "Scuderia Ferrari HP",
+                Chassis = "SF-24",
+                Base = "Maranello, Italy",
+                PowerUnit = "Ferrari",
+                TeamPrincipal = "Frédéric Vasseur",
+                TechnicalDirector = "Loïc Serra",
+                ReserveDriver = "O. Bearman / A. Giovinazzi",
+                History = "Founded in 1929 by Enzo Ferrari, the Scuderia Ferrari is the oldest and most successful team in Formula One history. The Prancing Horse has competed in every F1 World Championship since 1950, collecting 16 Constructors' titles and 15 Drivers' titles with legends like Schumacher, Lauda, and Ascari.",
+                PreviousSeasonSummary = "2024: 2nd in Constructors' Championship with 652 points. Charles Leclerc finished 3rd in drivers' standings with 356 points, while Carlos Sainz secured 5th place with 290 points. The team scored 5 wins across the season."
             }
         };
     }
@@ -96,6 +119,7 @@ public class MockTeamsService : ITeamsService
             TeamName = "Red Bull Racing",
             BorderColor = "#1A3A5C",
             Emoji = "🐂",
+            GradientColor = "#1A3A5C",
             TotalPoints = 443,
             Drivers = new List<DriverEntry>
             {
@@ -111,6 +135,28 @@ public class MockTeamsService : ITeamsService
                 new() { EventName = "MIAMI GP", EventDate = DateTime.UtcNow.AddDays(-66), Driver1Name = "M. VERSTAPPEN", Driver1Points = 18, Driver1Position = 2, Driver1BestLap = null, Driver2Name = "S. PEREZ", Driver2Points = 8, Driver2Position = 6, Driver2BestLap = null, TotalPoints = 26 },
                 new() { EventName = "SAUDI ARABIAN GP", EventDate = DateTime.UtcNow.AddDays(-80), Driver1Name = "M. VERSTAPPEN", Driver1Points = 25, Driver1Position = 1, Driver1BestLap = "1:30.112", Driver2Name = "S. PEREZ", Driver2Points = 15, Driver2Position = 3, Driver2BestLap = null, TotalPoints = 40 },
                 new() { EventName = "AUSTRALIAN GP", EventDate = DateTime.UtcNow.AddDays(-95), Driver1Name = "M. VERSTAPPEN", Driver1Points = 25, Driver1Position = 1, Driver1BestLap = null, Driver2Name = "S. PEREZ", Driver2Points = 8, Driver2Position = 6, Driver2BestLap = null, TotalPoints = 33 },
+            },
+            SeasonStats = new TeamSeasonStats
+            {
+                Championships = 7,
+                RaceWins = 118,
+                Podiums = 275,
+                PolePositions = 103,
+                FastestLaps = 98,
+                FirstSeason = "2005",
+                HomeRace = "Austrian GP"
+            },
+            Profile = new TeamProfile
+            {
+                FullName = "Oracle Red Bull Racing",
+                Chassis = "RB20",
+                Base = "Milton Keynes, United Kingdom",
+                PowerUnit = "Honda RBPT",
+                TeamPrincipal = "Christian Horner",
+                TechnicalDirector = "Pierre Waché",
+                ReserveDriver = "L. Lawson",
+                History = "Founded in 2005 after Red Bull purchased the Jaguar Racing team. Under the leadership of Christian Horner and the design genius of Adrian Newey, the team rose to dominance, winning four consecutive Drivers' and Constructors' doubles from 2010 to 2013 with Sebastian Vettel, and later dominating the 2022-2024 seasons with Max Verstappen.",
+                PreviousSeasonSummary = "2024: 1st in Constructors' Championship with 860 points. Max Verstappen won his fourth consecutive Drivers' title with 575 points (19 wins in 22 races). Sergio Perez finished 2nd with 285 points. The team achieved a record-breaking 21 wins in a single season."
             }
         };
     }
@@ -122,6 +168,7 @@ public class MockTeamsService : ITeamsService
             TeamName = "Mercedes",
             BorderColor = "#00A19C",
             Emoji = "⚡",
+            GradientColor = "#00A19C",
             TotalPoints = 383,
             Drivers = new List<DriverEntry>
             {
@@ -137,12 +184,48 @@ public class MockTeamsService : ITeamsService
                 new() { EventName = "MIAMI GP", EventDate = DateTime.UtcNow.AddDays(-66), Driver1Name = "L. HAMILTON", Driver1Points = 25, Driver1Position = 1, Driver1BestLap = "1:28.910", Driver2Name = "G. RUSSELL", Driver2Points = 6, Driver2Position = 7, Driver2BestLap = null, TotalPoints = 31 },
                 new() { EventName = "SAUDI ARABIAN GP", EventDate = DateTime.UtcNow.AddDays(-80), Driver1Name = "L. HAMILTON", Driver1Points = 12, Driver1Position = 4, Driver1BestLap = null, Driver2Name = "G. RUSSELL", Driver2Points = 0, Driver2Position = 10, Driver2BestLap = null, TotalPoints = 12 },
                 new() { EventName = "AUSTRALIAN GP", EventDate = DateTime.UtcNow.AddDays(-95), Driver1Name = "L. HAMILTON", Driver1Points = 18, Driver1Position = 2, Driver1BestLap = "1:24.546", Driver2Name = "G. RUSSELL", Driver2Points = 8, Driver2Position = 7, Driver2BestLap = null, TotalPoints = 26 },
+            },
+            SeasonStats = new TeamSeasonStats
+            {
+                Championships = 8,
+                RaceWins = 125,
+                Podiums = 281,
+                PolePositions = 136,
+                FastestLaps = 104,
+                FirstSeason = "1954",
+                HomeRace = "British GP"
+            },
+            Profile = new TeamProfile
+            {
+                FullName = "Mercedes-AMG Petronas F1 Team",
+                Chassis = "W15",
+                Base = "Brackley, United Kingdom",
+                PowerUnit = "Mercedes",
+                TeamPrincipal = "Toto Wolff",
+                TechnicalDirector = "James Allison",
+                ReserveDriver = "M. Schumacher / F. Vesti",
+                History = "The Mercedes F1 team returned to the sport in 2010 after purchasing the championship-winning Brawn GP outfit. With the introduction of the hybrid turbo era in 2014, Mercedes began an unprecedented run of dominance, winning eight consecutive Constructors' Championships from 2014 to 2021, powering Lewis Hamilton to six of his seven world titles.",
+                PreviousSeasonSummary = "2024: 3rd in Constructors' Championship with 409 points. Lewis Hamilton finished 6th in the drivers' standings with 223 points, George Russell finished 7th with 186 points. The team secured 3 wins, struggling to match the dominant pace of Red Bull."
             }
         };
     }
 
     private static TeamDetail BuildGenericTeamDetail(string teamName)
     {
-        return BuildFerrariDetail() with { TeamName = teamName };
+        return BuildFerrariDetail() with
+        {
+            TeamName = teamName,
+            BorderColor = "#333333",
+            GradientColor = "#333333",
+            Emoji = "🏎️",
+            TotalPoints = 0,
+            SeasonStats = new TeamSeasonStats(),
+            Profile = new TeamProfile
+            {
+                FullName = teamName,
+                History = "Team details coming soon.",
+                PreviousSeasonSummary = "Season data not available yet."
+            }
+        };
     }
 }

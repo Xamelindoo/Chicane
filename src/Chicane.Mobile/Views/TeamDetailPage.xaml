@@ -11,9 +11,7 @@
     <Grid RowDefinitions="*">
 
         <!-- Loading -->
-        <VerticalStackLayout IsVisible="{Binding IsBusy}"
-                             VerticalOptions="Center"
-                             HorizontalOptions="Center" Spacing="12">
+        <VerticalStackLayout IsVisible="{Binding IsBusy}" VerticalOptions="Center" HorizontalOptions="Center" Spacing="12">
             <ActivityIndicator IsRunning="{Binding IsBusy}" Color="{StaticResource RacingRed}" HeightRequest="48" WidthRequest="48" />
             <Label Text="Loading team..." Style="{StaticResource Caption}" HorizontalOptions="Center" />
         </VerticalStackLayout>
@@ -27,50 +25,60 @@
 
         <!-- Content -->
         <ScrollView IsVisible="{Binding HasData}">
-            <VerticalStackLayout Spacing="0" Padding="0,0,0,20">
+            <VerticalStackLayout Spacing="0" Padding="0,0,0,0">
 
-                <!-- Team Header -->
-                <Border BackgroundColor="{Binding BorderColor}"
-                        StrokeThickness="0"
-                        Padding="20,48,20,16">
-                    <Grid ColumnDefinitions="Auto,*,Auto">
-                        <Label Grid.Column="0" Text="{Binding Emoji}" FontSize="24" VerticalOptions="Center" />
-                        <Label Grid.Column="1" Text="{Binding TeamName}"
-                               FontFamily="SpaceMonoBold" FontSize="20"
-                               TextColor="{StaticResource PureWhite}"
-                               VerticalOptions="Center" Margin="8,0,0,0" />
-                        <Label Grid.Column="2"
-                               Text="{Binding TotalPoints, StringFormat='{0} pts'}"
-                               FontFamily="SpaceMonoBold" FontSize="16"
-                               TextColor="#FFFFFF99"
-                               VerticalOptions="Center" />
-                    </Grid>
+                <!-- Manual Back Header -->
+                <Grid Padding="20,48,20,8" BackgroundColor="{StaticResource CarbonBlack}">
+                    <Border StrokeThickness="0" HorizontalOptions="Start" VerticalOptions="Center">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnBackTapped" />
+                        </Border.GestureRecognizers>
+                        <HorizontalStackLayout Spacing="4">
+                            <Label Text="&#x2190;" FontSize="16" TextColor="{StaticResource CoolSlate}" VerticalOptions="Center" />
+                            <Label Text="Leaderboards" FontFamily="SpaceMonoRegular" FontSize="12" TextColor="{StaticResource CoolSlate}" VerticalOptions="Center" />
+                        </HorizontalStackLayout>
+                    </Border>
+                </Grid>
+
+                <!-- Gradient Factory Image Placeholder -->
+                <Border StrokeThickness="0" HeightRequest="180">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                            <GradientStop Color="{Binding GradientColor}" Offset="0.0" />
+                            <GradientStop Color="{StaticResource CarbonBlack}" Offset="1.0" />
+                        </LinearGradientBrush>
+                    </Border.Background>
                 </Border>
 
-                <!-- Drivers Section -->
-                <Label Text="DRIVERS"
-                       FontFamily="SpaceMonoBold" FontSize="12"
-                       TextColor="{StaticResource PureWhite}"
-                       CharacterSpacing="3"
-                       Margin="20,20,20,10" />
+                <!-- Centered Team Name + Points -->
+                <VerticalStackLayout Spacing="4" Padding="20,16">
+                    <Label Text="{Binding TeamName}"
+                           FontFamily="SpaceMonoBold" FontSize="24"
+                           TextColor="{StaticResource PureWhite}"
+                           HorizontalOptions="Center" />
+                    <HorizontalStackLayout HorizontalOptions="Center" Spacing="4">
+                        <Label Text="{Binding TotalPoints}" FontFamily="SpaceMonoBold" FontSize="16"
+                               TextColor="{StaticResource RacingRed}" VerticalOptions="Center" />
+                        <Label Text="pts" FontFamily="SpaceMonoRegular" FontSize="12"
+                               TextColor="{StaticResource TextMuted}" VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
 
-                <CollectionView ItemsSource="{Binding Drivers}"
-                                x:DataType="viewmodels:TeamDetailViewModel">
+                <!-- Drivers Section -->
+                <Label Text="DRIVERS" FontFamily="SpaceMonoBold" FontSize="12"
+                       TextColor="{StaticResource PureWhite}" CharacterSpacing="3"
+                       Margin="20,12,20,10" />
+                <CollectionView ItemsSource="{Binding Drivers}" x:DataType="viewmodels:TeamDetailViewModel">
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="models:DriverEntry">
-                            <Grid ColumnDefinitions="4,*"
-                                  Margin="20,0,20,8">
+                            <Grid ColumnDefinitions="4,*" Margin="20,0,20,8">
                                 <BoxView Grid.Column="0" WidthRequest="4"
                                          Color="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:TeamDetailViewModel}}, Path=BorderColor}"
                                          VerticalOptions="Fill" />
-                                <Border Grid.Column="1"
-                                        Stroke="{StaticResource BorderSubtle}" StrokeThickness="1"
-                                        StrokeShape="RoundRectangle 0,4,4,0"
-                                        BackgroundColor="{StaticResource SurfaceLow}"
-                                        Padding="12,10">
+                                <Border Grid.Column="1" Stroke="{StaticResource BorderSubtle}" StrokeThickness="1"
+                                        StrokeShape="RoundRectangle 0,4,4,0" BackgroundColor="{StaticResource SurfaceLow}" Padding="12,10">
                                     <Grid ColumnDefinitions="*,Auto">
-                                        <Label Grid.Column="0" Text="{Binding Name}"
-                                               FontFamily="SpaceMonoRegular" FontSize="14"
+                                        <Label Grid.Column="0" Text="{Binding Name}" FontFamily="SpaceMonoRegular" FontSize="14"
                                                TextColor="{StaticResource PureWhite}" VerticalOptions="Center" />
                                         <HorizontalStackLayout Grid.Column="1" Spacing="4">
                                             <Label Text="{Binding Points}" FontFamily="SpaceMonoBold" FontSize="14"
@@ -93,10 +101,8 @@
                         <TapGestureRecognizer Command="{Binding NavigateToRaceListCommand}" />
                     </Border.GestureRecognizers>
                     <Grid ColumnDefinitions="*,Auto">
-                        <Label Grid.Column="0" Text="RACE RESULTS"
-                               FontFamily="SpaceMonoBold" FontSize="13"
-                               TextColor="{StaticResource PureWhite}"
-                               CharacterSpacing="3" VerticalOptions="Center" />
+                        <Label Grid.Column="0" Text="RACE RESULTS" FontFamily="SpaceMonoBold" FontSize="13"
+                               TextColor="{StaticResource PureWhite}" CharacterSpacing="3" VerticalOptions="Center" />
                         <HorizontalStackLayout Grid.Column="1" Spacing="4">
                             <Label Text="{Binding TotalPoints}" FontFamily="SpaceMonoBold" FontSize="14"
                                    TextColor="{StaticResource RacingRed}" VerticalOptions="Center" />
@@ -106,42 +112,29 @@
                     </Grid>
                 </Border>
 
-                <!-- Horizontal Race Scroll -->
-                <CollectionView ItemsSource="{Binding RaceResults}"
-                                x:DataType="viewmodels:TeamDetailViewModel"
-                                ItemsLayout="HorizontalList"
-                                Margin="0,10,0,0"
-                                HeightRequest="140">
+                <!-- Horizontal Race Scroll - aligned left with RACE RESULTS -->
+                <CollectionView ItemsSource="{Binding RaceResults}" x:DataType="viewmodels:TeamDetailViewModel"
+                                ItemsLayout="HorizontalList" Margin="12,10,0,0" HeightRequest="140">
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="models:TeamRaceResult">
                             <Border Stroke="{StaticResource BorderSubtle}" StrokeThickness="1"
-                                    StrokeShape="RoundRectangle 4"
-                                    BackgroundColor="{StaticResource SurfaceLow}"
-                                    Padding="12,10"
-                                    Margin="8,0,8,0"
-                                    WidthRequest="170">
+                                    StrokeShape="RoundRectangle 4" BackgroundColor="{StaticResource SurfaceLow}"
+                                    Padding="12,10" Margin="8,0,8,0" WidthRequest="170">
                                 <Border.GestureRecognizers>
                                     <TapGestureRecognizer
                                         Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:TeamDetailViewModel}}, Path=NavigateToRaceCommand}"
                                         CommandParameter="{Binding EventName}" />
                                 </Border.GestureRecognizers>
                                 <VerticalStackLayout Spacing="6">
-                                    <Label Text="{Binding EventName}"
-                                           FontFamily="SpaceMonoBold" FontSize="11"
-                                           TextColor="{StaticResource PureWhite}"
-                                           LineBreakMode="TailTruncation" />
+                                    <Label Text="{Binding EventName}" FontFamily="SpaceMonoBold" FontSize="11"
+                                           TextColor="{StaticResource PureWhite}" LineBreakMode="TailTruncation" />
                                     <Grid ColumnDefinitions="Auto,Auto">
-                                        <Label Grid.Column="0" Text="{Binding TotalPoints}"
-                                               FontFamily="SpaceMonoBold" FontSize="18"
-                                               TextColor="{StaticResource PureWhite}"
-                                               VerticalOptions="Center" />
-                                        <Label Grid.Column="1" Text=" pts"
-                                               FontFamily="SpaceMonoRegular" FontSize="10"
-                                               TextColor="{StaticResource TextMuted}"
-                                               VerticalOptions="Center" Margin="2,0,0,0" />
+                                        <Label Grid.Column="0" Text="{Binding TotalPoints}" FontFamily="SpaceMonoBold" FontSize="18"
+                                               TextColor="{StaticResource PureWhite}" VerticalOptions="Center" />
+                                        <Label Grid.Column="1" Text=" pts" FontFamily="SpaceMonoRegular" FontSize="10"
+                                               TextColor="{StaticResource TextMuted}" VerticalOptions="Center" Margin="2,0,0,0" />
                                     </Grid>
-                                    <Label FontFamily="SpaceMonoRegular" FontSize="10"
-                                           TextColor="{StaticResource CoolSlate}">
+                                    <Label FontFamily="SpaceMonoRegular" FontSize="10" TextColor="{StaticResource CoolSlate}">
                                         <Label.Text>
                                             <MultiBinding StringFormat="{}{0} {1} pts">
                                                 <Binding Path="Driver1Position" StringFormat="P{0}" />
@@ -149,8 +142,7 @@
                                             </MultiBinding>
                                         </Label.Text>
                                     </Label>
-                                    <Label FontFamily="SpaceMonoRegular" FontSize="10"
-                                           TextColor="{StaticResource CoolSlate}">
+                                    <Label FontFamily="SpaceMonoRegular" FontSize="10" TextColor="{StaticResource CoolSlate}">
                                         <Label.Text>
                                             <MultiBinding StringFormat="{}{0} {1} pts">
                                                 <Binding Path="Driver2Position" StringFormat="P{0}" />
@@ -163,6 +155,138 @@
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
+
+                <!-- ═══════════ SEASON RECORDS ═══════════ -->
+                <Border Stroke="{StaticResource BorderSubtle}" StrokeThickness="1"
+                        StrokeShape="RoundRectangle 4" BackgroundColor="{StaticResource SurfaceLow}"
+                        Padding="16" Margin="20,24,20,0">
+                    <VerticalStackLayout Spacing="0">
+                        <Label Text="SEASON RECORDS" FontFamily="SpaceMonoBold" FontSize="13"
+                               TextColor="{StaticResource PureWhite}" CharacterSpacing="3" Margin="0,0,0,12" />
+
+                        <Grid ColumnDefinitions="*,Auto" Padding="0,6" ColumnSpacing="8"
+                              IsVisible="{Binding SeasonStats.Championships, FallbackValue=True}">
+                            <Label Grid.Column="0" Text="Championships" FontFamily="SpaceMonoRegular" FontSize="12"
+                                   TextColor="{StaticResource CoolSlate}" VerticalOptions="Center" />
+                            <Label Grid.Column="1" Text="{Binding SeasonStats.Championships}" FontFamily="SpaceMonoBold" FontSize="14"
+                                   TextColor="{StaticResource PureWhite}" VerticalOptions="Center" />
+                        </Grid>
+                        <Grid ColumnDefinitions="*,Auto" Padding="0,6" ColumnSpacing="8"
+                              IsVisible="{Binding SeasonStats.RaceWins, FallbackValue=True}">
+                            <Label Grid.Column="0" Text="Race Wins" FontFamily="SpaceMonoRegular" FontSize="12"
+                                   TextColor="{StaticResource CoolSlate}" VerticalOptions="Center" />
+                            <Label Grid.Column="1" Text="{Binding SeasonStats.RaceWins}" FontFamily="SpaceMonoBold" FontSize="14"
+                                   TextColor="{StaticResource PureWhite}" VerticalOptions="Center" />
+                        </Grid>
+                        <Grid ColumnDefinitions="*,Auto" Padding="0,6" ColumnSpacing="8"
+                              IsVisible="{Binding SeasonStats.Podiums, FallbackValue=True}">
+                            <Label Grid.Column="0" Text="Podiums" FontFamily="SpaceMonoRegular" FontSize="12"
+                                   TextColor="{StaticResource CoolSlate}" VerticalOptions="Center" />
+                            <Label Grid.Column="1" Text="{Binding SeasonStats.Podiums}" FontFamily="SpaceMonoBold" FontSize="14"
+                                   TextColor="{StaticResource PureWhite}" VerticalOptions="Center" />
+                        </Grid>
+                        <Grid ColumnDefinitions="*,Auto" Padding="0,6" ColumnSpacing="8"
+                              IsVisible="{Binding SeasonStats.PolePositions, FallbackValue=True}">
+                            <Label Grid.Column="0" Text="Pole Positions" FontFamily="SpaceMonoRegular" FontSize="12"
+                                   TextColor="{StaticResource CoolSlate}" VerticalOptions="Center" />
+                            <Label Grid.Column="1" Text="{Binding SeasonStats.PolePositions}" FontFamily="SpaceMonoBold" FontSize="14"
+                                   TextColor="{StaticResource PureWhite}" VerticalOptions="Center" />
+                        </Grid>
+                        <Grid ColumnDefinitions="*,Auto" Padding="0,6" ColumnSpacing="8"
+                              IsVisible="{Binding SeasonStats.FastestLaps, FallbackValue=True}">
+                            <Label Grid.Column="0" Text="Fastest Laps" FontFamily="SpaceMonoRegular" FontSize="12"
+                                   TextColor="{StaticResource CoolSlate}" VerticalOptions="Center" />
+                            <Label Grid.Column="1" Text="{Binding SeasonStats.FastestLaps}" FontFamily="SpaceMonoBold" FontSize="14"
+                                   TextColor="{StaticResource PureWhite}" VerticalOptions="Center" />
+                        </Grid>
+                        <Grid ColumnDefinitions="*,Auto" Padding="0,6" ColumnSpacing="8"
+                              IsVisible="{Binding SeasonStats.FirstSeason, FallbackValue=False}">
+                            <Label Grid.Column="0" Text="First Season" FontFamily="SpaceMonoRegular" FontSize="12"
+                                   TextColor="{StaticResource CoolSlate}" VerticalOptions="Center" />
+                            <Label Grid.Column="1" Text="{Binding SeasonStats.FirstSeason}" FontFamily="SpaceMonoBold" FontSize="14"
+                                   TextColor="{StaticResource PureWhite}" VerticalOptions="Center" />
+                        </Grid>
+                        <Grid ColumnDefinitions="*,Auto" Padding="0,6" ColumnSpacing="8"
+                              IsVisible="{Binding SeasonStats.HomeRace, FallbackValue=False}">
+                            <Label Grid.Column="0" Text="Home Race" FontFamily="SpaceMonoRegular" FontSize="12"
+                                   TextColor="{StaticResource CoolSlate}" VerticalOptions="Center" />
+                            <Label Grid.Column="1" Text="{Binding SeasonStats.HomeRace}" FontFamily="SpaceMonoBold" FontSize="14"
+                                   TextColor="{StaticResource PureWhite}" VerticalOptions="Center" />
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- ═══════════ TEAM PROFILE ═══════════ -->
+                <Border Stroke="{StaticResource BorderSubtle}" StrokeThickness="1"
+                        StrokeShape="RoundRectangle 4" BackgroundColor="{StaticResource SurfaceLow}"
+                        Padding="16" Margin="20,24,20,20">
+                    <VerticalStackLayout Spacing="0">
+                        <Label Text="TEAM PROFILE" FontFamily="SpaceMonoBold" FontSize="13"
+                               TextColor="{StaticResource PureWhite}" CharacterSpacing="3" Margin="0,0,0,12" />
+
+                        <Grid ColumnDefinitions="*,Auto" Padding="0,6" ColumnSpacing="8"
+                              IsVisible="{Binding Profile.FullName, FallbackValue=False}">
+                            <Label Grid.Column="0" Text="{Binding Profile.FullName}" FontFamily="SpaceMonoBold" FontSize="14"
+                                   TextColor="{StaticResource PureWhite}" VerticalOptions="Center" />
+                        </Grid>
+                        <Grid ColumnDefinitions="Auto,*" Padding="0,6" ColumnSpacing="12"
+                              IsVisible="{Binding Profile.Chassis, FallbackValue=False}">
+                            <Label Grid.Column="0" Text="Chassis" FontFamily="SpaceMonoRegular" FontSize="12"
+                                   TextColor="{StaticResource CoolSlate}" VerticalOptions="Center" WidthRequest="90" />
+                            <Label Grid.Column="1" Text="{Binding Profile.Chassis}" FontFamily="SpaceMonoBold" FontSize="12"
+                                   TextColor="{StaticResource PureWhite}" VerticalOptions="Center" />
+                        </Grid>
+                        <Grid ColumnDefinitions="Auto,*" Padding="0,6" ColumnSpacing="12"
+                              IsVisible="{Binding Profile.Base, FallbackValue=False}">
+                            <Label Grid.Column="0" Text="Base" FontFamily="SpaceMonoRegular" FontSize="12"
+                                   TextColor="{StaticResource CoolSlate}" VerticalOptions="Center" WidthRequest="90" />
+                            <Label Grid.Column="1" Text="{Binding Profile.Base}" FontFamily="SpaceMonoBold" FontSize="12"
+                                   TextColor="{StaticResource PureWhite}" VerticalOptions="Center" />
+                        </Grid>
+                        <Grid ColumnDefinitions="Auto,*" Padding="0,6" ColumnSpacing="12"
+                              IsVisible="{Binding Profile.PowerUnit, FallbackValue=False}">
+                            <Label Grid.Column="0" Text="Power Unit" FontFamily="SpaceMonoRegular" FontSize="12"
+                                   TextColor="{StaticResource CoolSlate}" VerticalOptions="Center" WidthRequest="90" />
+                            <Label Grid.Column="1" Text="{Binding Profile.PowerUnit}" FontFamily="SpaceMonoBold" FontSize="12"
+                                   TextColor="{StaticResource PureWhite}" VerticalOptions="Center" />
+                        </Grid>
+                        <Grid ColumnDefinitions="Auto,*" Padding="0,6" ColumnSpacing="12"
+                              IsVisible="{Binding Profile.TeamPrincipal, FallbackValue=False}">
+                            <Label Grid.Column="0" Text="T. Principal" FontFamily="SpaceMonoRegular" FontSize="12"
+                                   TextColor="{StaticResource CoolSlate}" VerticalOptions="Center" WidthRequest="90" />
+                            <Label Grid.Column="1" Text="{Binding Profile.TeamPrincipal}" FontFamily="SpaceMonoBold" FontSize="12"
+                                   TextColor="{StaticResource PureWhite}" VerticalOptions="Center" />
+                        </Grid>
+                        <Grid ColumnDefinitions="Auto,*" Padding="0,6" ColumnSpacing="12"
+                              IsVisible="{Binding Profile.TechnicalDirector, FallbackValue=False}">
+                            <Label Grid.Column="0" Text="Tech. Director" FontFamily="SpaceMonoRegular" FontSize="12"
+                                   TextColor="{StaticResource CoolSlate}" VerticalOptions="Center" WidthRequest="90" />
+                            <Label Grid.Column="1" Text="{Binding Profile.TechnicalDirector}" FontFamily="SpaceMonoBold" FontSize="12"
+                                   TextColor="{StaticResource PureWhite}" VerticalOptions="Center" />
+                        </Grid>
+                        <Grid ColumnDefinitions="Auto,*" Padding="0,6" ColumnSpacing="12"
+                              IsVisible="{Binding Profile.ReserveDriver, FallbackValue=False}">
+                            <Label Grid.Column="0" Text="Reserve Driver" FontFamily="SpaceMonoRegular" FontSize="12"
+                                   TextColor="{StaticResource CoolSlate}" VerticalOptions="Center" WidthRequest="90" />
+                            <Label Grid.Column="1" Text="{Binding Profile.ReserveDriver}" FontFamily="SpaceMonoBold" FontSize="12"
+                                   TextColor="{StaticResource PureWhite}" VerticalOptions="Center" />
+                        </Grid>
+
+                        <BoxView HeightRequest="1" Color="{StaticResource BorderSubtle}" Margin="0,10"
+                                 IsVisible="{Binding Profile.History, FallbackValue=False}" />
+
+                        <Label Text="{Binding Profile.History}" FontFamily="SpaceMonoRegular" FontSize="12"
+                               TextColor="{StaticResource CoolSlate}" LineHeight="1.6"
+                               IsVisible="{Binding Profile.History, FallbackValue=False}" />
+
+                        <BoxView HeightRequest="1" Color="{StaticResource BorderSubtle}" Margin="0,10"
+                                 IsVisible="{Binding Profile.PreviousSeasonSummary, FallbackValue=False}" />
+
+                        <Label Text="{Binding Profile.PreviousSeasonSummary}" FontFamily="SpaceMonoRegular" FontSize="12"
+                               TextColor="{StaticResource CoolSlate}" LineHeight="1.6"
+                               IsVisible="{Binding Profile.PreviousSeasonSummary, FallbackValue=False}" />
+                    </VerticalStackLayout>
+                </Border>
 
             </VerticalStackLayout>
         </ScrollView>
