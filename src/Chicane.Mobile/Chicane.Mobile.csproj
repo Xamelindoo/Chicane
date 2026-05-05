@@ -62,6 +62,7 @@
 
 		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
+		<MauiAsset Include="secrets.json" LogicalName="secrets.json" Condition="Exists('secrets.json')" />
 	</ItemGroup>
 
 	<ItemGroup>

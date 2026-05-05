@@ -6,6 +6,7 @@
              x:Class="Chicane.Mobile.Views.NewsPage"
              x:DataType="viewmodels:NewsViewModel"
              Title="News"
+             Shell.NavBarIsVisible="False"
              BackgroundColor="{StaticResource CarbonBlack}">
 
     <Grid RowDefinitions="Auto,*">
@@ -62,7 +63,6 @@
                               ColumnDefinitions="100,*"
                               ColumnSpacing="0">
 
-                            <!-- Image -->
                             <Image Grid.Row="0" Grid.Column="0" Grid.RowSpan="2"
                                    Source="{Binding ImageUrl}"
                                    Aspect="AspectFill"
