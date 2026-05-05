@@ -52,7 +52,7 @@
                             StrokeThickness="1"
                             StrokeShape="RoundRectangle 4"
                             BackgroundColor="{StaticResource SurfaceLow}"
-                            Margin="16,0,16,10"
+                            Margin="16,0,16,12"
                             Padding="0">
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer
@@ -62,20 +62,20 @@
                         <Grid RowDefinitions="Auto,Auto">
 
                             <VerticalStackLayout Grid.Row="0"
-                                                 Padding="14,10,14,0"
-                                                 Spacing="4">
+                                                 Padding="14,12,14,0"
+                                                 Spacing="6">
                                 <Label Text="{Binding Title}"
                                        FontFamily="SpaceMonoBold"
-                                       FontSize="13"
+                                       FontSize="14"
                                        TextColor="{StaticResource PureWhite}"
                                        MaxLines="2"
                                        LineBreakMode="TailTruncation" />
-                                <HorizontalStackLayout Spacing="6">
+                                <HorizontalStackLayout Spacing="4">
                                     <Label Text="{Binding Source}"
                                            FontFamily="SpaceMonoRegular"
                                            FontSize="10"
                                            TextColor="{StaticResource RacingRed}" />
-                                    <Label Text="ÔÇó"
+                                    <Label Text="·"
                                            FontSize="10"
                                            TextColor="{StaticResource TextMuted}"
                                            VerticalOptions="Center" />
@@ -89,11 +89,11 @@
                             <Label Grid.Row="1"
                                    Text="{Binding Description}"
                                    FontFamily="SpaceMonoRegular"
-                                   FontSize="11"
-                                   TextColor="{StaticResource CoolSlate}"
-                                   MaxLines="2"
-                                   LineBreakMode="TailTruncation"
-                                   Padding="14,4,14,10" />
+                                    FontSize="12"
+                                    TextColor="{StaticResource CoolSlate}"
+                                    MaxLines="3"
+                                    LineBreakMode="TailTruncation"
+                                    Padding="14,6,14,12" />
                         </Grid>
                     </Border>
                 </DataTemplate>
