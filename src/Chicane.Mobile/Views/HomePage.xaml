@@ -58,8 +58,7 @@
         </VerticalStackLayout>
 
         <!-- Scrollable Content -->
-        <ScrollView IsVisible="{Binding HasData}"
-                    Scrolled="OnScrolled">
+        <ScrollView x:Name="MainScrollView" IsVisible="{Binding HasData}">
             <VerticalStackLayout Spacing="0">
 
                 <!-- ═══════════ HERO SECTION (100vh) ═══════════ -->

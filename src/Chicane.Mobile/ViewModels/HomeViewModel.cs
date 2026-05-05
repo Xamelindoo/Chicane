@@ -33,6 +33,12 @@ public partial class HomeViewModel : ObservableObject
     public bool HasError => !string.IsNullOrWhiteSpace(ErrorMessage);
 
     [ObservableProperty]
+    private double heroHeight = 800;
+
+    [ObservableProperty]
+    private bool isAtScrollTop = true;
+
+    [ObservableProperty]
     private bool isPreRace = true;
 
     [ObservableProperty]
@@ -89,6 +95,9 @@ public partial class HomeViewModel : ObservableObject
 
         try
         {
+            var displayInfo = DeviceDisplay.Current.MainDisplayInfo;
+            HeroHeight = displayInfo.Height / displayInfo.Density;
+
             var raceEvent = await f1DataService.GetNextEventAsync();
 
             EventName = raceEvent.EventName;
@@ -233,5 +242,10 @@ public partial class HomeViewModel : ObservableObject
         }
 
         Countdown = $"{(int)remaining.TotalDays:D2}:{remaining.Hours:D2}:{remaining.Minutes:D2}:{remaining.Seconds:D2}";
+    }
+
+    public void OnScrolled(double scrollY)
+    {
+        IsAtScrollTop = scrollY <= 0;
     }
 }

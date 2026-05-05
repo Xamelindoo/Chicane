@@ -11,6 +11,8 @@ public partial class HomePage : ContentPage
         InitializeComponent();
         BindingContext = viewModel;
         this.viewModel = viewModel;
+
+        MainScrollView.Scrolled += OnScrolled;
     }
 
     protected override void OnAppearing()
@@ -20,5 +22,10 @@ public partial class HomePage : ContentPage
         {
             viewModel.LoadCommand.Execute(null);
         }
+    }
+
+    private void OnScrolled(object? sender, ScrolledEventArgs e)
+    {
+        viewModel.OnScrolled(e.ScrollY);
     }
 }
