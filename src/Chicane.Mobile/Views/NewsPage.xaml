@@ -65,8 +65,8 @@
                                                  Padding="16,14,16,0"
                                                  Spacing="8">
                                 <Label Text="{Binding Title}"
-                                       FontFamily="SpaceMonoBold"
-                                       FontSize="16"
+                                       FontFamily="OpenSansSemibold"
+                                       FontSize="18"
                                        TextColor="{StaticResource PureWhite}"
                                        MaxLines="2"
                                        LineBreakMode="TailTruncation" />
