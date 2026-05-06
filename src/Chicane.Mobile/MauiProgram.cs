@@ -57,13 +57,16 @@ public static class MauiProgram
 
         // Data dispatching: F1 → real API, others → mock
         builder.Services.AddSingleton<DispatchingF1DataService>();
+        builder.Services.AddSingleton<DispatchingScheduleService>();
 
         // Cached services (real/mock → SQLite → return)
         builder.Services.AddSingleton<IF1DataService>(sp => new CachedF1DataService(
             sp.GetRequiredService<DispatchingF1DataService>(),
             sp.GetRequiredService<StandingsRepository>(),
             sp.GetRequiredService<ConstructorStandingsRepository>()));
-        builder.Services.AddSingleton<IRaceCalendarService, CachedScheduleService>();
+        builder.Services.AddSingleton<IRaceCalendarService>(sp => new CachedScheduleService(
+            sp.GetRequiredService<DispatchingScheduleService>(),
+            sp.GetRequiredService<ScheduleRepository>()));
         builder.Services.AddSingleton<ITeamsService, CachedTeamsService>();
         builder.Services.AddSingleton<ICategoryProvider, CategoryProvider>();
 

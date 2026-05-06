@@ -4,7 +4,7 @@ using Chicane.Mobile.Models.Api;
 
 namespace Chicane.Mobile.Services;
 
-public class SportmonksService : IF1DataService
+public class SportmonksService : IF1DataService, IRaceCalendarService
 {
     private readonly HttpClient _http;
     private const string BaseUrl = "https://api.sportmonks.com/v3/motorsport";
@@ -134,4 +134,78 @@ public class SportmonksService : IF1DataService
         Circuit = new CircuitInfo { Name = "TBD" },
         Weather = new WeatherInfo { Condition = "N/A", TemperatureC = 20, IconGlyph = "\u2600" }
     };
+
+    // ─────────── IRaceCalendarService for F1 ───────────
+    public async Task<List<RaceScheduleEntry>> GetUpcomingRacesAsync(string categoryId)
+    {
+        try
+        {
+            var from = DateTime.UtcNow.ToString("yyyy-MM-dd");
+            var to = DateTime.UtcNow.AddMonths(6).ToString("yyyy-MM-dd");
+
+            var response = await _http.GetFromJsonAsync<SportmonksResponse<SportmonksFixture>>(
+                $"{BaseUrl}/fixtures/between/{from}/{to}?api_token={SecretsConfig.SportmonksApiKey}&league_id={F1LeagueId}&include=venue.country");
+
+            return (response?.Data ?? new()).Select(f =>
+            {
+                DateTime.TryParse(f.StartingAt, out var date);
+                return new RaceScheduleEntry
+                {
+                    EventName = f.Name.ToUpper().Replace("FORMULA 1 ", ""),
+                    CircuitName = f.Venue?.Name ?? "TBD",
+                    Country = f.Venue?.Country?.Name ?? "",
+                    EventDate = date,
+                    WeatherCondition = "N/A",
+                    WeatherIcon = "\u2600",
+                    TemperatureC = 20,
+                    IsCompleted = f.HasResults,
+                };
+            }).OrderBy(r => r.EventDate).ToList();
+        }
+        catch { return new(); }
+    }
+
+    public async Task<List<RaceScheduleEntry>> GetPastRacesAsync(string categoryId)
+    {
+        try
+        {
+            var to = DateTime.UtcNow.ToString("yyyy-MM-dd");
+            var from = DateTime.UtcNow.AddMonths(-6).ToString("yyyy-MM-dd");
+
+            var response = await _http.GetFromJsonAsync<SportmonksResponse<SportmonksFixture>>(
+                $"{BaseUrl}/fixtures/between/{from}/{to}?api_token={SecretsConfig.SportmonksApiKey}&league_id={F1LeagueId}&include=venue.country");
+
+            return (response?.Data ?? new())
+                .Where(f => f.HasResults)
+                .Select(f =>
+                {
+                    DateTime.TryParse(f.StartingAt, out var date);
+                    return new RaceScheduleEntry
+                    {
+                        EventName = f.Name.ToUpper().Replace("FORMULA 1 ", ""),
+                        CircuitName = f.Venue?.Name ?? "TBD",
+                        Country = f.Venue?.Country?.Name ?? "",
+                        EventDate = date,
+                        WeatherCondition = "N/A",
+                        WeatherIcon = "\u2600",
+                        TemperatureC = 20,
+                        IsCompleted = true,
+                    };
+                }).OrderByDescending(r => r.EventDate).ToList();
+        }
+        catch { return new(); }
+    }
+
+    public async Task<PastRaceDetail> GetPastRaceDetailAsync(string eventName, string categoryId)
+    {
+        return new PastRaceDetail
+        {
+            EventName = eventName,
+            EventDate = DateTime.UtcNow.AddDays(-30),
+            YellowFlagCount = 0,
+            Results = new() { new() { Position = 1, DriverName = "Results from Sportmonks", TeamName = "TBD", TimeOrDnf = "--:--" } },
+            DriverStandings = new() { new() { Position = 1, DriverName = "Data loading...", TeamName = "TBD", Points = 0 } },
+            ConstructorStandings = new() { new() { Position = 1, TeamName = "Data loading...", Points = 0 } },
+        };
+    }
 }

@@ -6,23 +6,23 @@ namespace Chicane.Mobile.Services;
 
 public class CachedScheduleService : IRaceCalendarService
 {
-    private readonly MockRaceCalendarService _mock;
+    private readonly IRaceCalendarService _primary;
     private readonly ScheduleRepository _scheduleRepo;
 
-    public CachedScheduleService(MockRaceCalendarService mock, ScheduleRepository scheduleRepo)
+    public CachedScheduleService(IRaceCalendarService primary, ScheduleRepository scheduleRepo)
     {
-        _mock = mock;
+        _primary = primary;
         _scheduleRepo = scheduleRepo;
     }
 
     public async Task<List<RaceScheduleEntry>> GetUpcomingRacesAsync(string categoryId)
-        => await CacheAndReturn(categoryId, () => _mock.GetUpcomingRacesAsync(categoryId));
+        => await CacheAndReturn(categoryId, () => _primary.GetUpcomingRacesAsync(categoryId));
 
     public async Task<List<RaceScheduleEntry>> GetPastRacesAsync(string categoryId)
-        => await CacheAndReturn(categoryId, () => _mock.GetPastRacesAsync(categoryId));
+        => await CacheAndReturn(categoryId, () => _primary.GetPastRacesAsync(categoryId));
 
     public async Task<PastRaceDetail> GetPastRaceDetailAsync(string eventName, string categoryId)
-        => await _mock.GetPastRaceDetailAsync(eventName, categoryId);
+        => await _primary.GetPastRaceDetailAsync(eventName, categoryId);
 
     private async Task<List<RaceScheduleEntry>> CacheAndReturn(
         string categoryId, Func<Task<List<RaceScheduleEntry>>> fetchFunc)
