@@ -66,12 +66,12 @@
                 <!-- ═══════════ HERO SECTION (100vh) ═══════════ -->
                 <Grid RowDefinitions="Auto,*"
                       HeightRequest="{Binding HeroHeight}"
-                       Padding="20,56,20,20">
+                       Padding="20,28,20,20">
 
                     <!-- Top: Category Pill + Event Label -->
                     <VerticalStackLayout Grid.Row="0"
                                          HorizontalOptions="Center"
-                                         Spacing="6">
+                                          Spacing="16">
                         <Label x:Name="CategoryPill"
                                HorizontalOptions="Center"
                                InputTransparent="False" />

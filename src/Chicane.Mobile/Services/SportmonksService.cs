@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Net.Http.Json;
 using Chicane.Mobile.Models;
 using Chicane.Mobile.Models.Api;
@@ -42,7 +43,7 @@ public class SportmonksService : IF1DataService, IRaceCalendarService
                 Weather = new WeatherInfo { Condition = "N/A", TemperatureC = 20, IconGlyph = "\u2600" }
             };
         }
-        catch { return DefaultEvent(); }
+        catch (Exception ex) { Debug.WriteLine($"[SM] GetNextEvent: {ex.Message}"); return DefaultEvent(); }
     }
 
     public async Task<LiveSessionData> GetLiveSessionDataAsync(string categoryId)

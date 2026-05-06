@@ -278,6 +278,7 @@ public partial class HomeViewModel : ObservableObject
         {
             ShowApproximateWarning = true;
             _ = Task.Run(async () => { await Task.Delay(2000); ShowApproximateWarning = false; });
+            return;
         }
         ShowWeatherDetail = true;
     }
