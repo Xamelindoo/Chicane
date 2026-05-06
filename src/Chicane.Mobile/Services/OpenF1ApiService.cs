@@ -104,7 +104,7 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
                 PositionBoard = top3,
             };
         }
-        catch { return new LiveSessionData(); }
+        catch (Exception ex) { Debug.WriteLine($"[OpenF1] LiveSession: {ex.Message}"); return new LiveSessionData(); }
     }
 
     public async Task<List<StandingsEntry>> GetStandingsAsync(string categoryId)

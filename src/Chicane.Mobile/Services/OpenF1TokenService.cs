@@ -27,26 +27,26 @@ public class OpenF1TokenService
         await _lock.WaitAsync();
         try
         {
-            // Double-check inside lock
             if (_accessToken is not null && DateTime.UtcNow < _expiresAt.AddMinutes(-5))
                 return _accessToken;
 
-            var content = new FormUrlEncodedContent(new[]
+            Debug.WriteLine("[OpenF1] POST /token...");
+            var response = await _http.PostAsync(BaseAuthUrl, new FormUrlEncodedContent(new[]
             {
                 new KeyValuePair<string, string>("username", SecretsConfig.OpenF1Username),
                 new KeyValuePair<string, string>("password", SecretsConfig.OpenF1Password),
-            });
+            }));
 
-            var response = await _http.PostAsync(BaseAuthUrl, content);
+            Debug.WriteLine($"[OpenF1] Token HTTP {response.StatusCode}");
             response.EnsureSuccessStatusCode();
 
             var json = await response.Content.ReadAsStringAsync();
             var tokenResponse = JsonSerializer.Deserialize<OpenF1TokenResponse>(json);
 
-            _accessToken = tokenResponse?.AccessToken ?? throw new InvalidOperationException("No token");
+            _accessToken = tokenResponse?.AccessToken ?? throw new InvalidOperationException("No token in response");
             _expiresAt = DateTime.UtcNow.AddSeconds(tokenResponse?.ExpiresIn ?? 3600);
 
-            Debug.WriteLine($"[OpenF1] Token refreshed, expires at {_expiresAt}");
+            Debug.WriteLine($"[OpenF1] Token ok, expires at {_expiresAt}");
 
             StartRefreshTimer();
 
