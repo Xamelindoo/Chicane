@@ -34,9 +34,8 @@ public static class MauiProgram
 
         // API infrastructure
         builder.Services.AddSingleton<HttpClient>();
-        builder.Services.AddSingleton<ErgastApiService>();
-        builder.Services.AddSingleton<OpenF1Service>();
-        builder.Services.AddSingleton<SportmonksService>();
+        builder.Services.AddSingleton<OpenF1TokenService>();
+        builder.Services.AddSingleton<OpenF1ApiService>();
 
         // News service
         builder.Services.AddSingleton<INewsService, Rss2JsonService>();
