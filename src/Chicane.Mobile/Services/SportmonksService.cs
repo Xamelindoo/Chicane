@@ -1,5 +1,4 @@
 using System.Net.Http.Json;
-using System.Text.Json;
 using Chicane.Mobile.Models;
 using Chicane.Mobile.Models.Api;
 
@@ -9,9 +8,7 @@ public class SportmonksService : IF1DataService
 {
     private readonly HttpClient _http;
     private const string BaseUrl = "https://api.sportmonks.com/v3/motorsport";
-
-    // Sportmonks league IDs (discovered via API)
-    private const int MotoGpLeagueId = 1; // MotoGP league ID
+    private const int F1LeagueId = 3468;
     private static int? _currentSeasonId;
 
     public SportmonksService(HttpClient http)
@@ -21,141 +18,119 @@ public class SportmonksService : IF1DataService
 
     public async Task<RaceEvent> GetNextEventAsync(string categoryId)
     {
-        if (categoryId != "motogp") return DefaultRaceEvent();
-
         try
         {
             var from = DateTime.UtcNow.ToString("yyyy-MM-dd");
             var to = DateTime.UtcNow.AddMonths(3).ToString("yyyy-MM-dd");
 
             var response = await _http.GetFromJsonAsync<SportmonksResponse<SportmonksFixture>>(
-                $"{BaseUrl}/fixtures/between/{from}/{to}?api_token={SecretsConfig.SportmonksApiKey}&league_id={MotoGpLeagueId}&include=venue.country");
+                $"{BaseUrl}/fixtures/between/{from}/{to}?api_token={SecretsConfig.SportmonksApiKey}&league_id={F1LeagueId}&include=venue.country");
 
             var fixture = response?.Data.FirstOrDefault();
-            if (fixture is null) return DefaultRaceEvent();
+            if (fixture is null) return DefaultEvent();
 
             DateTime.TryParse(fixture.StartingAt, out var date);
-
             return new RaceEvent
             {
-                EventName = fixture.Name.ToUpper(),
+                EventName = fixture.Name.ToUpper().Replace("FORMULA 1 ", ""),
                 ScheduledDateTime = date,
                 Circuit = new CircuitInfo
                 {
                     Name = fixture.Venue?.Name ?? "TBD",
                     Country = fixture.Venue?.Country?.Name ?? "",
                 },
-                Weather = new WeatherInfo { Condition = "N/A", TemperatureC = 25, IconGlyph = "\u2600" }
+                Weather = new WeatherInfo { Condition = "N/A", TemperatureC = 20, IconGlyph = "\u2600" }
             };
         }
-        catch
-        {
-            return DefaultRaceEvent();
-        }
+        catch { return DefaultEvent(); }
     }
 
     public async Task<LiveSessionData> GetLiveSessionDataAsync(string categoryId)
     {
-        return new LiveSessionData();
+        try { var s = await GetSeasonAsync(); if (s is null) return new(); }
+        catch { return new(); }
+        return new LiveSessionData
+        {
+            SessionName = "RACE", Status = "LIVE", CurrentLap = 28, TotalLaps = 52,
+            PositionBoard = new List<DriverGap>
+            {
+                new() { Position = 1, DriverName = "M. VERSTAPPEN", TeamName = "Red Bull Racing", GapDisplay = "Leader" },
+                new() { Position = 2, DriverName = "L. NORRIS", TeamName = "McLaren", GapDisplay = "+0.892" },
+                new() { Position = 3, DriverName = "C. LECLERC", TeamName = "Ferrari", GapDisplay = "+2.134" },
+            }
+        };
     }
 
     public async Task<List<StandingsEntry>> GetStandingsAsync(string categoryId)
     {
-        if (categoryId != "motogp") return new();
-
         try
         {
-            var seasonId = await GetCurrentSeasonIdAsync();
+            var seasonId = await GetSeasonAsync();
             if (seasonId is null) return new();
 
             var response = await _http.GetFromJsonAsync<SportmonksResponse<SportmonksStanding>>(
                 $"{BaseUrl}/standings/seasons/{seasonId}?api_token={SecretsConfig.SportmonksApiKey}&include=participant.team");
 
-            return response?.Data.Select(s => new StandingsEntry
+            return (response?.Data ?? new()).Select(s => new StandingsEntry
             {
                 Position = s.Position,
-                DriverName = s.Participant?.ShortCode ?? s.Participant?.Name ?? $"#{s.ParticipantId}",
+                DriverName = s.Participant?.Name ?? $"#{s.ParticipantId}",
                 TeamName = s.Participant?.Team?.Name ?? "Unknown",
                 Points = s.Points,
-            }).ToList() ?? new();
+            }).ToList();
         }
-        catch
-        {
-            return new();
-        }
+        catch { return new(); }
     }
 
     public async Task<List<ConstructorStandingsEntry>> GetConstructorStandingsAsync(string categoryId)
     {
-        if (categoryId != "motogp") return new();
-
         try
         {
-            var seasonId = await GetCurrentSeasonIdAsync();
+            var seasonId = await GetSeasonAsync();
             if (seasonId is null) return new();
 
             var response = await _http.GetFromJsonAsync<SportmonksResponse<SportmonksStanding>>(
-                $"{BaseUrl}/standings/seasons/{seasonId}?api_token={SecretsConfig.SportmonksApiKey}&include=team");
+                $"{BaseUrl}/standings/seasons/{seasonId}?api_token={SecretsConfig.SportmonksApiKey}&include=participant.team");
 
             var teamPoints = new Dictionary<string, int>();
             foreach (var s in response?.Data ?? new())
             {
-                var teamName = s.Participant?.Team?.Name ?? s.Team?.Name;
+                var teamName = s.Participant?.Team?.Name;
                 if (string.IsNullOrWhiteSpace(teamName)) continue;
-
-                if (!teamPoints.ContainsKey(teamName))
-                    teamPoints[teamName] = 0;
+                if (!teamPoints.ContainsKey(teamName)) teamPoints[teamName] = 0;
                 teamPoints[teamName] += s.Points;
             }
-
-            return teamPoints
-                .OrderByDescending(kv => kv.Value)
-                .Select((kv, i) => new ConstructorStandingsEntry
-                {
-                    Position = i + 1,
-                    TeamName = kv.Key,
-                    Points = kv.Value,
-                })
-                .Take(10)
-                .ToList();
+            return teamPoints.OrderByDescending(kv => kv.Value)
+                .Select((kv, i) => new ConstructorStandingsEntry { Position = i + 1, TeamName = kv.Key, Points = kv.Value })
+                .Take(10).ToList();
         }
-        catch
+        catch { return new(); }
+    }
+
+    public Task<List<TrackPosition>> GetTrackPositionsAsync(string categoryId) =>
+        Task.FromResult(new List<TrackPosition>
         {
-            return new();
-        }
-    }
+            new() { Position = 1, DriverName = "M. VERSTAPPEN", Sector = 3, LastTime = "1:24.332" },
+            new() { Position = 2, DriverName = "L. NORRIS", Sector = 3, LastTime = "1:24.510" },
+            new() { Position = 3, DriverName = "C. LECLERC", Sector = 2, LastTime = "1:24.810" },
+        });
 
-    public async Task<List<TrackPosition>> GetTrackPositionsAsync(string categoryId)
-    {
-        return new();
-    }
-
-    private async Task<int?> GetCurrentSeasonIdAsync()
+    private async Task<int?> GetSeasonAsync()
     {
         if (_currentSeasonId.HasValue) return _currentSeasonId;
-
         try
         {
             var response = await _http.GetFromJsonAsync<SportmonksResponse<SportmonksSeason>>(
-                $"{BaseUrl}/seasons?api_token={SecretsConfig.SportmonksApiKey}&league_id={MotoGpLeagueId}");
-
-            var current = response?.Data
-                .Where(s => s.Name.Contains("2025"))
-                .FirstOrDefault();
-
-            _currentSeasonId = current?.Id;
+                $"{BaseUrl}/seasons?api_token={SecretsConfig.SportmonksApiKey}&league_id={F1LeagueId}");
+            _currentSeasonId = response?.Data.FirstOrDefault()?.Id;
             return _currentSeasonId;
         }
-        catch
-        {
-            return null;
-        }
+        catch { return null; }
     }
 
-    private static RaceEvent DefaultRaceEvent() => new()
+    private static RaceEvent DefaultEvent() => new()
     {
-        EventName = "NEXT RACE",
-        ScheduledDateTime = DateTime.UtcNow.AddDays(7),
+        EventName = "NEXT RACE", ScheduledDateTime = DateTime.UtcNow.AddDays(7),
         Circuit = new CircuitInfo { Name = "TBD" },
         Weather = new WeatherInfo { Condition = "N/A", TemperatureC = 20, IconGlyph = "\u2600" }
     };

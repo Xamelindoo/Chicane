@@ -163,6 +163,57 @@
                                     </Label>
                                 </HorizontalStackLayout>
                             </Border>
+
+                            <!-- Simulate Live Toggle -->
+                            <Border Stroke="{StaticResource PureWhite}"
+                                    StrokeThickness="1"
+                                    StrokeShape="RoundRectangle 4"
+                                    BackgroundColor="#20FFFFFF"
+                                    Padding="0"
+                                    HorizontalOptions="Center"
+                                    Margin="0,12,0,0">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding SimulateLiveCommand}" />
+                                </Border.GestureRecognizers>
+                                <HorizontalStackLayout Spacing="0">
+                                    <Border Padding="14,6"
+                                            BackgroundColor="{StaticResource RacingRed}"
+                                            StrokeThickness="0"
+                                            StrokeShape="RoundRectangle 4,0,0,4"
+                                            IsVisible="{Binding IsPreRace}">
+                                        <Label Text="SIMULATE LIVE"
+                                               FontFamily="SpaceMonoRegular"
+                                               FontSize="10"
+                                               TextColor="{StaticResource PureWhite}"
+                                               CharacterSpacing="2" />
+                                    </Border>
+                                    <Border Padding="14,6"
+                                            BackgroundColor="{StaticResource RacingRed}"
+                                            StrokeThickness="0"
+                                            StrokeShape="RoundRectangle 0,4,4,0"
+                                            IsVisible="{Binding IsLive}">
+                                        <Label Text="SIMULATE PRE-RACE"
+                                               FontFamily="SpaceMonoRegular"
+                                               FontSize="10"
+                                               TextColor="{StaticResource PureWhite}"
+                                               CharacterSpacing="2" />
+                                    </Border>
+                                    <Label Text="SIMULATE LIVE"
+                                           FontFamily="SpaceMonoRegular"
+                                           FontSize="10"
+                                           TextColor="{StaticResource PureWhite}"
+                                           CharacterSpacing="2"
+                                           Padding="14,6"
+                                           IsVisible="{Binding IsLive}" />
+                                    <Label Text="BACK TO PRE-RACE"
+                                           FontFamily="SpaceMonoRegular"
+                                           FontSize="10"
+                                           TextColor="{StaticResource PureWhite}"
+                                           CharacterSpacing="2"
+                                           Padding="14,6"
+                                           IsVisible="{Binding IsPreRace}" />
+                                </HorizontalStackLayout>
+                            </Border>
                         </VerticalStackLayout>
 
                         <!-- Live Session Data -->

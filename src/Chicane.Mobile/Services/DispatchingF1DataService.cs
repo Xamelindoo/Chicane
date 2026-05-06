@@ -4,21 +4,18 @@ namespace Chicane.Mobile.Services;
 
 public class DispatchingF1DataService : IF1DataService
 {
-    private readonly ErgastApiService _ergast;
     private readonly SportmonksService _sportmonks;
     private readonly MockF1DataService _mock;
 
-    public DispatchingF1DataService(ErgastApiService ergast, SportmonksService sportmonks, MockF1DataService mock)
+    public DispatchingF1DataService(SportmonksService sportmonks, MockF1DataService mock)
     {
-        _ergast = ergast;
         _sportmonks = sportmonks;
         _mock = mock;
     }
 
     private IF1DataService ResolveService(string categoryId) => categoryId switch
     {
-        "f1" => _ergast,
-        "motogp" => _sportmonks,
+        "f1" => _sportmonks,
         _ => _mock,
     };
 
