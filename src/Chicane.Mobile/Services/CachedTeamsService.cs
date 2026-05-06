@@ -21,7 +21,37 @@ public class CachedTeamsService : ITeamsService
     {
         try
         {
-            var teams = await _mock.GetTeamsAsync(categoryId);
+            List<TeamEntry> teams;
+
+            if (categoryId == "f1")
+            {
+                var constructorStandings = await _f1Data.GetConstructorStandingsAsync(categoryId);
+                var driverStandings = await _f1Data.GetStandingsAsync(categoryId);
+
+                teams = constructorStandings.Select(cs =>
+                {
+                    var teamDrivers = driverStandings
+                        .Where(d => d.TeamName == cs.TeamName)
+                        .Take(2)
+                        .Select(d => new DriverEntry { Name = d.DriverName, Points = d.Points })
+                        .ToList();
+
+                    return new TeamEntry
+                    {
+                        Position = cs.Position,
+                        TeamName = cs.TeamName,
+                        Points = cs.Points,
+                        BorderColor = GetTeamColor(cs.TeamName),
+                        GradientColor = GetTeamColor(cs.TeamName),
+                        Drivers = teamDrivers,
+                    };
+                }).ToList();
+            }
+            else
+            {
+                teams = await _mock.GetTeamsAsync(categoryId);
+            }
+
             var records = teams.Select(t => StorageMapper.ToRecord(t, categoryId)).ToList();
             await _teamsRepo.UpsertAsync(categoryId, records);
             return teams;
