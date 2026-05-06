@@ -18,7 +18,7 @@
                 BackgroundColor="{StaticResource SurfaceLow}"
                 Padding="20,48,20,12">
             <Label Text="NEWS"
-                   FontFamily="SpaceMonoBold"
+                   FontFamily="TitilliumWebBold"
                    FontSize="14"
                    TextColor="{StaticResource PureWhite}"
                    CharacterSpacing="4"
@@ -72,7 +72,7 @@
                                        LineBreakMode="TailTruncation" />
                                 <HorizontalStackLayout Spacing="4">
                                     <Label Text="{Binding Source}"
-                                           FontFamily="SpaceMonoRegular"
+                                           FontFamily="TitilliumWebRegular"
                                            FontSize="10"
                                            TextColor="{StaticResource RacingRed}" />
                                     <Label Text="·"
@@ -80,7 +80,7 @@
                                            TextColor="{StaticResource TextMuted}"
                                            VerticalOptions="Center" />
                                     <Label Text="{Binding PublishedAt, StringFormat='{0:dd MMM}'}"
-                                           FontFamily="SpaceMonoRegular"
+                                           FontFamily="TitilliumWebRegular"
                                            FontSize="10"
                                            TextColor="{StaticResource TextMuted}" />
                                 </HorizontalStackLayout>
@@ -88,7 +88,7 @@
 
                             <Label Grid.Row="1"
                                    Text="{Binding Description}"
-                                   FontFamily="SpaceMonoRegular"
+                                   FontFamily="TitilliumWebRegular"
                                     FontSize="13"
                                     TextColor="{StaticResource CoolSlate}"
                                     MaxLines="3"

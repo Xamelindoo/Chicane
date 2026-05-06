@@ -17,13 +17,13 @@
                 Padding="20,48,20,12">
             <Grid ColumnDefinitions="*,Auto">
                 <Label Grid.Column="0" Text="RACE RESULTS"
-                       FontFamily="SpaceMonoBold" FontSize="14"
+                       FontFamily="TitilliumWebBold" FontSize="14"
                        TextColor="{StaticResource PureWhite}"
                        CharacterSpacing="4" VerticalOptions="Center" />
                 <HorizontalStackLayout Grid.Column="1" Spacing="4">
-                    <Label Text="{Binding TotalPoints}" FontFamily="SpaceMonoBold" FontSize="16"
+                    <Label Text="{Binding TotalPoints}" FontFamily="TitilliumWebBold" FontSize="16"
                            TextColor="{StaticResource RacingRed}" VerticalOptions="Center" />
-                    <Label Text="pts" FontFamily="SpaceMonoRegular" FontSize="11"
+                    <Label Text="pts" FontFamily="TitilliumWebRegular" FontSize="11"
                            TextColor="{StaticResource TextMuted}" VerticalOptions="Center" />
                 </HorizontalStackLayout>
             </Grid>
@@ -67,10 +67,10 @@
                             <!-- Race Header -->
                             <Grid ColumnDefinitions="*,Auto">
                                 <Label Grid.Column="0" Text="{Binding EventName}"
-                                       FontFamily="SpaceMonoBold" FontSize="15"
+                                       FontFamily="TitilliumWebBold" FontSize="15"
                                        TextColor="{StaticResource PureWhite}" />
                                 <Label Grid.Column="1" Text="{Binding EventDate, StringFormat='{0:dd MMM}'}"
-                                       FontFamily="SpaceMonoRegular" FontSize="11"
+                                       FontFamily="TitilliumWebRegular" FontSize="11"
                                        TextColor="{StaticResource TextMuted}"
                                        VerticalOptions="End" />
                             </Grid>
@@ -83,17 +83,17 @@
                                         StrokeThickness="0" StrokeShape="RoundRectangle 4"
                                         Padding="6,2" VerticalOptions="Center">
                                     <Label Text="{Binding Driver1Position, StringFormat='P{0}'}"
-                                           FontFamily="SpaceMonoBold" FontSize="11"
+                                           FontFamily="TitilliumWebBold" FontSize="11"
                                            TextColor="{StaticResource PureWhite}" />
                                 </Border>
                                 <Label Grid.Column="1" Text="{Binding Driver1Name}"
-                                       FontFamily="SpaceMonoRegular" FontSize="13"
+                                       FontFamily="TitilliumWebRegular" FontSize="13"
                                        TextColor="{StaticResource PureWhite}" VerticalOptions="Center" />
                                 <Label Grid.Column="2" Text="{Binding Driver1Points}"
-                                       FontFamily="SpaceMonoBold" FontSize="14"
+                                       FontFamily="TitilliumWebBold" FontSize="14"
                                        TextColor="{StaticResource PureWhite}" VerticalOptions="Center" />
                                 <Label Grid.Column="3" Text="pts"
-                                       FontFamily="SpaceMonoRegular" FontSize="10"
+                                       FontFamily="TitilliumWebRegular" FontSize="10"
                                        TextColor="{StaticResource TextMuted}" VerticalOptions="Center" />
                             </Grid>
 
@@ -103,17 +103,17 @@
                                         StrokeThickness="0" StrokeShape="RoundRectangle 4"
                                         Padding="6,2" VerticalOptions="Center">
                                     <Label Text="{Binding Driver2Position, StringFormat='P{0}'}"
-                                           FontFamily="SpaceMonoBold" FontSize="11"
+                                           FontFamily="TitilliumWebBold" FontSize="11"
                                            TextColor="{StaticResource CoolSlate}" />
                                 </Border>
                                 <Label Grid.Column="1" Text="{Binding Driver2Name}"
-                                       FontFamily="SpaceMonoRegular" FontSize="13"
+                                       FontFamily="TitilliumWebRegular" FontSize="13"
                                        TextColor="{StaticResource PureWhite}" VerticalOptions="Center" />
                                 <Label Grid.Column="2" Text="{Binding Driver2Points}"
-                                       FontFamily="SpaceMonoBold" FontSize="14"
+                                       FontFamily="TitilliumWebBold" FontSize="14"
                                        TextColor="{StaticResource PureWhite}" VerticalOptions="Center" />
                                 <Label Grid.Column="3" Text="pts"
-                                       FontFamily="SpaceMonoRegular" FontSize="10"
+                                       FontFamily="TitilliumWebRegular" FontSize="10"
                                        TextColor="{StaticResource TextMuted}" VerticalOptions="Center" />
                             </Grid>
 
@@ -121,7 +121,7 @@
 
                             <!-- Best Lap + Total -->
                             <Grid ColumnDefinitions="*,Auto">
-                                <Label Grid.Column="0" FontFamily="SpaceMonoRegular"
+                                <Label Grid.Column="0" FontFamily="TitilliumWebRegular"
                                        FontSize="11" TextColor="{StaticResource CoolSlate}">
                                     <Label.Text>
                                         <MultiBinding StringFormat="{}Best lap: {0}">
@@ -131,10 +131,10 @@
                                 </Label>
                                 <HorizontalStackLayout Grid.Column="1" Spacing="3">
                                     <Label Text="{Binding TotalPoints}"
-                                           FontFamily="SpaceMonoBold" FontSize="14"
+                                           FontFamily="TitilliumWebBold" FontSize="14"
                                            TextColor="{StaticResource RacingRed}" VerticalOptions="Center" />
                                     <Label Text="pts"
-                                           FontFamily="SpaceMonoRegular" FontSize="10"
+                                           FontFamily="TitilliumWebRegular" FontSize="10"
                                            TextColor="{StaticResource TextMuted}" VerticalOptions="Center" />
                                 </HorizontalStackLayout>
                             </Grid>

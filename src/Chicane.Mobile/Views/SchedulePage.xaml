@@ -34,7 +34,7 @@
                     <TapGestureRecognizer Command="{Binding ShowUpcomingCommand}" />
                 </Border.GestureRecognizers>
                 <Label Text="UPCOMING"
-                       FontFamily="SpaceMonoBold"
+                       FontFamily="TitilliumWebBold"
                        FontSize="12"
                        VerticalOptions="Center"
                        HorizontalOptions="Center"
@@ -72,7 +72,7 @@
                     <TapGestureRecognizer Command="{Binding ShowPastCommand}" />
                 </Border.GestureRecognizers>
                 <Label Text="PAST"
-                       FontFamily="SpaceMonoBold"
+                       FontFamily="TitilliumWebBold"
                        FontSize="12"
                        VerticalOptions="Center"
                        HorizontalOptions="Center"
@@ -152,7 +152,7 @@
                             <!-- Event Name -->
                             <Label Grid.Row="0" Grid.Column="0"
                                    Text="{Binding EventName}"
-                                   FontFamily="SpaceMonoBold"
+                                   FontFamily="TitilliumWebBold"
                                    FontSize="16"
                                    TextColor="{StaticResource PureWhite}"
                                    VerticalOptions="Center" />
@@ -160,7 +160,7 @@
                             <!-- Date -->
                             <Label Grid.Row="1" Grid.Column="0"
                                    Text="{Binding EventDate, StringFormat='{0:dd MMM yyyy}'}"
-                                   FontFamily="SpaceMonoRegular"
+                                   FontFamily="TitilliumWebRegular"
                                    FontSize="12"
                                    TextColor="{StaticResource CoolSlate}" />
 
@@ -171,7 +171,7 @@
                                 <Label Text="{Binding WeatherIcon}"
                                        FontSize="14"
                                        VerticalOptions="Center" />
-                                <Label FontFamily="SpaceMonoRegular"
+                                <Label FontFamily="TitilliumWebRegular"
                                        FontSize="11"
                                        TextColor="{StaticResource CoolSlate}"
                                        VerticalOptions="Center">
@@ -186,7 +186,7 @@
 
                             <!-- Circuit + Country -->
                             <Label Grid.Row="2" Grid.Column="0"
-                                   FontFamily="SpaceMonoRegular"
+                                   FontFamily="TitilliumWebRegular"
                                    FontSize="10"
                                    TextColor="{StaticResource TextMuted}">
                                 <Label.Text>
@@ -200,7 +200,7 @@
                             <!-- Result (past races only) -->
                             <Label Grid.Row="2" Grid.Column="1"
                                    Text="{Binding Result}"
-                                   FontFamily="SpaceMonoBold"
+                                   FontFamily="TitilliumWebBold"
                                    FontSize="11"
                                    TextColor="{StaticResource RacingRed}"
                                    HorizontalTextAlignment="End"

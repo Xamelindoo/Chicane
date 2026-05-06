@@ -91,6 +91,9 @@ public partial class HomeViewModel : ObservableObject
     private string circuitMapUrl = string.Empty;
 
     [ObservableProperty]
+    private bool hasCircuitMap;
+
+    [ObservableProperty]
     private string circuitImage = string.Empty;
 
     [ObservableProperty]
@@ -138,6 +141,7 @@ public partial class HomeViewModel : ObservableObject
             CircuitName = raceEvent.Circuit.Name;
             CircuitLocation = $"{raceEvent.Circuit.Name}, {raceEvent.Circuit.Country}";
             CircuitMapUrl = GetCircuitMapUrl(raceEvent.Circuit.Country);
+            HasCircuitMap = !string.IsNullOrWhiteSpace(CircuitMapUrl);
             CircuitImage = raceEvent.Circuit.ImageUrl;
 
             await LoadWeatherAsync(raceEvent);
@@ -296,7 +300,7 @@ public partial class HomeViewModel : ObservableObject
         "Spain" => "https://www.formula1.com/content/dam/fom-website/2018-redesign-assets/Circuit%20maps%2016x9/Spain_Circuit.png",
         "France" => "https://www.formula1.com/content/dam/fom-website/2018-redesign-assets/Circuit%20maps%2016x9/France_Circuit.png",
         "Austria" => "https://www.formula1.com/content/dam/fom-website/2018-redesign-assets/Circuit%20maps%2016x9/Austria_Circuit.png",
-        _ => "circuit_placeholder.png",
+        _ => "",
     };
 
     private void StartCountdown()

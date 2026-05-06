@@ -48,7 +48,7 @@
 
                 <!-- RACE RESULTS -->
                 <Label Text="{Binding EventDateText}"
-                       FontFamily="SpaceMonoRegular"
+                       FontFamily="TitilliumWebRegular"
                        FontSize="11"
                        TextColor="{StaticResource TextMuted}"
                        HorizontalOptions="Center"
@@ -60,7 +60,7 @@
                         Padding="16"
                         Margin="20,16,20,0">
                     <Label Text="RACE RESULTS"
-                           FontFamily="SpaceMonoBold"
+                           FontFamily="TitilliumWebBold"
                            FontSize="14"
                            TextColor="{StaticResource RacingRed}"
                            CharacterSpacing="4"
@@ -72,19 +72,19 @@
                       ColumnSpacing="6">
                     <Label Grid.Column="1"
                            Text="#"
-                           FontFamily="SpaceMonoBold"
+                           FontFamily="TitilliumWebBold"
                            FontSize="10"
                            TextColor="{StaticResource TextMuted}"
                            CharacterSpacing="2" />
                     <Label Grid.Column="2"
                            Text="DRIVER"
-                           FontFamily="SpaceMonoBold"
+                           FontFamily="TitilliumWebBold"
                            FontSize="10"
                            TextColor="{StaticResource TextMuted}"
                            CharacterSpacing="2" />
                     <Label Grid.Column="3"
                            Text="TIME"
-                           FontFamily="SpaceMonoBold"
+                           FontFamily="TitilliumWebBold"
                            FontSize="10"
                            TextColor="{StaticResource TextMuted}"
                            CharacterSpacing="2"
@@ -109,7 +109,7 @@
                                 <!-- Position -->
                                 <Label Grid.Column="1"
                                        Text="{Binding Position}"
-                                       FontFamily="SpaceMonoBold"
+                                       FontFamily="TitilliumWebBold"
                                        FontSize="13"
                                        TextColor="{StaticResource PureWhite}"
                                        VerticalOptions="Center" />
@@ -118,7 +118,7 @@
                                                      VerticalOptions="Center"
                                                      Spacing="1">
                                     <Label Text="{Binding DriverName}"
-                                           FontFamily="SpaceMonoRegular"
+                                           FontFamily="TitilliumWebRegular"
                                            FontSize="12"
                                            TextColor="{StaticResource PureWhite}" />
                                     <Label Text="{Binding TeamName}"
@@ -128,7 +128,7 @@
                                 <!-- Time or DNF -->
                                 <Label Grid.Column="3"
                                        Text="{Binding TimeOrDnf}"
-                                       FontFamily="SpaceMonoBold"
+                                       FontFamily="TitilliumWebBold"
                                        FontSize="13"
                                        HorizontalTextAlignment="End"
                                        VerticalOptions="Center">
@@ -161,7 +161,7 @@
                         <Label Text="&#x1F7E1;"
                                FontSize="16"
                                VerticalOptions="Center" />
-                        <Label FontFamily="SpaceMonoRegular"
+                        <Label FontFamily="TitilliumWebRegular"
                                FontSize="12"
                                TextColor="{StaticResource CoolSlate}"
                                VerticalOptions="Center">
@@ -181,7 +181,7 @@
                         Padding="16"
                         Margin="20,24,20,0">
                     <Label Text="DRIVER STANDINGS"
-                           FontFamily="SpaceMonoBold"
+                           FontFamily="TitilliumWebBold"
                            FontSize="13"
                            TextColor="{StaticResource PureWhite}"
                            CharacterSpacing="3"
@@ -193,17 +193,17 @@
                       ColumnSpacing="8">
                     <Label Grid.Column="0"
                            Text="#"
-                           FontFamily="SpaceMonoBold"
+                           FontFamily="TitilliumWebBold"
                            FontSize="10"
                            TextColor="{StaticResource TextMuted}" />
                     <Label Grid.Column="1"
                            Text="DRIVER"
-                           FontFamily="SpaceMonoBold"
+                           FontFamily="TitilliumWebBold"
                            FontSize="10"
                            TextColor="{StaticResource TextMuted}" />
                     <Label Grid.Column="2"
                            Text="PTS"
-                           FontFamily="SpaceMonoBold"
+                           FontFamily="TitilliumWebBold"
                            FontSize="10"
                            TextColor="{StaticResource TextMuted}" />
                 </Grid>
@@ -216,7 +216,7 @@
                                   ColumnSpacing="8">
                                 <Label Grid.Column="0"
                                        Text="{Binding Position}"
-                                       FontFamily="SpaceMonoBold"
+                                       FontFamily="TitilliumWebBold"
                                        FontSize="12"
                                        TextColor="{StaticResource PureWhite}"
                                        VerticalOptions="Center" />
@@ -224,7 +224,7 @@
                                                      VerticalOptions="Center"
                                                      Spacing="1">
                                     <Label Text="{Binding DriverName}"
-                                           FontFamily="SpaceMonoRegular"
+                                           FontFamily="TitilliumWebRegular"
                                            FontSize="12"
                                            TextColor="{StaticResource PureWhite}" />
                                     <Label Text="{Binding TeamName}"
@@ -233,7 +233,7 @@
                                 </VerticalStackLayout>
                                 <Label Grid.Column="2"
                                        Text="{Binding Points}"
-                                       FontFamily="SpaceMonoBold"
+                                       FontFamily="TitilliumWebBold"
                                        FontSize="13"
                                        TextColor="{StaticResource RacingRed}"
                                        VerticalOptions="Center" />
@@ -250,7 +250,7 @@
                         Padding="16"
                         Margin="20,24,20,0">
                     <Label Text="CONSTRUCTOR STANDINGS"
-                           FontFamily="SpaceMonoBold"
+                           FontFamily="TitilliumWebBold"
                            FontSize="13"
                            TextColor="{StaticResource PureWhite}"
                            CharacterSpacing="3"
@@ -262,17 +262,17 @@
                       ColumnSpacing="8">
                     <Label Grid.Column="0"
                            Text="#"
-                           FontFamily="SpaceMonoBold"
+                           FontFamily="TitilliumWebBold"
                            FontSize="10"
                            TextColor="{StaticResource TextMuted}" />
                     <Label Grid.Column="1"
                            Text="TEAM"
-                           FontFamily="SpaceMonoBold"
+                           FontFamily="TitilliumWebBold"
                            FontSize="10"
                            TextColor="{StaticResource TextMuted}" />
                     <Label Grid.Column="2"
                            Text="PTS"
-                           FontFamily="SpaceMonoBold"
+                           FontFamily="TitilliumWebBold"
                            FontSize="10"
                            TextColor="{StaticResource TextMuted}" />
                 </Grid>
@@ -285,19 +285,19 @@
                                   ColumnSpacing="8">
                                 <Label Grid.Column="0"
                                        Text="{Binding Position}"
-                                       FontFamily="SpaceMonoBold"
+                                       FontFamily="TitilliumWebBold"
                                        FontSize="12"
                                        TextColor="{StaticResource PureWhite}"
                                        VerticalOptions="Center" />
                                 <Label Grid.Column="1"
                                        Text="{Binding TeamName}"
-                                       FontFamily="SpaceMonoRegular"
+                                       FontFamily="TitilliumWebRegular"
                                        FontSize="12"
                                        TextColor="{StaticResource PureWhite}"
                                        VerticalOptions="Center" />
                                 <Label Grid.Column="2"
                                        Text="{Binding Points}"
-                                       FontFamily="SpaceMonoBold"
+                                       FontFamily="TitilliumWebBold"
                                        FontSize="13"
                                        TextColor="{StaticResource RacingRed}"
                                        VerticalOptions="Center" />
