@@ -21,6 +21,10 @@ public static class MauiProgram
                 fonts.AddFont("SpaceMono-Bold.ttf", "SpaceMonoBold");
                 fonts.AddFont("JetBrainsMono-Regular.ttf", "JetBrainsMonoRegular");
                 fonts.AddFont("JetBrainsMono-Bold.ttf", "JetBrainsMonoBold");
+                fonts.AddFont("BebasNeue-Regular.ttf", "BebasNeue");
+                fonts.AddFont("TitilliumWeb-Regular.ttf", "TitilliumWebRegular");
+                fonts.AddFont("TitilliumWeb-SemiBold.ttf", "TitilliumWebSemiBold");
+                fonts.AddFont("TitilliumWeb-Bold.ttf", "TitilliumWebBold");
             });
 
 #if DEBUG

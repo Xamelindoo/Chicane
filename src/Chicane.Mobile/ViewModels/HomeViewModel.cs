@@ -227,10 +227,26 @@ public partial class HomeViewModel : ObservableObject
     private async Task LoadWeatherAsync(RaceEvent raceEvent)
     {
         var daysUntil = (raceEvent.ScheduledDateTime - DateTime.UtcNow).TotalDays;
+
         if (daysUntil <= 7 && daysUntil > 0)
         {
             WeatherForecast = await weatherService.GetForecastAsync(
                 raceEvent.Circuit.Name, raceEvent.Circuit.Country, raceEvent.ScheduledDateTime);
+            if (WeatherForecast is not null)
+                WeatherForecast = WeatherForecast with { IsApproximate = false };
+        }
+        else if (daysUntil <= 16)
+        {
+            WeatherForecast = new WeatherForecast
+            {
+                Condition = "Check back closer to race day",
+                TemperatureC = 22,
+                WindSpeed = 0,
+                Humidity = 50,
+                Pressure = 1013,
+                IconGlyph = "\u26A0",
+                IsApproximate = true,
+            };
         }
         else
         {

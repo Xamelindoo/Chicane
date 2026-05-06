@@ -1,6 +1,6 @@
 namespace Chicane.Mobile.Models;
 
-public class WeatherForecast
+public record WeatherForecast
 {
     public string Condition { get; init; } = string.Empty;
     public int TemperatureC { get; init; }
