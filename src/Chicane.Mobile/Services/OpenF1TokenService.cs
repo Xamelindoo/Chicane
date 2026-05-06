@@ -1,7 +1,5 @@
 using System.Diagnostics;
-using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace Chicane.Mobile.Services;
 
@@ -41,10 +39,22 @@ public class OpenF1TokenService
             response.EnsureSuccessStatusCode();
 
             var json = await response.Content.ReadAsStringAsync();
-            var tokenResponse = JsonSerializer.Deserialize<OpenF1TokenResponse>(json);
+            var doc = JsonDocument.Parse(json);
+            var root = doc.RootElement;
 
-            _accessToken = tokenResponse?.AccessToken ?? throw new InvalidOperationException("No token in response");
-            _expiresAt = DateTime.UtcNow.AddSeconds(tokenResponse?.ExpiresIn ?? 3600);
+            _accessToken = root.GetProperty("access_token").GetString()
+                ?? throw new InvalidOperationException("No access_token");
+
+            if (root.TryGetProperty("expires_in", out var exp))
+            {
+                _expiresAt = exp.ValueKind == JsonValueKind.String
+                    ? DateTime.UtcNow.AddSeconds(int.Parse(exp.GetString()!))
+                    : DateTime.UtcNow.AddSeconds(exp.GetInt32());
+            }
+            else
+            {
+                _expiresAt = DateTime.UtcNow.AddHours(1);
+            }
 
             Debug.WriteLine($"[OpenF1] Token ok, expires at {_expiresAt}");
 
@@ -67,14 +77,5 @@ public class OpenF1TokenService
             try { _accessToken = null; await GetTokenAsync(); }
             catch (Exception ex) { Debug.WriteLine($"[OpenF1] Refresh failed: {ex.Message}"); }
         }, null, interval, interval);
-    }
-
-    private class OpenF1TokenResponse
-    {
-        [JsonPropertyName("access_token")]
-        public string? AccessToken { get; set; }
-
-        [JsonPropertyName("expires_in")]
-        public int ExpiresIn { get; set; }
     }
 }
