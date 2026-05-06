@@ -140,7 +140,7 @@ public partial class HomeViewModel : ObservableObject
             eventDateTime = raceEvent.ScheduledDateTime;
             CircuitName = raceEvent.Circuit.Name;
             CircuitLocation = $"{raceEvent.Circuit.Name}, {raceEvent.Circuit.Country}";
-            CircuitMapUrl = GetCircuitMapUrl(raceEvent.Circuit.Country);
+            CircuitMapUrl = GetCircuitMapUrl(raceEvent.Circuit.Country, categoryId);
             HasCircuitMap = !string.IsNullOrWhiteSpace(CircuitMapUrl);
             CircuitImage = raceEvent.Circuit.ImageUrl;
 
@@ -288,20 +288,25 @@ public partial class HomeViewModel : ObservableObject
         ShowWeatherDetail = false;
     }
 
-    private static string GetCircuitMapUrl(string country) => country switch
+    private static string GetCircuitMapUrl(string country, string categoryId)
     {
-        "Australia" => "https://www.formula1.com/content/dam/fom-website/2018-redesign-assets/Circuit%20maps%2016x9/Australia_Circuit.png",
-        "Italy" => "https://www.formula1.com/content/dam/fom-website/2018-redesign-assets/Circuit%20maps%2016x9/Italy_Circuit.png",
-        "Great Britain" => "https://www.formula1.com/content/dam/fom-website/2018-redesign-assets/Circuit%20maps%2016x9/Great_Britain_Circuit.png",
-        "Monaco" => "https://www.formula1.com/content/dam/fom-website/2018-redesign-assets/Circuit%20maps%2016x9/Monaco_Circuit.png",
-        "Belgium" => "https://www.formula1.com/content/dam/fom-website/2018-redesign-assets/Circuit%20maps%2016x9/Belgium_Circuit.png",
-        "Japan" => "https://www.formula1.com/content/dam/fom-website/2018-redesign-assets/Circuit%20maps%2016x9/Japan_Circuit.png",
-        "USA" => "https://www.formula1.com/content/dam/fom-website/2018-redesign-assets/Circuit%20maps%2016x9/USA_Circuit.png",
-        "Spain" => "https://www.formula1.com/content/dam/fom-website/2018-redesign-assets/Circuit%20maps%2016x9/Spain_Circuit.png",
-        "France" => "https://www.formula1.com/content/dam/fom-website/2018-redesign-assets/Circuit%20maps%2016x9/France_Circuit.png",
-        "Austria" => "https://www.formula1.com/content/dam/fom-website/2018-redesign-assets/Circuit%20maps%2016x9/Austria_Circuit.png",
-        _ => "",
-    };
+        if (categoryId != "f1") return "";
+
+        return country switch
+        {
+            "Australia" => "https://www.formula1.com/content/dam/fom-website/2018-redesign-assets/Circuit%20maps%2016x9/Australia_Circuit.png",
+            "Italy" => "https://www.formula1.com/content/dam/fom-website/2018-redesign-assets/Circuit%20maps%2016x9/Italy_Circuit.png",
+            "Great Britain" => "https://www.formula1.com/content/dam/fom-website/2018-redesign-assets/Circuit%20maps%2016x9/Great_Britain_Circuit.png",
+            "Monaco" => "https://www.formula1.com/content/dam/fom-website/2018-redesign-assets/Circuit%20maps%2016x9/Monaco_Circuit.png",
+            "Belgium" => "https://www.formula1.com/content/dam/fom-website/2018-redesign-assets/Circuit%20maps%2016x9/Belgium_Circuit.png",
+            "Japan" => "https://www.formula1.com/content/dam/fom-website/2018-redesign-assets/Circuit%20maps%2016x9/Japan_Circuit.png",
+            "USA" => "https://www.formula1.com/content/dam/fom-website/2018-redesign-assets/Circuit%20maps%2016x9/USA_Circuit.png",
+            "Spain" => "https://www.formula1.com/content/dam/fom-website/2018-redesign-assets/Circuit%20maps%2016x9/Spain_Circuit.png",
+            "France" => "https://www.formula1.com/content/dam/fom-website/2018-redesign-assets/Circuit%20maps%2016x9/France_Circuit.png",
+            "Austria" => "https://www.formula1.com/content/dam/fom-website/2018-redesign-assets/Circuit%20maps%2016x9/Austria_Circuit.png",
+            _ => "",
+        };
+    }
 
     private void StartCountdown()
     {
