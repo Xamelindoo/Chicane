@@ -88,8 +88,9 @@
 
                     <!-- Center: Countdown (Pre-Race) or Live Data -->
                     <Grid Grid.Row="1"
-                          VerticalOptions="End"
-                          HorizontalOptions="Center">
+                          VerticalOptions="Center"
+                          HorizontalOptions="Center"
+                          Margin="0,40,0,0">
 
                         <!-- Pre-Race Countdown -->
                         <VerticalStackLayout IsVisible="{Binding IsPreRace}"
