@@ -8,7 +8,8 @@ namespace Chicane.Mobile.Services;
 public class SportmonksService : IF1DataService, IRaceCalendarService
 {
     private readonly HttpClient _http;
-    private const string BaseUrl = "https://api.sportmonks.com/v3/formula1";
+    private const string BaseUrl = "https://api.sportmonks.com/v3/motorsport";
+    private const int F1LeagueId = 3468;
     private static int? _currentSeasonId;
 
     public SportmonksService(HttpClient http)
@@ -67,7 +68,7 @@ public class SportmonksService : IF1DataService, IRaceCalendarService
             if (seasonId is null) { Debug.WriteLine("[SM] Season null"); return new(); }
 
             var response = await _http.GetFromJsonAsync<SportmonksResponse<SportmonksStanding>>(
-                $"{BaseUrl}/standings/drivers?api_token={SecretsConfig.SportmonksApiKey}&season_id={seasonId}&include=participant.team");
+                $"{BaseUrl}/standings/seasons/{seasonId}?api_token={SecretsConfig.SportmonksApiKey}&include=participant.team");
 
             var result = (response?.Data ?? new()).Select(s => new StandingsEntry
             {
@@ -91,14 +92,19 @@ public class SportmonksService : IF1DataService, IRaceCalendarService
             if (seasonId is null) return new();
 
             var response = await _http.GetFromJsonAsync<SportmonksResponse<SportmonksStanding>>(
-                $"{BaseUrl}/standings/constructors?api_token={SecretsConfig.SportmonksApiKey}&season_id={seasonId}");
+                $"{BaseUrl}/standings/seasons/{seasonId}?api_token={SecretsConfig.SportmonksApiKey}&include=participant.team");
 
-            return (response?.Data ?? new()).Select(s => new ConstructorStandingsEntry
+            var teamPoints = new Dictionary<string, int>();
+            foreach (var s in response?.Data ?? new())
             {
-                Position = s.Position,
-                TeamName = s.Participant?.Name ?? s.Team?.Name ?? "Unknown",
-                Points = s.Points,
-            }).ToList();
+                var teamName = s.Participant?.Team?.Name;
+                if (string.IsNullOrWhiteSpace(teamName)) continue;
+                if (!teamPoints.ContainsKey(teamName)) teamPoints[teamName] = 0;
+                teamPoints[teamName] += s.Points;
+            }
+            return teamPoints.OrderByDescending(kv => kv.Value)
+                .Select((kv, i) => new ConstructorStandingsEntry { Position = i + 1, TeamName = kv.Key, Points = kv.Value })
+                .Take(10).ToList();
         }
         catch (Exception ex) { Debug.WriteLine($"[SM] Constructors: {ex.Message}"); return new(); }
     }
@@ -222,7 +228,7 @@ public class SportmonksService : IF1DataService, IRaceCalendarService
         try
         {
             var response = await _http.GetFromJsonAsync<SportmonksResponse<SportmonksSeason>>(
-                $"{BaseUrl}/seasons?api_token={SecretsConfig.SportmonksApiKey}");
+                $"{BaseUrl}/seasons?api_token={SecretsConfig.SportmonksApiKey}&league_id={F1LeagueId}");
             _currentSeasonId = response?.Data.FirstOrDefault()?.Id;
             Debug.WriteLine($"[SM] Season ID: {_currentSeasonId}");
             return _currentSeasonId;
