@@ -88,7 +88,7 @@
 
                     <!-- Center: Countdown (Pre-Race) or Live Data -->
                     <Grid Grid.Row="1"
-                          VerticalOptions="Center"
+                          VerticalOptions="End"
                           HorizontalOptions="Center">
 
                         <!-- Pre-Race Countdown -->
