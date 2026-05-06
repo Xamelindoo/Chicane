@@ -100,10 +100,6 @@ public class MockF1DataService : IF1DataService
     {
         var standings = categoryId switch
         {
-            "f1" => F1Standings(),
-            "wec" => WecStandings(),
-            "wrc" => WrcStandings(),
-            "motogp" => MotoGpStandings(),
             _ => new List<StandingsEntry>()
         };
         return Task.FromResult(standings);
@@ -113,7 +109,6 @@ public class MockF1DataService : IF1DataService
     {
         var standings = categoryId switch
         {
-            "f1" => F1ConstructorStandings(),
             "wec" => WecConstructorStandings(),
             "wrc" => WrcConstructorStandings(),
             "motogp" => MotoGpConstructorStandings(),
@@ -126,7 +121,6 @@ public class MockF1DataService : IF1DataService
     {
         var positions = categoryId switch
         {
-            "f1" => F1Track(),
             "wec" => WecTrack(),
             "wrc" => WrcTrack(),
             "motogp" => MotoGpTrack(),
@@ -134,15 +128,6 @@ public class MockF1DataService : IF1DataService
         };
         return Task.FromResult(positions);
     }
-
-    private static List<StandingsEntry> F1Standings() => new()
-    {
-        new() { Position = 1, DriverName = "M. VERSTAPPEN", TeamName = "Red Bull Racing", Points = 278 },
-        new() { Position = 2, DriverName = "L. HAMILTON", TeamName = "Mercedes", Points = 235 },
-        new() { Position = 3, DriverName = "C. LECLERC", TeamName = "Ferrari", Points = 218 },
-        new() { Position = 4, DriverName = "O. PIASTRI", TeamName = "McLaren", Points = 196 },
-        new() { Position = 5, DriverName = "L. NORRIS", TeamName = "McLaren", Points = 182 },
-    };
 
     private static List<StandingsEntry> WecStandings() => new()
     {
@@ -171,15 +156,6 @@ public class MockF1DataService : IF1DataService
         new() { Position = 5, DriverName = "Brad BINDER", TeamName = "Red Bull KTM", Points = 185 },
     };
 
-    private static List<ConstructorStandingsEntry> F1ConstructorStandings() => new()
-    {
-        new() { Position = 1, TeamName = "Red Bull Racing", Points = 443 },
-        new() { Position = 2, TeamName = "Mercedes", Points = 383 },
-        new() { Position = 3, TeamName = "Ferrari", Points = 343 },
-        new() { Position = 4, TeamName = "McLaren", Points = 378 },
-        new() { Position = 5, TeamName = "Aston Martin", Points = 216 },
-    };
-
     private static List<ConstructorStandingsEntry> WecConstructorStandings() => new()
     {
         new() { Position = 1, TeamName = "Toyota Gazoo Racing", Points = 145 },
@@ -205,13 +181,6 @@ public class MockF1DataService : IF1DataService
         new() { Position = 3, TeamName = "Aprilia Racing", Points = 310 },
         new() { Position = 4, TeamName = "Red Bull KTM", Points = 285 },
         new() { Position = 5, TeamName = "Gresini Ducati", Points = 260 },
-    };
-
-    private static List<TrackPosition> F1Track() => new()
-    {
-        new() { Position = 1, DriverName = "M. VERSTAPPEN", Sector = 3, LastTime = "1:24.332" },
-        new() { Position = 2, DriverName = "L. HAMILTON", Sector = 3, LastTime = "1:24.546" },
-        new() { Position = 3, DriverName = "C. LECLERC", Sector = 2, LastTime = "1:24.810" },
     };
 
     private static List<TrackPosition> WecTrack() => new()
