@@ -120,3 +120,34 @@ public class SportmonksSeason
     [JsonPropertyName("league_id")]
     public int LeagueId { get; set; }
 }
+
+// ──────── Fixture Results ────────
+public class SportmonksFixtureResult
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    [JsonPropertyName("position")]
+    public int Position { get; set; }
+
+    [JsonPropertyName("participant_id")]
+    public int ParticipantId { get; set; }
+
+    [JsonPropertyName("participant")]
+    public SportmonksParticipant? Participant { get; set; }
+
+    [JsonPropertyName("status")]
+    public string Status { get; set; } = string.Empty;
+
+    [JsonPropertyName("time")]
+    public SportmonksTime? Time { get; set; }
+
+    [JsonPropertyName("fastest_lap_rank")]
+    public int? FastestLapRank { get; set; }
+}
+
+public class SportmonksTime
+{
+    [JsonPropertyName("value")]
+    public string Value { get; set; } = string.Empty;
+}

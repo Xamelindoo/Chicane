@@ -198,14 +198,54 @@ public class SportmonksService : IF1DataService, IRaceCalendarService
 
     public async Task<PastRaceDetail> GetPastRaceDetailAsync(string eventName, string categoryId)
     {
-        return new PastRaceDetail
+        try
         {
-            EventName = eventName,
-            EventDate = DateTime.UtcNow.AddDays(-30),
-            YellowFlagCount = 0,
-            Results = new() { new() { Position = 1, DriverName = "Results from Sportmonks", TeamName = "TBD", TimeOrDnf = "--:--" } },
-            DriverStandings = new() { new() { Position = 1, DriverName = "Data loading...", TeamName = "TBD", Points = 0 } },
-            ConstructorStandings = new() { new() { Position = 1, TeamName = "Data loading...", Points = 0 } },
-        };
+            var to = DateTime.UtcNow.ToString("yyyy-MM-dd");
+            var from = DateTime.UtcNow.AddMonths(-6).ToString("yyyy-MM-dd");
+
+            var fixturesResponse = await _http.GetFromJsonAsync<SportmonksResponse<SportmonksFixture>>(
+                $"{BaseUrl}/fixtures/between/{from}/{to}?api_token={SecretsConfig.SportmonksApiKey}&league_id={F1LeagueId}");
+
+            var fixture = fixturesResponse?.Data
+                .FirstOrDefault(f => f.HasResults && f.Name.ToUpper().Contains(eventName.ToUpper()));
+
+            if (fixture is null) return EmptyDetail(eventName);
+
+            var resultsResponse = await _http.GetFromJsonAsync<SportmonksResponse<SportmonksFixtureResult>>(
+                $"{BaseUrl}/fixtures/{fixture.Id}/results?api_token={SecretsConfig.SportmonksApiKey}&include=participant.team");
+
+            DateTime.TryParse(fixture.StartingAt, out var date);
+            var results = (resultsResponse?.Data ?? new())
+                .Select(r => new RaceResultEntry
+                {
+                    Position = r.Position,
+                    DriverName = r.Participant?.Name ?? $"#{r.ParticipantId}",
+                    TeamName = r.Participant?.Team?.Name ?? "Unknown",
+                    TimeOrDnf = r.Status == "Retired" || r.Status == "Did not finish" ? "DNF" : r.Time?.Value ?? "--:--",
+                    IsDnf = r.Status != "Finished",
+                    IsFastestLap = r.FastestLapRank == 1,
+                })
+                .OrderBy(r => r.IsDnf ? 1 : 0)
+                .ThenBy(r => r.IsDnf ? r.DriverName : "")
+                .ThenBy(r => r.Position)
+                .ToList();
+
+            return new PastRaceDetail
+            {
+                EventName = eventName,
+                EventDate = date,
+                YellowFlagCount = 0,
+                Results = results,
+                DriverStandings = new(),
+                ConstructorStandings = new(),
+            };
+        }
+        catch { return EmptyDetail(eventName); }
     }
+
+    private static PastRaceDetail EmptyDetail(string name) => new()
+    {
+        EventName = name, EventDate = DateTime.UtcNow.AddDays(-30),
+        Results = new() { new() { Position = 1, DriverName = "Loading...", TeamName = "TBD", TimeOrDnf = "--:--" } },
+    };
 }
