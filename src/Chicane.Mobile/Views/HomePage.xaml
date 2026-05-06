@@ -66,12 +66,12 @@
                 <!-- ═══════════ HERO SECTION (100vh) ═══════════ -->
                 <Grid RowDefinitions="Auto,*"
                       HeightRequest="{Binding HeroHeight}"
-                       Padding="20,40,20,20">
+                       Padding="20,56,20,20">
 
                     <!-- Top: Category Pill + Event Label -->
                     <VerticalStackLayout Grid.Row="0"
                                          HorizontalOptions="Center"
-                                          Spacing="16">
+                                         Spacing="6">
                         <Label x:Name="CategoryPill"
                                HorizontalOptions="Center"
                                InputTransparent="False" />
@@ -84,58 +84,17 @@
                         <Label Text="{Binding EventName}"
                                Style="{StaticResource Headline}"
                                HorizontalOptions="Center" />
-                        <Label Text="{Binding CircuitLocation}"
-                               FontFamily="TitilliumWebRegular"
-                               FontSize="12"
-                               TextColor="{StaticResource CoolSlate}"
-                               HorizontalOptions="Center" />
                     </VerticalStackLayout>
 
-                    <!-- Toggle Button (debug, top-right) -->
-                    <Border Grid.Row="0"
-                            Stroke="{StaticResource PureWhite}"
-                            StrokeThickness="1"
-                            StrokeShape="RoundRectangle 4"
-                            BackgroundColor="#20FFFFFF"
-                            Padding="10,4"
-                            HorizontalOptions="End"
-                            VerticalOptions="Start"
-                            Margin="0,5,0,0">
-                        <Border.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding SimulateLiveCommand}" />
-                        </Border.GestureRecognizers>
-                        <Label FontFamily="TitilliumWebSemiBold"
-                               FontSize="9"
-                               TextColor="{StaticResource PureWhite}"
-                               CharacterSpacing="2">
-                            <Label.Triggers>
-                                <DataTrigger TargetType="Label" Binding="{Binding IsPreRace}" Value="True">
-                                    <Setter Property="Text" Value="LIVE" />
-                                </DataTrigger>
-                                <DataTrigger TargetType="Label" Binding="{Binding IsPreRace}" Value="False">
-                                    <Setter Property="Text" Value="PRE-RACE" />
-                                </DataTrigger>
-                            </Label.Triggers>
-                        </Label>
-                    </Border>
-
-                    <!-- Center: Circuit Map + Countdown (Pre-Race) or Live Data -->
+                    <!-- Center: Countdown (Pre-Race) or Live Data -->
                     <Grid Grid.Row="1"
-                          VerticalOptions="Start"
-                          HorizontalOptions="Center"
-                          Margin="0,16,0,0">
+                          VerticalOptions="Center"
+                          HorizontalOptions="Center">
 
                         <!-- Pre-Race Countdown -->
                         <VerticalStackLayout IsVisible="{Binding IsPreRace}"
                                              Spacing="10"
                                              HorizontalOptions="Center">
-
-                            <!-- Circuit Map -->
-                            <Image Source="{Binding CircuitMapUrl}"
-                                   IsVisible="{Binding HasCircuitMap}"
-                                   Aspect="AspectFit"
-                                   HeightRequest="140"
-                                   HorizontalOptions="Center" />
 
                             <FlexLayout Direction="Row"
                                         AlignItems="Center"
