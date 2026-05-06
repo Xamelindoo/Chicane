@@ -31,6 +31,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<HttpClient>();
         builder.Services.AddSingleton<ErgastApiService>();
         builder.Services.AddSingleton<OpenF1Service>();
+        builder.Services.AddSingleton<SportmonksService>();
 
         // News service
         builder.Services.AddSingleton<INewsService, Rss2JsonService>();

@@ -5,26 +5,35 @@ namespace Chicane.Mobile.Services;
 public class DispatchingF1DataService : IF1DataService
 {
     private readonly ErgastApiService _ergast;
+    private readonly SportmonksService _sportmonks;
     private readonly MockF1DataService _mock;
 
-    public DispatchingF1DataService(ErgastApiService ergast, MockF1DataService mock)
+    public DispatchingF1DataService(ErgastApiService ergast, SportmonksService sportmonks, MockF1DataService mock)
     {
         _ergast = ergast;
+        _sportmonks = sportmonks;
         _mock = mock;
     }
 
+    private IF1DataService ResolveService(string categoryId) => categoryId switch
+    {
+        "f1" => _ergast,
+        "motogp" => _sportmonks,
+        _ => _mock,
+    };
+
     public Task<RaceEvent> GetNextEventAsync(string categoryId)
-        => categoryId == "f1" ? _ergast.GetNextEventAsync(categoryId) : _mock.GetNextEventAsync(categoryId);
+        => ResolveService(categoryId).GetNextEventAsync(categoryId);
 
     public Task<LiveSessionData> GetLiveSessionDataAsync(string categoryId)
-        => categoryId == "f1" ? _ergast.GetLiveSessionDataAsync(categoryId) : _mock.GetLiveSessionDataAsync(categoryId);
+        => ResolveService(categoryId).GetLiveSessionDataAsync(categoryId);
 
     public Task<List<StandingsEntry>> GetStandingsAsync(string categoryId)
-        => categoryId == "f1" ? _ergast.GetStandingsAsync(categoryId) : _mock.GetStandingsAsync(categoryId);
+        => ResolveService(categoryId).GetStandingsAsync(categoryId);
 
     public Task<List<ConstructorStandingsEntry>> GetConstructorStandingsAsync(string categoryId)
-        => categoryId == "f1" ? _ergast.GetConstructorStandingsAsync(categoryId) : _mock.GetConstructorStandingsAsync(categoryId);
+        => ResolveService(categoryId).GetConstructorStandingsAsync(categoryId);
 
     public Task<List<TrackPosition>> GetTrackPositionsAsync(string categoryId)
-        => categoryId == "f1" ? _ergast.GetTrackPositionsAsync(categoryId) : _mock.GetTrackPositionsAsync(categoryId);
+        => ResolveService(categoryId).GetTrackPositionsAsync(categoryId);
 }
