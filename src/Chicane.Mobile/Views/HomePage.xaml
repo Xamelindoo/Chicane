@@ -97,9 +97,42 @@
                         <Label Text="{Binding EventName}"
                                Style="{StaticResource Headline}"
                                HorizontalOptions="Center" />
+                        <Label Text="{Binding CircuitLocation}"
+                               FontFamily="TitilliumWebRegular"
+                               FontSize="12"
+                               TextColor="{StaticResource CoolSlate}"
+                               HorizontalOptions="Center" />
                     </VerticalStackLayout>
 
-                    <!-- Center: Countdown (Pre-Race) or Live Data -->
+                    <!-- Toggle Button (debug, top-right) -->
+                    <Border Grid.Row="0"
+                            Stroke="{StaticResource PureWhite}"
+                            StrokeThickness="1"
+                            StrokeShape="RoundRectangle 4"
+                            BackgroundColor="#20FFFFFF"
+                            Padding="10,4"
+                            HorizontalOptions="End"
+                            VerticalOptions="Start"
+                            Margin="0,60,0,0">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding SimulateLiveCommand}" />
+                        </Border.GestureRecognizers>
+                        <Label FontFamily="TitilliumWebSemiBold"
+                               FontSize="9"
+                               TextColor="{StaticResource PureWhite}"
+                               CharacterSpacing="2">
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label" Binding="{Binding IsPreRace}" Value="True">
+                                    <Setter Property="Text" Value="LIVE" />
+                                </DataTrigger>
+                                <DataTrigger TargetType="Label" Binding="{Binding IsPreRace}" Value="False">
+                                    <Setter Property="Text" Value="PRE-RACE" />
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
+                    </Border>
+
+                    <!-- Center: Circuit Map + Countdown (Pre-Race) or Live Data -->
                     <Grid Grid.Row="1"
                           VerticalOptions="Center"
                           HorizontalOptions="Center">
@@ -108,6 +141,13 @@
                         <VerticalStackLayout IsVisible="{Binding IsPreRace}"
                                              Spacing="10"
                                              HorizontalOptions="Center">
+
+                            <!-- Circuit Map -->
+                            <Image Source="{Binding CircuitMapUrl}"
+                                   Aspect="AspectFit"
+                                   HeightRequest="180"
+                                   HorizontalOptions="Center" />
+
                             <FlexLayout Direction="Row"
                                         AlignItems="Center"
                                         JustifyContent="Center"
