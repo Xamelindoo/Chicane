@@ -121,7 +121,7 @@
 
                     <!-- Center: Circuit Map + Countdown (Pre-Race) or Live Data -->
                     <Grid Grid.Row="1"
-                          VerticalOptions="Start"
+                          VerticalOptions="End"
                           HorizontalOptions="Center">
 
                         <!-- Pre-Race Countdown -->
@@ -181,16 +181,35 @@
                                     <Label Text="{Binding WeatherForecast.IconGlyph}"
                                            FontSize="14"
                                            VerticalOptions="Center" />
+                                    <!-- Normal weather -->
                                     <Label FontFamily="TitilliumWebRegular"
                                            FontSize="11"
                                            TextColor="{StaticResource CoolSlate}"
-                                           VerticalOptions="Center">
+                                           VerticalOptions="Center"
+                                           IsVisible="{Binding WeatherForecast.IsApproximate, FallbackValue=False, Converter={x:Null}}">
+                                        <Label.Triggers>
+                                            <DataTrigger TargetType="Label" Binding="{Binding WeatherForecast.IsApproximate}" Value="True">
+                                                <Setter Property="IsVisible" Value="False" />
+                                            </DataTrigger>
+                                        </Label.Triggers>
                                         <Label.Text>
                                             <MultiBinding StringFormat="{}{0} - {1}°C">
                                                 <Binding Path="WeatherForecast.Condition" FallbackValue="N/A" />
                                                 <Binding Path="WeatherForecast.TemperatureC" FallbackValue="--" />
                                             </MultiBinding>
                                         </Label.Text>
+                                    </Label>
+                                    <!-- Approximate weather -->
+                                    <Label Text="{Binding WeatherForecast.Condition}"
+                                           FontFamily="TitilliumWebRegular"
+                                           FontSize="11"
+                                           TextColor="{StaticResource CoolSlate}"
+                                           VerticalOptions="Center">
+                                        <Label.Triggers>
+                                            <DataTrigger TargetType="Label" Binding="{Binding WeatherForecast.IsApproximate}" Value="False">
+                                                <Setter Property="IsVisible" Value="False" />
+                                            </DataTrigger>
+                                        </Label.Triggers>
                                     </Label>
                                 </HorizontalStackLayout>
                             </Border>

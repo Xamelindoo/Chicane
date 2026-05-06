@@ -8,8 +8,7 @@ namespace Chicane.Mobile.Services;
 public class SportmonksService : IF1DataService, IRaceCalendarService
 {
     private readonly HttpClient _http;
-    private const string BaseUrl = "https://api.sportmonks.com/v3/motorsport";
-    private const int F1LeagueId = 3468;
+    private const string BaseUrl = "https://api.sportmonks.com/v3/formula1";
     private static int? _currentSeasonId;
 
     public SportmonksService(HttpClient http)
@@ -25,7 +24,7 @@ public class SportmonksService : IF1DataService, IRaceCalendarService
             var to = DateTime.UtcNow.AddMonths(3).ToString("yyyy-MM-dd");
 
             var response = await _http.GetFromJsonAsync<SportmonksResponse<SportmonksFixture>>(
-                $"{BaseUrl}/fixtures/between/{from}/{to}?api_token={SecretsConfig.SportmonksApiKey}&league_id={F1LeagueId}&include=venue.country");
+                $"{BaseUrl}/fixtures/between/{from}/{to}?api_token={SecretsConfig.SportmonksApiKey}&include=venue.country");
 
             var fixture = response?.Data.FirstOrDefault();
             if (fixture is null) return DefaultEvent();
@@ -48,8 +47,6 @@ public class SportmonksService : IF1DataService, IRaceCalendarService
 
     public async Task<LiveSessionData> GetLiveSessionDataAsync(string categoryId)
     {
-        try { var s = await GetSeasonAsync(); if (s is null) return new(); }
-        catch { return new(); }
         return new LiveSessionData
         {
             SessionName = "RACE", Status = "LIVE", CurrentLap = 28, TotalLaps = 52,
@@ -67,20 +64,23 @@ public class SportmonksService : IF1DataService, IRaceCalendarService
         try
         {
             var seasonId = await GetSeasonAsync();
-            if (seasonId is null) return new();
+            if (seasonId is null) { Debug.WriteLine("[SM] Season null"); return new(); }
 
             var response = await _http.GetFromJsonAsync<SportmonksResponse<SportmonksStanding>>(
-                $"{BaseUrl}/standings/seasons/{seasonId}?api_token={SecretsConfig.SportmonksApiKey}&include=participant.team");
+                $"{BaseUrl}/standings/drivers?api_token={SecretsConfig.SportmonksApiKey}&season_id={seasonId}&include=participant.team");
 
-            return (response?.Data ?? new()).Select(s => new StandingsEntry
+            var result = (response?.Data ?? new()).Select(s => new StandingsEntry
             {
                 Position = s.Position,
                 DriverName = s.Participant?.Name ?? $"#{s.ParticipantId}",
                 TeamName = s.Participant?.Team?.Name ?? "Unknown",
                 Points = s.Points,
             }).ToList();
+
+            Debug.WriteLine($"[SM] GetStandings: {result.Count} drivers");
+            return result;
         }
-        catch { return new(); }
+        catch (Exception ex) { Debug.WriteLine($"[SM] Standings: {ex.Message}"); return new(); }
     }
 
     public async Task<List<ConstructorStandingsEntry>> GetConstructorStandingsAsync(string categoryId)
@@ -91,21 +91,16 @@ public class SportmonksService : IF1DataService, IRaceCalendarService
             if (seasonId is null) return new();
 
             var response = await _http.GetFromJsonAsync<SportmonksResponse<SportmonksStanding>>(
-                $"{BaseUrl}/standings/seasons/{seasonId}?api_token={SecretsConfig.SportmonksApiKey}&include=participant.team");
+                $"{BaseUrl}/standings/constructors?api_token={SecretsConfig.SportmonksApiKey}&season_id={seasonId}");
 
-            var teamPoints = new Dictionary<string, int>();
-            foreach (var s in response?.Data ?? new())
+            return (response?.Data ?? new()).Select(s => new ConstructorStandingsEntry
             {
-                var teamName = s.Participant?.Team?.Name;
-                if (string.IsNullOrWhiteSpace(teamName)) continue;
-                if (!teamPoints.ContainsKey(teamName)) teamPoints[teamName] = 0;
-                teamPoints[teamName] += s.Points;
-            }
-            return teamPoints.OrderByDescending(kv => kv.Value)
-                .Select((kv, i) => new ConstructorStandingsEntry { Position = i + 1, TeamName = kv.Key, Points = kv.Value })
-                .Take(10).ToList();
+                Position = s.Position,
+                TeamName = s.Participant?.Name ?? s.Team?.Name ?? "Unknown",
+                Points = s.Points,
+            }).ToList();
         }
-        catch { return new(); }
+        catch (Exception ex) { Debug.WriteLine($"[SM] Constructors: {ex.Message}"); return new(); }
     }
 
     public Task<List<TrackPosition>> GetTrackPositionsAsync(string categoryId) =>
@@ -116,27 +111,7 @@ public class SportmonksService : IF1DataService, IRaceCalendarService
             new() { Position = 3, DriverName = "C. LECLERC", Sector = 2, LastTime = "1:24.810" },
         });
 
-    private async Task<int?> GetSeasonAsync()
-    {
-        if (_currentSeasonId.HasValue) return _currentSeasonId;
-        try
-        {
-            var response = await _http.GetFromJsonAsync<SportmonksResponse<SportmonksSeason>>(
-                $"{BaseUrl}/seasons?api_token={SecretsConfig.SportmonksApiKey}&league_id={F1LeagueId}");
-            _currentSeasonId = response?.Data.FirstOrDefault()?.Id;
-            return _currentSeasonId;
-        }
-        catch { return null; }
-    }
-
-    private static RaceEvent DefaultEvent() => new()
-    {
-        EventName = "NEXT RACE", ScheduledDateTime = DateTime.UtcNow.AddDays(7),
-        Circuit = new CircuitInfo { Name = "TBD" },
-        Weather = new WeatherInfo { Condition = "N/A", TemperatureC = 20, IconGlyph = "\u2600" }
-    };
-
-    // ─────────── IRaceCalendarService for F1 ───────────
+    // ─────────── IRaceCalendarService ───────────
     public async Task<List<RaceScheduleEntry>> GetUpcomingRacesAsync(string categoryId)
     {
         try
@@ -145,7 +120,7 @@ public class SportmonksService : IF1DataService, IRaceCalendarService
             var to = DateTime.UtcNow.AddMonths(6).ToString("yyyy-MM-dd");
 
             var response = await _http.GetFromJsonAsync<SportmonksResponse<SportmonksFixture>>(
-                $"{BaseUrl}/fixtures/between/{from}/{to}?api_token={SecretsConfig.SportmonksApiKey}&league_id={F1LeagueId}&include=venue.country");
+                $"{BaseUrl}/fixtures/between/{from}/{to}?api_token={SecretsConfig.SportmonksApiKey}&include=venue.country");
 
             return (response?.Data ?? new()).Select(f =>
             {
@@ -163,7 +138,7 @@ public class SportmonksService : IF1DataService, IRaceCalendarService
                 };
             }).OrderBy(r => r.EventDate).ToList();
         }
-        catch { return new(); }
+        catch (Exception ex) { Debug.WriteLine($"[SM] Upcoming: {ex.Message}"); return new(); }
     }
 
     public async Task<List<RaceScheduleEntry>> GetPastRacesAsync(string categoryId)
@@ -174,7 +149,7 @@ public class SportmonksService : IF1DataService, IRaceCalendarService
             var from = DateTime.UtcNow.AddMonths(-6).ToString("yyyy-MM-dd");
 
             var response = await _http.GetFromJsonAsync<SportmonksResponse<SportmonksFixture>>(
-                $"{BaseUrl}/fixtures/between/{from}/{to}?api_token={SecretsConfig.SportmonksApiKey}&league_id={F1LeagueId}&include=venue.country");
+                $"{BaseUrl}/fixtures/between/{from}/{to}?api_token={SecretsConfig.SportmonksApiKey}&include=venue.country");
 
             return (response?.Data ?? new())
                 .Where(f => f.HasResults)
@@ -194,7 +169,7 @@ public class SportmonksService : IF1DataService, IRaceCalendarService
                     };
                 }).OrderByDescending(r => r.EventDate).ToList();
         }
-        catch { return new(); }
+        catch (Exception ex) { Debug.WriteLine($"[SM] Past: {ex.Message}"); return new(); }
     }
 
     public async Task<PastRaceDetail> GetPastRaceDetailAsync(string eventName, string categoryId)
@@ -205,7 +180,7 @@ public class SportmonksService : IF1DataService, IRaceCalendarService
             var from = DateTime.UtcNow.AddMonths(-6).ToString("yyyy-MM-dd");
 
             var fixturesResponse = await _http.GetFromJsonAsync<SportmonksResponse<SportmonksFixture>>(
-                $"{BaseUrl}/fixtures/between/{from}/{to}?api_token={SecretsConfig.SportmonksApiKey}&league_id={F1LeagueId}");
+                $"{BaseUrl}/fixtures/between/{from}/{to}?api_token={SecretsConfig.SportmonksApiKey}");
 
             var fixture = fixturesResponse?.Data
                 .FirstOrDefault(f => f.HasResults && f.Name.ToUpper().Contains(eventName.ToUpper()));
@@ -233,20 +208,38 @@ public class SportmonksService : IF1DataService, IRaceCalendarService
 
             return new PastRaceDetail
             {
-                EventName = eventName,
-                EventDate = date,
-                YellowFlagCount = 0,
+                EventName = eventName, EventDate = date, YellowFlagCount = 0,
                 Results = results,
-                DriverStandings = new(),
-                ConstructorStandings = new(),
+                DriverStandings = new(), ConstructorStandings = new(),
             };
         }
-        catch { return EmptyDetail(eventName); }
+        catch (Exception ex) { Debug.WriteLine($"[SM] Detail: {ex.Message}"); return EmptyDetail(eventName); }
+    }
+
+    private async Task<int?> GetSeasonAsync()
+    {
+        if (_currentSeasonId.HasValue) return _currentSeasonId;
+        try
+        {
+            var response = await _http.GetFromJsonAsync<SportmonksResponse<SportmonksSeason>>(
+                $"{BaseUrl}/seasons?api_token={SecretsConfig.SportmonksApiKey}");
+            _currentSeasonId = response?.Data.FirstOrDefault()?.Id;
+            Debug.WriteLine($"[SM] Season ID: {_currentSeasonId}");
+            return _currentSeasonId;
+        }
+        catch (Exception ex) { Debug.WriteLine($"[SM] Season fail: {ex.Message}"); return null; }
     }
 
     private static PastRaceDetail EmptyDetail(string name) => new()
     {
         EventName = name, EventDate = DateTime.UtcNow.AddDays(-30),
         Results = new() { new() { Position = 1, DriverName = "Loading...", TeamName = "TBD", TimeOrDnf = "--:--" } },
+    };
+
+    private static RaceEvent DefaultEvent() => new()
+    {
+        EventName = "NEXT RACE", ScheduledDateTime = DateTime.UtcNow.AddDays(7),
+        Circuit = new CircuitInfo { Name = "TBD" },
+        Weather = new WeatherInfo { Condition = "N/A", TemperatureC = 20, IconGlyph = "\u2600" }
     };
 }

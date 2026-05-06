@@ -252,10 +252,10 @@ public partial class HomeViewModel : ObservableObject
             WeatherForecast = new WeatherForecast
             {
                 Condition = "Check back closer to race day",
-                TemperatureC = 22,
+                TemperatureC = 0,
                 WindSpeed = 0,
-                Humidity = 50,
-                Pressure = 1013,
+                Humidity = 0,
+                Pressure = 0,
                 IconGlyph = "\u26A0",
                 IsApproximate = true,
             };
