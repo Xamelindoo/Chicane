@@ -35,6 +35,7 @@ public static class MauiProgram
 
         // News service
         builder.Services.AddSingleton<INewsService, Rss2JsonService>();
+        builder.Services.AddSingleton<IWeatherService, OpenWeatherService>();
 
         // SQLite infrastructure
         builder.Services.AddSingleton<DatabaseService>();

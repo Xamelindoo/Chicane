@@ -10,13 +10,15 @@ public partial class HomeViewModel : ObservableObject
 {
     private readonly IF1DataService f1DataService;
     private readonly ICategoryProvider categoryProvider;
+    private readonly IWeatherService weatherService;
     private IDispatcherTimer? countdownTimer;
     private DateTime eventDateTime;
 
-    public HomeViewModel(IF1DataService f1DataService, ICategoryProvider categoryProvider)
+    public HomeViewModel(IF1DataService f1DataService, ICategoryProvider categoryProvider, IWeatherService weatherService)
     {
         this.f1DataService = f1DataService;
         this.categoryProvider = categoryProvider;
+        this.weatherService = weatherService;
 
         categoryProvider.CategoryChanged += OnCategoryChanged;
     }
@@ -71,13 +73,13 @@ public partial class HomeViewModel : ObservableObject
     public ObservableCollection<CountdownPart> CountdownParts { get; } = new();
 
     [ObservableProperty]
-    private string weatherCondition = string.Empty;
+    private WeatherForecast? weatherForecast;
 
     [ObservableProperty]
-    private string weatherIcon = string.Empty;
+    private bool showWeatherDetail;
 
     [ObservableProperty]
-    private int weatherTemperature;
+    private bool showApproximateWarning;
 
     [ObservableProperty]
     private string circuitName = string.Empty;
@@ -129,10 +131,8 @@ public partial class HomeViewModel : ObservableObject
             eventDateTime = raceEvent.ScheduledDateTime;
             CircuitName = raceEvent.Circuit.Name;
             CircuitImage = raceEvent.Circuit.ImageUrl;
-            WeatherCondition = raceEvent.Weather.Condition;
-            WeatherIcon = raceEvent.Weather.IconGlyph;
-            WeatherTemperature = raceEvent.Weather.TemperatureC;
 
+            await LoadWeatherAsync(raceEvent);
             var standings = await f1DataService.GetStandingsAsync(categoryId);
             Standings.Clear();
             foreach (var entry in standings)
@@ -222,6 +222,42 @@ public partial class HomeViewModel : ObservableObject
         {
             IsBusy = false;
         }
+    }
+
+    private async Task LoadWeatherAsync(RaceEvent raceEvent)
+    {
+        var daysUntil = (raceEvent.ScheduledDateTime - DateTime.UtcNow).TotalDays;
+        if (daysUntil <= 7 && daysUntil > 0)
+        {
+            WeatherForecast = await weatherService.GetForecastAsync(
+                raceEvent.Circuit.Name, raceEvent.Circuit.Country, raceEvent.ScheduledDateTime);
+        }
+        else
+        {
+            WeatherForecast = null;
+        }
+    }
+
+    [RelayCommand]
+    private void ToggleWeatherDetail()
+    {
+        if (WeatherForecast is null)
+        {
+            ErrorMessage = "Previsioni non disponibili";
+            return;
+        }
+        if (WeatherForecast.IsApproximate)
+        {
+            ShowApproximateWarning = true;
+            _ = Task.Run(async () => { await Task.Delay(2000); ShowApproximateWarning = false; });
+        }
+        ShowWeatherDetail = true;
+    }
+
+    [RelayCommand]
+    private void CloseWeatherDetail()
+    {
+        ShowWeatherDetail = false;
     }
 
     private void StartCountdown()
