@@ -10,12 +10,10 @@ namespace Chicane.Mobile.ViewModels;
 public partial class TeamDetailViewModel : ObservableObject
 {
     private readonly ITeamsService teamsService;
-    private readonly ICategoryProvider categoryProvider;
 
-    public TeamDetailViewModel(ITeamsService teamsService, ICategoryProvider categoryProvider)
+    public TeamDetailViewModel(ITeamsService teamsService)
     {
         this.teamsService = teamsService;
-        this.categoryProvider = categoryProvider;
     }
 
     [ObservableProperty]
@@ -75,7 +73,7 @@ public partial class TeamDetailViewModel : ObservableObject
 
         try
         {
-            var detail = await teamsService.GetTeamDetailAsync(TeamName, categoryProvider.CurrentCategory.Id);
+            var detail = await teamsService.GetTeamDetailAsync(TeamName, "f1");
 
             TeamName = detail.TeamName;
             BorderColor = detail.BorderColor;
@@ -113,7 +111,7 @@ public partial class TeamDetailViewModel : ObservableObject
     [RelayCommand]
     private async Task NavigateToRaceAsync(string eventName)
     {
-        await Shell.Current.GoToAsync($"past-race-detail?eventName={Uri.EscapeDataString(eventName)}");
+        await Shell.Current.GoToAsync($"past-race-detail?sessionKey=0");
     }
 
     [RelayCommand]

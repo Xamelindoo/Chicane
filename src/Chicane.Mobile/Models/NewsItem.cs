@@ -10,4 +10,16 @@ public class NewsItem
     public string Source { get; init; } = string.Empty;
 
     public bool HasImage => !string.IsNullOrWhiteSpace(ImageUrl);
+
+    public string TimeAgo
+    {
+        get
+        {
+            var diff = DateTime.UtcNow - PublishedAt;
+            if (diff.TotalMinutes < 1) return "just now";
+            if (diff.TotalMinutes < 60) return $"{(int)diff.TotalMinutes}m ago";
+            if (diff.TotalHours < 24) return $"{(int)diff.TotalHours}h ago";
+            return $"{(int)diff.TotalDays}d ago";
+        }
+    }
 }

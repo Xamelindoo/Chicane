@@ -48,28 +48,19 @@ public static class MauiProgram
         builder.Services.AddSingleton<ScheduleRepository>();
         builder.Services.AddSingleton<TeamsRepository>();
 
-        // Mock services (dependencies for cached wrappers, fallback for non-F1)
-        builder.Services.AddSingleton<MockF1DataService>();
+        // Mock services (fallback only)
         builder.Services.AddSingleton<MockTeamsService>();
         builder.Services.AddSingleton<MockRaceCalendarService>();
 
-        // Data dispatching: F1 → real API, others → mock
-        builder.Services.AddSingleton<DispatchingF1DataService>();
-        builder.Services.AddSingleton<DispatchingScheduleService>();
-
-        // Cached services (real/mock → SQLite → return)
+        // Cached services (OpenF1 → SQLite → return)
         builder.Services.AddSingleton<IF1DataService>(sp => new CachedF1DataService(
-            sp.GetRequiredService<DispatchingF1DataService>(),
+            sp.GetRequiredService<OpenF1ApiService>(),
             sp.GetRequiredService<StandingsRepository>(),
             sp.GetRequiredService<ConstructorStandingsRepository>()));
         builder.Services.AddSingleton<IRaceCalendarService>(sp => new CachedScheduleService(
-            sp.GetRequiredService<DispatchingScheduleService>(),
+            sp.GetRequiredService<OpenF1ApiService>(),
             sp.GetRequiredService<ScheduleRepository>()));
         builder.Services.AddSingleton<ITeamsService, CachedTeamsService>();
-        builder.Services.AddSingleton<ICategoryProvider, CategoryProvider>();
-
-        builder.Services.AddSingleton<CategorySwitcherViewModel>();
-        builder.Services.AddTransient<CategorySwitcher>();
 
         builder.Services.AddTransient<HomeViewModel>();
         builder.Services.AddTransient<HomePage>();
@@ -77,8 +68,14 @@ public static class MauiProgram
         builder.Services.AddTransient<ScheduleViewModel>();
         builder.Services.AddTransient<SchedulePage>();
 
+        builder.Services.AddTransient<MeetingDetailViewModel>();
+        builder.Services.AddTransient<MeetingDetailPage>();
+
         builder.Services.AddTransient<PastRaceDetailViewModel>();
         builder.Services.AddTransient<PastRaceDetailPage>();
+
+        builder.Services.AddTransient<DriverDetailViewModel>();
+        builder.Services.AddTransient<DriverDetailPage>();
 
         builder.Services.AddTransient<LeaderboardsViewModel>();
         builder.Services.AddTransient<LeaderboardsPage>();

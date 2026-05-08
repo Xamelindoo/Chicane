@@ -5,7 +5,7 @@
              xmlns:models="clr-namespace:Chicane.Mobile.Models"
              x:Class="Chicane.Mobile.Views.PastRaceDetailPage"
              x:DataType="viewmodels:PastRaceDetailViewModel"
-             Title="{Binding EventName}"
+              Title="Race Results"
              BackgroundColor="{StaticResource CarbonBlack}">
 
     <Grid RowDefinitions="*">
@@ -124,6 +124,24 @@
                                     <Label Text="{Binding TeamName}"
                                            FontSize="10"
                                            TextColor="{StaticResource TextMuted}" />
+                                    <HorizontalStackLayout Spacing="8">
+                                        <Label FontFamily="TitilliumWebRegular"
+                                               FontSize="9"
+                                               TextColor="{StaticResource CoolSlate}"
+                                               IsVisible="{Binding GapToLeader, FallbackValue=False}">
+                                            <Label.Text>
+                                                <Binding Path="GapToLeader" />
+                                            </Label.Text>
+                                        </Label>
+                                        <Label FontFamily="TitilliumWebRegular"
+                                               FontSize="9"
+                                               TextColor="{StaticResource CoolSlate}">
+                                            <Label.Text>
+                                                <Binding Path="NumberOfLaps"
+                                                         StringFormat="{}{0} laps" />
+                                            </Label.Text>
+                                        </Label>
+                                    </HorizontalStackLayout>
                                 </VerticalStackLayout>
                                 <!-- Time or DNF -->
                                 <Label Grid.Column="3"
@@ -157,20 +175,11 @@
                         BackgroundColor="{StaticResource SurfaceLow}"
                         Padding="14"
                         Margin="20,24,20,0">
-                    <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
-                        <Label Text="&#x1F7E1;"
-                               FontSize="16"
-                               VerticalOptions="Center" />
-                        <Label FontFamily="TitilliumWebRegular"
-                               FontSize="12"
-                               TextColor="{StaticResource CoolSlate}"
-                               VerticalOptions="Center">
-<Label.Text>
-                                                <Binding Path="YellowFlagCount"
-                                                         StringFormat="{}{0} yellow flags" />
-                            </Label.Text>
-                        </Label>
-                    </HorizontalStackLayout>
+                    <Label Text="{Binding EventDateText}"
+                           FontFamily="TitilliumWebBold"
+                           FontSize="12"
+                           TextColor="{StaticResource CoolSlate}"
+                           HorizontalOptions="Center" />
                 </Border>
 
                 <!-- DRIVER STANDINGS -->

@@ -12,6 +12,8 @@ public static class StorageMapper
         DriverName = entry.DriverName,
         TeamName = entry.TeamName,
         Points = entry.Points,
+        DriverNumber = entry.DriverNumber,
+        PositionStart = entry.PositionStart,
     };
 
     public static StandingsEntry ToDomain(StandingsRecord record) => new()
@@ -20,6 +22,8 @@ public static class StorageMapper
         DriverName = record.DriverName,
         TeamName = record.TeamName,
         Points = record.Points,
+        DriverNumber = record.DriverNumber,
+        PositionStart = record.PositionStart,
     };
 
     // Constructor standings
@@ -29,6 +33,7 @@ public static class StorageMapper
         Position = entry.Position,
         TeamName = entry.TeamName,
         Points = entry.Points,
+        TeamLogo = entry.TeamLogo,
     };
 
     public static ConstructorStandingsEntry ToDomain(ConstructorStandingsRecord record) => new()
@@ -36,6 +41,7 @@ public static class StorageMapper
         Position = record.Position,
         TeamName = record.TeamName,
         Points = record.Points,
+        TeamLogo = record.TeamLogo,
     };
 
     // Schedule
@@ -51,6 +57,10 @@ public static class StorageMapper
         TemperatureC = entry.TemperatureC,
         IsCompleted = entry.IsCompleted,
         Result = entry.Result,
+        SessionKey = entry.SessionKey,
+        Top3Result = entry.Top3Result,
+        MeetingName = entry.MeetingName,
+        MeetingKey = entry.MeetingKey,
     };
 
     public static RaceScheduleEntry ToDomain(RaceScheduleRecord record) => new()
@@ -64,6 +74,10 @@ public static class StorageMapper
         TemperatureC = record.TemperatureC,
         IsCompleted = record.IsCompleted,
         Result = record.Result,
+        SessionKey = record.SessionKey,
+        Top3Result = record.Top3Result,
+        MeetingName = record.MeetingName,
+        MeetingKey = record.MeetingKey,
     };
 
     // Teams
@@ -79,6 +93,7 @@ public static class StorageMapper
         Driver1Points = entry.Drivers.Count > 0 ? entry.Drivers[0].Points : 0,
         Driver2Name = entry.Drivers.Count > 1 ? entry.Drivers[1].Name : "",
         Driver2Points = entry.Drivers.Count > 1 ? entry.Drivers[1].Points : 0,
+        TeamLogo = entry.TeamLogo,
     };
 
     public static TeamEntry ToDomain(TeamRecord record) => new()
@@ -88,6 +103,7 @@ public static class StorageMapper
         Points = record.Points,
         BorderColor = record.BorderColor,
         GradientColor = record.GradientColor,
+        TeamLogo = record.TeamLogo,
         Drivers = new List<DriverEntry>
         {
             new() { Name = record.Driver1Name, Points = record.Driver1Points },

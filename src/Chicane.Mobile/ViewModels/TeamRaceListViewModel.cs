@@ -10,12 +10,10 @@ namespace Chicane.Mobile.ViewModels;
 public partial class TeamRaceListViewModel : ObservableObject
 {
     private readonly ITeamsService teamsService;
-    private readonly ICategoryProvider categoryProvider;
 
-    public TeamRaceListViewModel(ITeamsService teamsService, ICategoryProvider categoryProvider)
+    public TeamRaceListViewModel(ITeamsService teamsService)
     {
         this.teamsService = teamsService;
-        this.categoryProvider = categoryProvider;
     }
 
     [ObservableProperty]
@@ -59,7 +57,7 @@ public partial class TeamRaceListViewModel : ObservableObject
 
         try
         {
-            var detail = await teamsService.GetTeamDetailAsync(TeamName, categoryProvider.CurrentCategory.Id);
+            var detail = await teamsService.GetTeamDetailAsync(TeamName, "f1");
             TotalPoints = detail.TotalPoints;
 
             RaceResults.Clear();
@@ -84,6 +82,6 @@ public partial class TeamRaceListViewModel : ObservableObject
     [RelayCommand]
     private async Task NavigateToRaceAsync(string eventName)
     {
-        await Shell.Current.GoToAsync($"past-race-detail?eventName={Uri.EscapeDataString(eventName)}");
+        await Shell.Current.GoToAsync($"past-race-detail?sessionKey=0");
     }
 }

@@ -19,4 +19,5 @@ public class TeamRecord
     public int Driver1Points { get; set; }
     public string Driver2Name { get; set; } = string.Empty;
     public int Driver2Points { get; set; }
+    public string TeamLogo { get; set; } = string.Empty;
 }

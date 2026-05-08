@@ -7,37 +7,48 @@
              x:DataType="viewmodels:NewsViewModel"
              Title="News"
              Shell.NavBarIsVisible="False"
-             BackgroundColor="{StaticResource CarbonBlack}">
+             BackgroundColor="#0b1320">
 
     <Grid RowDefinitions="Auto,*">
 
         <!-- Header -->
-        <Border Grid.Row="0"
-                Stroke="{StaticResource BorderSubtle}"
-                StrokeThickness="0"
-                BackgroundColor="{StaticResource SurfaceLow}"
-                Padding="20,48,20,12">
-            <Label Text="NEWS"
-                   FontFamily="TitilliumWebBold"
-                   FontSize="14"
-                   TextColor="{StaticResource PureWhite}"
-                   CharacterSpacing="4"
-                   HorizontalOptions="Center" />
+        <Border Grid.Row="0" StrokeThickness="0" Padding="20,12,20,8">
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                    <GradientStop Color="#111827" Offset="0" />
+                    <GradientStop Color="#1e1b4b" Offset="0.5" />
+                    <GradientStop Color="#4c1d95" Offset="1" />
+                </LinearGradientBrush>
+            </Border.Background>
+            <HorizontalStackLayout Spacing="4" HorizontalOptions="Center">
+                <Label Text="&#x1F3C1;" FontSize="14" VerticalOptions="Center" />
+                <Label Text="CHICANE" FontFamily="OutfitBold" FontSize="20"
+                       FontAttributes="Italic" TextColor="White" VerticalOptions="Center"
+                       CharacterSpacing="2" />
+            </HorizontalStackLayout>
         </Border>
 
         <!-- Loading -->
         <VerticalStackLayout Grid.Row="1" IsVisible="{Binding IsBusy}"
-                             VerticalOptions="Center" HorizontalOptions="Center" Spacing="12">
-            <ActivityIndicator IsRunning="{Binding IsBusy}" Color="{StaticResource RacingRed}" HeightRequest="48" WidthRequest="48" />
-            <Label Text="Loading news..." Style="{StaticResource Caption}" HorizontalOptions="Center" />
+                              VerticalOptions="Center" HorizontalOptions="Center" Spacing="12">
+            <ActivityIndicator IsRunning="{Binding IsBusy}" Color="#E10600" HeightRequest="40" WidthRequest="40" />
+            <Label Text="Loading news..." FontFamily="TitilliumWebRegular" FontSize="12" TextColor="#9CA3AF" HorizontalOptions="Center" />
         </VerticalStackLayout>
 
         <!-- Error -->
         <VerticalStackLayout Grid.Row="1" IsVisible="{Binding HasError}"
-                             VerticalOptions="Center" HorizontalOptions="Center" Spacing="16" Padding="32">
-            <Label Text="&#x26A0;" FontSize="48" HorizontalOptions="Center" TextColor="{StaticResource RacingRed}" />
-            <Label Text="{Binding ErrorMessage}" Style="{StaticResource SubHeadline}" HorizontalOptions="Center" />
-            <Button Text="RETRY" Style="{StaticResource PrimaryButton}" Command="{Binding LoadCommand}" HorizontalOptions="Center" />
+                              VerticalOptions="Center" HorizontalOptions="Center" Spacing="16" Padding="32">
+            <Label Text="&#x26A0;" FontSize="48" HorizontalOptions="Center" TextColor="#E10600" />
+            <Label Text="{Binding ErrorMessage}" FontFamily="TitilliumWebBold" FontSize="14" TextColor="#9CA3AF" HorizontalOptions="Center" HorizontalTextAlignment="Center" />
+            <Button Text="RETRY"
+                    Command="{Binding LoadCommand}"
+                    BackgroundColor="#E10600"
+                    TextColor="White"
+                    FontFamily="TitilliumWebBold"
+                    FontSize="12"
+                    CornerRadius="4"
+                    Padding="24,10"
+                    HorizontalOptions="Center" />
         </VerticalStackLayout>
 
         <!-- News List -->
@@ -45,55 +56,59 @@
                         ItemsSource="{Binding Articles}"
                         IsVisible="{Binding HasData}"
                         x:DataType="viewmodels:NewsViewModel"
-                        Margin="0,8,0,0">
+                        Margin="0,0,0,0">
+            <CollectionView.Header>
+                <Label Text="ULTIME NOTIZIE"
+                       FontFamily="TitilliumWebBold"
+                       FontSize="16"
+                       TextColor="#E2E8F0"
+                       CharacterSpacing="2"
+                       Margin="20,16,20,10" />
+            </CollectionView.Header>
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:NewsItem">
-                    <Border Stroke="{StaticResource BorderSubtle}"
-                            StrokeThickness="1"
-                            StrokeShape="RoundRectangle 4"
-                            BackgroundColor="{StaticResource SurfaceLow}"
-                            Margin="16,0,16,12"
-                            Padding="0">
+                    <Border StrokeThickness="1"
+                            Stroke="#2a3441"
+                            StrokeShape="RoundRectangle 12"
+                            BackgroundColor="#1e293b"
+                            Margin="16,0,16,10"
+                            Padding="12">
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer
                                 Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:NewsViewModel}}, Path=OpenArticleCommand}"
                                 CommandParameter="{Binding SourceUrl}" />
                         </Border.GestureRecognizers>
-                        <Grid RowDefinitions="Auto,Auto">
-
-                            <VerticalStackLayout Grid.Row="0"
-                                                 Padding="16,14,16,0"
-                                                 Spacing="8">
+                        <Grid ColumnDefinitions="96,*"
+                              ColumnSpacing="14">
+                            <Image Grid.Column="0"
+                                   Source="{Binding ImageUrl}"
+                                   WidthRequest="96"
+                                   HeightRequest="96"
+                                   Aspect="AspectFill"
+                                   VerticalOptions="Center">
+                                <Image.Clip>
+                                    <RoundRectangleGeometry CornerRadius="8" Rect="0,0,96,96" />
+                                </Image.Clip>
+                            </Image>
+                            <VerticalStackLayout Grid.Column="1"
+                                                 VerticalOptions="Center"
+                                                 Spacing="4">
                                 <Label Text="{Binding Title}"
-                                       FontFamily="OpenSansSemibold"
-                                       FontSize="18"
-                                       TextColor="{StaticResource PureWhite}"
-                                       MaxLines="2"
-                                       LineBreakMode="TailTruncation" />
-                                <HorizontalStackLayout Spacing="4">
-                                    <Label Text="{Binding Source}"
-                                           FontFamily="TitilliumWebRegular"
-                                           FontSize="10"
-                                           TextColor="{StaticResource RacingRed}" />
-                                    <Label Text="·"
-                                           FontSize="10"
-                                           TextColor="{StaticResource TextMuted}"
-                                           VerticalOptions="Center" />
-                                    <Label Text="{Binding PublishedAt, StringFormat='{0:dd MMM}'}"
-                                           FontFamily="TitilliumWebRegular"
-                                           FontSize="10"
-                                           TextColor="{StaticResource TextMuted}" />
-                                </HorizontalStackLayout>
+                                       FontFamily="TitilliumWebBold"
+                                       FontSize="13"
+                                       TextColor="White"
+                                       LineBreakMode="TailTruncation"
+                                       MaxLines="3" />
+                                <Label Text="{Binding TimeAgo}"
+                                       FontFamily="TitilliumWebRegular"
+                                       FontSize="11"
+                                       TextColor="#9CA3AF" />
+                                <Label Text="{Binding Source}"
+                                       FontFamily="TitilliumWebBold"
+                                       FontSize="10"
+                                       TextColor="#E10600"
+                                       CharacterSpacing="1" />
                             </VerticalStackLayout>
-
-                            <Label Grid.Row="1"
-                                   Text="{Binding Description}"
-                                   FontFamily="TitilliumWebRegular"
-                                    FontSize="13"
-                                    TextColor="{StaticResource CoolSlate}"
-                                    MaxLines="3"
-                                    LineBreakMode="TailTruncation"
-                                    Padding="16,8,16,14" />
                         </Grid>
                     </Border>
                 </DataTemplate>

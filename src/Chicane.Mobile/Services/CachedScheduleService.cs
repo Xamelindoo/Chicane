@@ -21,8 +21,8 @@ public class CachedScheduleService : IRaceCalendarService
     public async Task<List<RaceScheduleEntry>> GetPastRacesAsync(string categoryId)
         => await CacheAndReturn(categoryId, () => _primary.GetPastRacesAsync(categoryId));
 
-    public async Task<PastRaceDetail> GetPastRaceDetailAsync(string eventName, string categoryId)
-        => await _primary.GetPastRaceDetailAsync(eventName, categoryId);
+    public async Task<PastRaceDetail> GetPastRaceDetailAsync(int sessionKey, string categoryId)
+        => await _primary.GetPastRaceDetailAsync(sessionKey, categoryId);
 
     private async Task<List<RaceScheduleEntry>> CacheAndReturn(
         string categoryId, Func<Task<List<RaceScheduleEntry>>> fetchFunc)

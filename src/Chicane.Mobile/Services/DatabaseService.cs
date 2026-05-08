@@ -13,6 +13,29 @@ public class DatabaseService
         _dbPath = Path.Combine(FileSystem.AppDataDirectory, "chicane.db");
     }
 
+    public async Task<bool> IsFirstLaunchOrCacheClearedAsync()
+    {
+        try
+        {
+            if (!File.Exists(_dbPath))
+                return true;
+
+            var conn = new SQLiteAsyncConnection(_dbPath);
+            var tableInfo = await conn.QueryAsync<object>("SELECT name FROM sqlite_master WHERE type='table' AND name='RaceSchedule'");
+            return tableInfo.Count == 0;
+        }
+        catch
+        {
+            return true;
+        }
+    }
+
+    public void ClearAll()
+    {
+        _connection = null;
+        try { File.Delete(_dbPath); } catch { }
+    }
+
     public async Task<SQLiteAsyncConnection> GetConnectionAsync()
     {
         if (_connection is not null)

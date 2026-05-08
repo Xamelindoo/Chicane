@@ -8,15 +8,11 @@ namespace Chicane.Mobile.ViewModels;
 
 public partial class ScheduleViewModel : ObservableObject
 {
-    private readonly IRaceCalendarService calendarService;
-    private readonly ICategoryProvider categoryProvider;
+    private readonly OpenF1ApiService _openF1;
 
-    public ScheduleViewModel(IRaceCalendarService calendarService, ICategoryProvider categoryProvider)
+    public ScheduleViewModel(OpenF1ApiService openF1)
     {
-        this.calendarService = calendarService;
-        this.categoryProvider = categoryProvider;
-
-        categoryProvider.CategoryChanged += async _ => await LoadAsync();
+        _openF1 = openF1;
     }
 
     [ObservableProperty]
@@ -40,23 +36,22 @@ public partial class ScheduleViewModel : ObservableObject
     [ObservableProperty]
     private bool isShowingPast;
 
-    public ObservableCollection<RaceScheduleEntry> Races { get; } = new();
+    public ObservableCollection<MeetingScheduleCard> Meetings { get; } = new();
 
     [RelayCommand]
     private async Task LoadAsync()
     {
         if (IsBusy) return;
-
         IsBusy = true;
         ErrorMessage = null;
 
         try
         {
-            await LoadRacesAsync();
+            await LoadMeetingsAsync();
         }
         catch (Exception)
         {
-            ErrorMessage = "Unable to load race schedule.";
+            ErrorMessage = "Unable to load schedule.";
             HasData = false;
             IsEmptyState = false;
         }
@@ -71,7 +66,7 @@ public partial class ScheduleViewModel : ObservableObject
     {
         IsShowingUpcoming = true;
         IsShowingPast = false;
-        await LoadRacesAsync();
+        await LoadMeetingsAsync();
     }
 
     [RelayCommand]
@@ -79,38 +74,22 @@ public partial class ScheduleViewModel : ObservableObject
     {
         IsShowingUpcoming = false;
         IsShowingPast = true;
-        await LoadRacesAsync();
+        await LoadMeetingsAsync();
     }
 
     [RelayCommand]
-    private async Task NavigateToDetailAsync(RaceScheduleEntry entry)
+    private async Task NavigateToMeetingAsync(MeetingScheduleCard meeting)
     {
-        if (!entry.IsCompleted)
-            return;
-
-        await Shell.Current.GoToAsync($"past-race-detail?eventName={Uri.EscapeDataString(entry.EventName)}");
+        await Shell.Current.GoToAsync($"meeting-detail?meetingKey={meeting.MeetingKey}");
     }
 
-    private async Task LoadRacesAsync()
+    private async Task LoadMeetingsAsync()
     {
-        List<RaceScheduleEntry> races;
-
-        if (IsShowingUpcoming)
-        {
-            races = await calendarService.GetUpcomingRacesAsync(categoryProvider.CurrentCategory.Id);
-        }
-        else
-        {
-            races = await calendarService.GetPastRacesAsync(categoryProvider.CurrentCategory.Id);
-        }
-
-        Races.Clear();
-        foreach (var race in races)
-        {
-            Races.Add(race);
-        }
-
-        HasData = Races.Count > 0;
-        IsEmptyState = Races.Count == 0;
+        var meetings = await _openF1.GetMeetingScheduleAsync(!IsShowingUpcoming);
+        Meetings.Clear();
+        foreach (var m in meetings)
+            Meetings.Add(m);
+        HasData = Meetings.Count > 0;
+        IsEmptyState = Meetings.Count == 0;
     }
 }

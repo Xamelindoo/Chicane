@@ -6,26 +6,38 @@
              x:Class="Chicane.Mobile.Views.SchedulePage"
              x:DataType="viewmodels:ScheduleViewModel"
              Title="Schedule"
-             Shell.NavBarIsVisible="False">
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="#0b1320">
 
-    <Grid RowDefinitions="Auto,*" BackgroundColor="{StaticResource CarbonBlack}">
+    <Grid RowDefinitions="Auto,Auto,*">
 
-        <!-- Segmented Control -->
-        <Grid Grid.Row="0"
-              ColumnDefinitions="*,*"
-              Padding="20,48,20,12"
-              ColumnSpacing="0">
-            <Border Grid.Column="0"
-                    Stroke="{StaticResource RacingRed}"
-                    StrokeThickness="1"
-                    StrokeShape="RoundRectangle 4,0,0,4"
-                    Padding="0">
+        <!-- Compact Header -->
+        <Border Grid.Row="0" StrokeThickness="0" Padding="20,12,20,8">
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                    <GradientStop Color="#111827" Offset="0" />
+                    <GradientStop Color="#1e1b4b" Offset="0.5" />
+                    <GradientStop Color="#4c1d95" Offset="1" />
+                </LinearGradientBrush>
+            </Border.Background>
+            <HorizontalStackLayout Spacing="4" HorizontalOptions="Center">
+                <Label Text="&#x1F3C1;" FontSize="14" VerticalOptions="Center" />
+                <Label Text="CHICANE" FontFamily="OutfitBold" FontSize="20"
+                       FontAttributes="Italic" TextColor="White" VerticalOptions="Center"
+                       CharacterSpacing="2" />
+            </HorizontalStackLayout>
+        </Border>
+
+        <!-- Toggle -->
+        <Grid Grid.Row="1" ColumnDefinitions="*,*" Padding="20,10,20,8" ColumnSpacing="0">
+            <Border Grid.Column="0" StrokeThickness="1" Stroke="#E10600"
+                    StrokeShape="RoundRectangle 4,0,0,4" Padding="0">
                 <Border.Style>
                     <Style TargetType="Border">
-                        <Setter Property="BackgroundColor" Value="{StaticResource SurfaceLow}" />
+                        <Setter Property="BackgroundColor" Value="#1e293b" />
                         <Style.Triggers>
                             <DataTrigger TargetType="Border" Binding="{Binding IsShowingUpcoming}" Value="True">
-                                <Setter Property="BackgroundColor" Value="{StaticResource RacingRed}" />
+                                <Setter Property="BackgroundColor" Value="#E10600" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
@@ -33,37 +45,24 @@
                 <Border.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding ShowUpcomingCommand}" />
                 </Border.GestureRecognizers>
-                <Label Text="UPCOMING"
-                       FontFamily="TitilliumWebBold"
-                       FontSize="12"
-                       VerticalOptions="Center"
-                       HorizontalOptions="Center"
-                       CharacterSpacing="3"
-                       Padding="0,10">
-                    <Label.Style>
-                        <Style TargetType="Label">
-                            <Setter Property="TextColor" Value="{StaticResource TextMuted}" />
-                            <Style.Triggers>
-                                <DataTrigger TargetType="Label" Binding="{Binding IsShowingUpcoming}" Value="True">
-                                    <Setter Property="TextColor" Value="{StaticResource PureWhite}" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Label.Style>
+                <Label Text="UPCOMING" FontFamily="TitilliumWebBold" FontSize="11"
+                       VerticalOptions="Center" HorizontalOptions="Center"
+                       CharacterSpacing="3" Padding="0,9" TextColor="#9CA3AF">
+                    <Label.Triggers>
+                        <DataTrigger TargetType="Label" Binding="{Binding IsShowingUpcoming}" Value="True">
+                            <Setter Property="TextColor" Value="White" />
+                        </DataTrigger>
+                    </Label.Triggers>
                 </Label>
             </Border>
-
-            <Border Grid.Column="1"
-                    Stroke="{StaticResource RacingRed}"
-                    StrokeThickness="1"
-                    StrokeShape="RoundRectangle 0,4,4,0"
-                    Padding="0">
+            <Border Grid.Column="1" StrokeThickness="1" Stroke="#E10600"
+                    StrokeShape="RoundRectangle 0,4,4,0" Padding="0">
                 <Border.Style>
                     <Style TargetType="Border">
-                        <Setter Property="BackgroundColor" Value="{StaticResource SurfaceLow}" />
+                        <Setter Property="BackgroundColor" Value="#1e293b" />
                         <Style.Triggers>
                             <DataTrigger TargetType="Border" Binding="{Binding IsShowingPast}" Value="True">
-                                <Setter Property="BackgroundColor" Value="{StaticResource RacingRed}" />
+                                <Setter Property="BackgroundColor" Value="#E10600" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
@@ -71,146 +70,145 @@
                 <Border.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding ShowPastCommand}" />
                 </Border.GestureRecognizers>
-                <Label Text="PAST"
-                       FontFamily="TitilliumWebBold"
-                       FontSize="12"
-                       VerticalOptions="Center"
-                       HorizontalOptions="Center"
-                       CharacterSpacing="3"
-                       Padding="0,10">
-                    <Label.Style>
-                        <Style TargetType="Label">
-                            <Setter Property="TextColor" Value="{StaticResource TextMuted}" />
-                            <Style.Triggers>
-                                <DataTrigger TargetType="Label" Binding="{Binding IsShowingPast}" Value="True">
-                                    <Setter Property="TextColor" Value="{StaticResource PureWhite}" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Label.Style>
+                <Label Text="PAST" FontFamily="TitilliumWebBold" FontSize="11"
+                       VerticalOptions="Center" HorizontalOptions="Center"
+                       CharacterSpacing="3" Padding="0,9" TextColor="#9CA3AF">
+                    <Label.Triggers>
+                        <DataTrigger TargetType="Label" Binding="{Binding IsShowingPast}" Value="True">
+                            <Setter Property="TextColor" Value="White" />
+                        </DataTrigger>
+                    </Label.Triggers>
                 </Label>
             </Border>
         </Grid>
 
-        <!-- Loading -->
-        <VerticalStackLayout Grid.Row="1"
-                             IsVisible="{Binding IsBusy}"
-                             VerticalOptions="Center"
-                             HorizontalOptions="Center"
-                             Spacing="12">
-            <ActivityIndicator IsRunning="{Binding IsBusy}"
-                               Color="{StaticResource RacingRed}"
-                               HeightRequest="48"
-                               WidthRequest="48" />
-            <Label Text="Loading schedule..."
-                   Style="{StaticResource Caption}"
-                   HorizontalOptions="Center" />
+        <!-- Loading / Error -->
+        <VerticalStackLayout Grid.Row="2" IsVisible="{Binding IsBusy}"
+                              VerticalOptions="Center" HorizontalOptions="Center" Spacing="12">
+            <ActivityIndicator IsRunning="{Binding IsBusy}" Color="#E10600" HeightRequest="40" WidthRequest="40" />
+            <Label Text="Loading..." FontFamily="TitilliumWebRegular" FontSize="12"
+                   TextColor="#9CA3AF" HorizontalOptions="Center" />
         </VerticalStackLayout>
 
-        <!-- Error -->
-        <VerticalStackLayout Grid.Row="1"
-                             IsVisible="{Binding HasError}"
-                             VerticalOptions="Center"
-                             HorizontalOptions="Center"
-                             Spacing="16"
-                             Padding="32">
-            <Label Text="&#x26A0;"
-                   FontSize="48"
-                   HorizontalOptions="Center"
-                   TextColor="{StaticResource RacingRed}" />
-            <Label Text="{Binding ErrorMessage}"
-                   Style="{StaticResource SubHeadline}"
-                   HorizontalOptions="Center" />
-            <Button Text="RETRY"
-                    Style="{StaticResource PrimaryButton}"
-                    Command="{Binding LoadCommand}"
-                    HorizontalOptions="Center" />
+        <VerticalStackLayout Grid.Row="2" IsVisible="{Binding HasError}"
+                              VerticalOptions="Center" HorizontalOptions="Center" Spacing="16" Padding="32">
+            <Label Text="&#x26A0;" FontSize="48" HorizontalOptions="Center" TextColor="#E10600" />
+            <Label Text="{Binding ErrorMessage}" FontFamily="TitilliumWebBold" FontSize="14"
+                   TextColor="#9CA3AF" HorizontalOptions="Center" HorizontalTextAlignment="Center" />
+            <Button Text="RETRY" Command="{Binding LoadCommand}"
+                    BackgroundColor="#E10600" TextColor="White" FontFamily="TitilliumWebBold"
+                    FontSize="12" CornerRadius="4" Padding="24,10" HorizontalOptions="Center" />
         </VerticalStackLayout>
 
-        <!-- Race List -->
-        <CollectionView Grid.Row="1"
-                        ItemsSource="{Binding Races}"
-                        IsVisible="{Binding HasData}"
-                        Margin="0,0,0,0">
+        <!-- Meeting Cards -->
+        <CollectionView Grid.Row="2" ItemsSource="{Binding Meetings}" IsVisible="{Binding HasData}">
             <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="models:RaceScheduleEntry">
-                    <Border Stroke="{StaticResource BorderSubtle}"
-                            StrokeThickness="1"
-                            StrokeShape="RoundRectangle 4"
-                            BackgroundColor="{StaticResource SurfaceLow}"
-                            Padding="16"
-                            Margin="20,0,20,10">
+                <DataTemplate x:DataType="models:MeetingScheduleCard">
+                    <Border StrokeThickness="1" Stroke="#E10600"
+                            StrokeShape="RoundRectangle 12"
+                            Margin="16,0,16,10" Padding="0">
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                <GradientStop Color="#161f2e" Offset="0" />
+                                <GradientStop Color="#0f1622" Offset="1" />
+                            </LinearGradientBrush>
+                        </Border.Background>
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer
-                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:ScheduleViewModel}}, Path=NavigateToDetailCommand}"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:ScheduleViewModel}}, Path=NavigateToMeetingCommand}"
                                 CommandParameter="{Binding .}" />
                         </Border.GestureRecognizers>
-                        <Grid RowDefinitions="Auto,Auto,Auto"
-                              ColumnDefinitions="*,Auto"
-                              RowSpacing="6">
+                        <VerticalStackLayout Spacing="0">
+                            <!-- Red Header Bar -->
+                            <Border StrokeThickness="0" StrokeShape="RoundRectangle 12,12,0,0"
+                                    Padding="12,7">
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="BackgroundColor" Value="#90111d" />
+                                        <Style.Triggers>
+                                            <DataTrigger TargetType="Border" Binding="{Binding IsCompleted}" Value="True">
+                                                <Setter Property="BackgroundColor" Value="#2a3441" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <Label Grid.Column="0"
+                                           Text="{Binding MeetingName}"
+                                           FontFamily="TitilliumWebBold" FontSize="13"
+                                           TextColor="White" LineBreakMode="TailTruncation"
+                                           VerticalOptions="Center" />
+                                    <Label Grid.Column="1"
+                                           FontFamily="TitilliumWebRegular" FontSize="10"
+                                           TextColor="#9CA3AF" VerticalOptions="Center">
+                                        <Label.Text>
+                                            <MultiBinding StringFormat="{}{0:dd MMM} - {1:dd MMM}">
+                                                <Binding Path="DateStart" />
+                                                <Binding Path="DateEnd" />
+                                            </MultiBinding>
+                                        </Label.Text>
+                                    </Label>
+                                </Grid>
+                            </Border>
 
-                            <!-- Event Name -->
-                            <Label Grid.Row="0" Grid.Column="0"
-                                   Text="{Binding EventName}"
-                                   FontFamily="TitilliumWebBold"
-                                   FontSize="16"
-                                   TextColor="{StaticResource PureWhite}"
-                                   VerticalOptions="Center" />
+                            <!-- Circuit Image -->
+                            <Image Source="{Binding CircuitImageUrl}"
+                                   HeightRequest="140"
+                                   Aspect="AspectFit"
+                                   Margin="0,8,0,0"
+                                   HorizontalOptions="Center" />
 
-                            <!-- Date -->
-                            <Label Grid.Row="1" Grid.Column="0"
-                                   Text="{Binding EventDate, StringFormat='{0:dd MMM yyyy}'}"
-                                   FontFamily="TitilliumWebRegular"
-                                   FontSize="12"
-                                   TextColor="{StaticResource CoolSlate}" />
-
-                            <!-- Weather -->
-                            <HorizontalStackLayout Grid.Row="1" Grid.Column="1"
-                                                   Spacing="6"
-                                                   VerticalOptions="Center">
-                                <Label Text="{Binding WeatherIcon}"
-                                       FontSize="14"
-                                       VerticalOptions="Center" />
-                                <Label FontFamily="TitilliumWebRegular"
-                                       FontSize="11"
-                                       TextColor="{StaticResource CoolSlate}"
-                                       VerticalOptions="Center">
+                            <!-- Info: circuit + country -->
+                            <Grid Padding="14,8" ColumnDefinitions="*,Auto">
+                                <Label Grid.Column="0" FontFamily="TitilliumWebRegular" FontSize="12"
+                                       TextColor="#9CA3AF">
                                     <Label.Text>
-                                        <MultiBinding StringFormat="{}{0} - {1}°C">
-                                            <Binding Path="WeatherCondition" />
-                                            <Binding Path="TemperatureC" />
+                                        <MultiBinding StringFormat="{}{0}, {1}">
+                                            <Binding Path="CircuitName" />
+                                            <Binding Path="Country" />
                                         </MultiBinding>
                                     </Label.Text>
                                 </Label>
-                            </HorizontalStackLayout>
+                                <Label Grid.Column="1" Text="{Binding Sessions.Count, StringFormat='{0} sessions'}"
+                                       FontFamily="TitilliumWebRegular" FontSize="10"
+                                       TextColor="#9CA3AF" VerticalOptions="Center" />
+                            </Grid>
 
-                            <!-- Circuit + Country -->
-                            <Label Grid.Row="2" Grid.Column="0"
-                                   FontFamily="TitilliumWebRegular"
-                                   FontSize="10"
-                                   TextColor="{StaticResource TextMuted}">
-                                <Label.Text>
-                                    <MultiBinding StringFormat="{}{0}, {1}">
-                                        <Binding Path="CircuitName" />
-                                        <Binding Path="Country" />
-                                    </MultiBinding>
-                                </Label.Text>
-                            </Label>
-
-                            <!-- Result (past races only) -->
-                            <Label Grid.Row="2" Grid.Column="1"
-                                   Text="{Binding Result}"
-                                   FontFamily="TitilliumWebBold"
-                                   FontSize="11"
-                                   TextColor="{StaticResource RacingRed}"
-                                   HorizontalTextAlignment="End"
-                                   VerticalOptions="Center" />
-                        </Grid>
+                            <!-- Top 3 (past only) -->
+                            <Border StrokeThickness="0" IsVisible="{Binding IsCompleted}"
+                                    Padding="14,0,14,10">
+                                <VerticalStackLayout BindableLayout.ItemsSource="{Binding Top3Drivers}"
+                                                     Spacing="4">
+                                    <BindableLayout.ItemTemplate>
+                                        <DataTemplate x:DataType="models:Top3Driver">
+                                            <Grid ColumnDefinitions="32,32,*,Auto" ColumnSpacing="8">
+                                                <Label Grid.Column="0"
+                                                       Text="{Binding Position, StringFormat='P{0}'}"
+                                                       FontFamily="TitilliumWebBold" FontSize="11"
+                                                       TextColor="#E10600" VerticalOptions="Center" />
+                                                <Border Grid.Column="1" StrokeThickness="1" Stroke="#2a3441"
+                                                        StrokeShape="RoundRectangle 14"
+                                                        WidthRequest="28" HeightRequest="28"
+                                                        BackgroundColor="#0f172a">
+                                                    <Image Source="{Binding HeadshotUrl}"
+                                                           Aspect="AspectFill" />
+                                                </Border>
+                                                <Label Grid.Column="2" Text="{Binding Initials}"
+                                                       FontFamily="TitilliumWebBold" FontSize="12"
+                                                       TextColor="White" VerticalOptions="Center" />
+                                                <Label Grid.Column="3" Text="{Binding TimeOrDnf}"
+                                                       FontFamily="TitilliumWebRegular" FontSize="11"
+                                                       TextColor="#9CA3AF" VerticalOptions="Center"
+                                                       HorizontalTextAlignment="End" />
+                                            </Grid>
+                                        </DataTemplate>
+                                    </BindableLayout.ItemTemplate>
+                                </VerticalStackLayout>
+                            </Border>
+                        </VerticalStackLayout>
                     </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-
     </Grid>
-
 </ContentPage>

@@ -9,30 +9,19 @@ namespace Chicane.Mobile.ViewModels;
 public partial class HomeViewModel : ObservableObject
 {
     private readonly IF1DataService f1DataService;
-    private readonly ICategoryProvider categoryProvider;
     private readonly IWeatherService weatherService;
+    private readonly OpenF1ApiService openF1;
+    private readonly INewsService newsService;
     private IDispatcherTimer? countdownTimer;
     private DateTime eventDateTime;
 
-    public HomeViewModel(IF1DataService f1DataService, ICategoryProvider categoryProvider, IWeatherService weatherService)
+    public HomeViewModel(IF1DataService f1DataService, IWeatherService weatherService, OpenF1ApiService openF1, INewsService newsService)
     {
         this.f1DataService = f1DataService;
-        this.categoryProvider = categoryProvider;
         this.weatherService = weatherService;
-
-        categoryProvider.CategoryChanged += OnCategoryChanged;
+        this.openF1 = openF1;
+        this.newsService = newsService;
     }
-
-    private async void OnCategoryChanged(MotorsportCategory category)
-    {
-        if (HasData)
-        {
-            await LoadAsync();
-        }
-    }
-
-    [ObservableProperty]
-    private MotorsportCategory currentCategory = MotorsportCategory.F1;
 
     [ObservableProperty]
     private bool isBusy;
@@ -53,10 +42,16 @@ public partial class HomeViewModel : ObservableObject
     public bool HasError => !string.IsNullOrWhiteSpace(ErrorMessage);
 
     [ObservableProperty]
-    private double heroHeight = 800;
+    private string eventName = string.Empty;
 
     [ObservableProperty]
-    private bool isAtScrollTop = true;
+    private string meetingName = string.Empty;
+
+    [ObservableProperty]
+    private string circuitImageUrl = string.Empty;
+
+    [ObservableProperty]
+    private double heroHeight = 800;
 
     [ObservableProperty]
     private bool isPreRace = true;
@@ -65,12 +60,12 @@ public partial class HomeViewModel : ObservableObject
     private bool isLive;
 
     [ObservableProperty]
-    private string eventName = string.Empty;
-
-    [ObservableProperty]
     private string countdown = "--:--:--:--";
 
     public ObservableCollection<CountdownPart> CountdownParts { get; } = new();
+
+    [ObservableProperty]
+    private DateTime eventDate;
 
     [ObservableProperty]
     private WeatherForecast? weatherForecast;
@@ -94,6 +89,9 @@ public partial class HomeViewModel : ObservableObject
     private bool hasCircuitMap;
 
     [ObservableProperty]
+    private double screenWidth;
+
+    [ObservableProperty]
     private string circuitImage = string.Empty;
 
     [ObservableProperty]
@@ -111,6 +109,10 @@ public partial class HomeViewModel : ObservableObject
     public ObservableCollection<DriverGap> PositionBoard { get; } = new();
     public ObservableCollection<StandingsEntry> Standings { get; } = new();
     public ObservableCollection<ConstructorStandingsEntry> ConstructorStandings { get; } = new();
+    public ObservableCollection<StandingsEntry> TopDrivers { get; } = new();
+    public ObservableCollection<ConstructorStandingsEntry> TopTeams { get; } = new();
+    public ObservableCollection<RaceWeekendCard> UpcomingWeekends { get; } = new();
+    public ObservableCollection<NewsItem> TopNews { get; } = new();
     public ObservableCollection<TrackPosition> TrackPositions { get; } = new();
 
     [RelayCommand]
@@ -130,34 +132,70 @@ public partial class HomeViewModel : ObservableObject
 
             var displayInfo = DeviceDisplay.Current.MainDisplayInfo;
             HeroHeight = displayInfo.Height / displayInfo.Density;
+            ScreenWidth = displayInfo.Width / displayInfo.Density - 32;
 
-            var categoryId = categoryProvider.CurrentCategory.Id;
-            CurrentCategory = categoryProvider.CurrentCategory;
-
-            var raceEvent = await f1DataService.GetNextEventAsync(categoryId);
+            var raceEvent = await f1DataService.GetNextEventAsync("f1");
 
             EventName = raceEvent.EventName;
+            MeetingName = raceEvent.MeetingName;
+            CircuitImageUrl = raceEvent.CircuitImageUrl;
             eventDateTime = raceEvent.ScheduledDateTime;
+            EventDate = raceEvent.ScheduledDateTime;
             CircuitName = raceEvent.Circuit.Name;
-            CircuitLocation = $"{raceEvent.Circuit.Name}, {raceEvent.Circuit.Country}";
-            CircuitMapUrl = GetCircuitMapUrl(raceEvent.Circuit.Country, categoryId);
+            CircuitLocation = $"{raceEvent.Circuit.Name}, {raceEvent.Circuit.Location}";
+            CircuitMapUrl = GetCircuitMapUrl(raceEvent.Circuit.Country);
             HasCircuitMap = !string.IsNullOrWhiteSpace(CircuitMapUrl);
+
+            UpcomingWeekends.Clear();
+            foreach (var w in await openF1.GetUpcomingWeekendsAsync(3))
+                UpcomingWeekends.Add(w);
+
+            if (UpcomingWeekends.Count > 0)
+            {
+                var first = UpcomingWeekends[0];
+                var forecast = await weatherService.GetForecastAsync(first.CircuitName, first.Country, first.DateStart);
+                if (forecast is not null)
+                {
+                    first.WeatherCondition = forecast.Condition;
+                    first.WeatherIcon = forecast.IconGlyph;
+                    first.TemperatureC = forecast.TemperatureC;
+                }
+                else
+                {
+                    first.WeatherCondition = "Check later";
+                    first.WeatherIcon = "\u26A0";
+                }
+            }
+
+            TopNews.Clear();
+            foreach (var n in (await newsService.GetNewsAsync("f1")).Take(4))
+                TopNews.Add(n);
             CircuitImage = raceEvent.Circuit.ImageUrl;
 
             await LoadWeatherAsync(raceEvent);
-            var standings = await f1DataService.GetStandingsAsync(categoryId);
+            var standings = await f1DataService.GetStandingsAsync("f1");
             Standings.Clear();
             foreach (var entry in standings)
             {
                 Standings.Add(entry);
             }
 
-            var constructorStandings = await f1DataService.GetConstructorStandingsAsync(categoryId);
+            var constructorStandings = await f1DataService.GetConstructorStandingsAsync("f1");
             ConstructorStandings.Clear();
             foreach (var entry in constructorStandings)
             {
                 ConstructorStandings.Add(entry);
             }
+
+            TopDrivers.Clear();
+            foreach (var d in standings.Take(3))
+                TopDrivers.Add(d);
+
+            TopTeams.Clear();
+            foreach (var t in constructorStandings.Take(3))
+                TopTeams.Add(t);
+
+            System.Diagnostics.Debug.WriteLine($"[Home] TopDrivers={TopDrivers.Count} TopTeams={TopTeams.Count}");
 
             IsPreRace = true;
             IsLive = false;
@@ -193,7 +231,7 @@ public partial class HomeViewModel : ObservableObject
         {
             if (IsPreRace)
             {
-                var liveData = await f1DataService.GetLiveSessionDataAsync(categoryProvider.CurrentCategory.Id);
+                var liveData = await f1DataService.GetLiveSessionDataAsync("f1");
 
                 SessionName = liveData.SessionName;
                 SessionStatus = liveData.Status;
@@ -206,7 +244,7 @@ public partial class HomeViewModel : ObservableObject
                     PositionBoard.Add(gap);
                 }
 
-                var trackPositions = await f1DataService.GetTrackPositionsAsync(categoryProvider.CurrentCategory.Id);
+                var trackPositions = await f1DataService.GetTrackPositionsAsync("f1");
                 TrackPositions.Clear();
                 foreach (var tp in trackPositions)
                 {
@@ -247,22 +285,13 @@ public partial class HomeViewModel : ObservableObject
             if (WeatherForecast is not null)
                 WeatherForecast = WeatherForecast with { IsApproximate = false };
         }
-        else if (daysUntil <= 16)
+        else
         {
             WeatherForecast = new WeatherForecast
             {
                 Condition = "Check back closer to race day",
-                TemperatureC = 0,
-                WindSpeed = 0,
-                Humidity = 0,
-                Pressure = 0,
-                IconGlyph = "\u26A0",
                 IsApproximate = true,
             };
-        }
-        else
-        {
-            WeatherForecast = null;
         }
     }
 
@@ -277,7 +306,11 @@ public partial class HomeViewModel : ObservableObject
         if (WeatherForecast.IsApproximate)
         {
             ShowApproximateWarning = true;
-            _ = Task.Run(async () => { await Task.Delay(2000); ShowApproximateWarning = false; });
+            _ = Task.Run(async () =>
+            {
+                await Task.Delay(2000);
+                MainThread.BeginInvokeOnMainThread(() => ShowApproximateWarning = false);
+            });
             return;
         }
         ShowWeatherDetail = true;
@@ -289,10 +322,39 @@ public partial class HomeViewModel : ObservableObject
         ShowWeatherDetail = false;
     }
 
-    private static string GetCircuitMapUrl(string country, string categoryId)
+    [RelayCommand]
+    private async Task NavigateToDriverAsync(int driverNumber)
     {
-        if (categoryId != "f1") return "";
+        if (driverNumber <= 0) return;
+        await Shell.Current.GoToAsync($"driver-detail?driverNumber={driverNumber}");
+    }
 
+    [RelayCommand]
+    private async Task NavigateToLeaderboardsDriversAsync()
+    {
+        await Shell.Current.GoToAsync("//leaderboards?tab=drivers");
+    }
+
+    [RelayCommand]
+    private async Task NavigateToLeaderboardsTeamsAsync()
+    {
+        await Shell.Current.GoToAsync("//leaderboards?tab=teams");
+    }
+
+    [RelayCommand]
+    private async Task NavigateToScheduleAsync()
+    {
+        await Shell.Current.GoToAsync("//schedule");
+    }
+
+    [RelayCommand]
+    private async Task NavigateToNewsAsync()
+    {
+        await Shell.Current.GoToAsync("//news");
+    }
+
+    private static string GetCircuitMapUrl(string country)
+    {
         return country switch
         {
             "Australia" => "https://www.formula1.com/content/dam/fom-website/2018-redesign-assets/Circuit%20maps%2016x9/Australia_Circuit.png",
@@ -348,30 +410,10 @@ public partial class HomeViewModel : ObservableObject
         if (remaining.TotalSeconds <= 0)
         {
             Countdown = "00:00:00:00";
-            BuildCountdownParts("00:00:00:00");
             return;
         }
 
         var text = $"{(int)remaining.TotalDays:D2}:{remaining.Hours:D2}:{remaining.Minutes:D2}:{remaining.Seconds:D2}";
         Countdown = text;
-        BuildCountdownParts(text);
-    }
-
-    private void BuildCountdownParts(string text)
-    {
-        CountdownParts.Clear();
-        foreach (var ch in text)
-        {
-            CountdownParts.Add(new CountdownPart
-            {
-                Text = ch.ToString(),
-                IsColon = ch == ':'
-            });
-        }
-    }
-
-    public void OnScrolled(double scrollY)
-    {
-        IsAtScrollTop = scrollY <= 0;
     }
 }

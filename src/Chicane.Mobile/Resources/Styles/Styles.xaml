@@ -25,7 +25,7 @@
 
     <Style x:Key="Headline" TargetType="Label">
         <Setter Property="TextColor" Value="{StaticResource PureWhite}" />
-        <Setter Property="FontFamily" Value="BebasNeue" />
+        <Setter Property="FontFamily" Value="OutfitBold" />
         <Setter Property="FontSize" Value="40" />
     </Style>
 

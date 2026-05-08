@@ -4,7 +4,11 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:views="clr-namespace:Chicane.Mobile.Views"
-    Shell.FlyoutBehavior="Disabled">
+    Shell.FlyoutBehavior="Disabled"
+    Shell.TabBarBackgroundColor="#1e293b"
+    Shell.TabBarForegroundColor="#E10600"
+    Shell.TabBarUnselectedColor="#9CA3AF"
+    Shell.TabBarTitleColor="#E10600">
 
     <TabBar>
         <ShellContent

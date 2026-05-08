@@ -6,16 +6,14 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace Chicane.Mobile.ViewModels;
 
-[QueryProperty(nameof(EventName), "eventName")]
+[QueryProperty(nameof(SessionKey), "sessionKey")]
 public partial class PastRaceDetailViewModel : ObservableObject
 {
     private readonly IRaceCalendarService calendarService;
-    private readonly ICategoryProvider categoryProvider;
 
-    public PastRaceDetailViewModel(IRaceCalendarService calendarService, ICategoryProvider categoryProvider)
+    public PastRaceDetailViewModel(IRaceCalendarService calendarService)
     {
         this.calendarService = calendarService;
-        this.categoryProvider = categoryProvider;
     }
 
     [ObservableProperty]
@@ -34,10 +32,7 @@ public partial class PastRaceDetailViewModel : ObservableObject
     public bool HasError => !string.IsNullOrWhiteSpace(ErrorMessage);
 
     [ObservableProperty]
-    private string eventName = string.Empty;
-
-    [ObservableProperty]
-    private int yellowFlagCount;
+    private int sessionKey;
 
     [ObservableProperty]
     private string eventDateText = string.Empty;
@@ -46,9 +41,10 @@ public partial class PastRaceDetailViewModel : ObservableObject
     public ObservableCollection<StandingsEntry> DriverStandings { get; } = new();
     public ObservableCollection<ConstructorStandingsEntry> ConstructorStandings { get; } = new();
 
-    partial void OnEventNameChanged(string value)
+    partial void OnSessionKeyChanged(int value)
     {
-        if (!string.IsNullOrWhiteSpace(value) && !HasData && !IsBusy)
+        HasData = false;
+        if (value > 0 && !IsBusy)
         {
             LoadCommand.Execute(null);
         }
@@ -64,9 +60,10 @@ public partial class PastRaceDetailViewModel : ObservableObject
 
         try
         {
-            var detail = await calendarService.GetPastRaceDetailAsync(EventName, categoryProvider.CurrentCategory.Id);
+            System.Diagnostics.Debug.WriteLine($"[Detail] Loading sessionKey={SessionKey}");
+            var detail = await calendarService.GetPastRaceDetailAsync(SessionKey, "f1");
+            System.Diagnostics.Debug.WriteLine($"[Detail] Results={detail.Results.Count} Drivers={detail.DriverStandings.Count} Teams={detail.ConstructorStandings.Count}");
 
-            YellowFlagCount = detail.YellowFlagCount;
             EventDateText = detail.EventDate.ToString("dd MMM yyyy");
 
             Results.Clear();

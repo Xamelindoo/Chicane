@@ -14,4 +14,5 @@ public class ConstructorStandingsRecord
     public int Position { get; set; }
     public string TeamName { get; set; } = string.Empty;
     public int Points { get; set; }
+    public string TeamLogo { get; set; } = string.Empty;
 }

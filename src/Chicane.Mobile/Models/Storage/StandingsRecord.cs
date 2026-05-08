@@ -15,4 +15,6 @@ public class StandingsRecord
     public string DriverName { get; set; } = string.Empty;
     public string TeamName { get; set; } = string.Empty;
     public int Points { get; set; }
+    public int DriverNumber { get; set; }
+    public int PositionStart { get; set; }
 }

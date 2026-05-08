@@ -9,14 +9,10 @@ namespace Chicane.Mobile.ViewModels;
 public partial class LeaderboardsViewModel : ObservableObject
 {
     private readonly ITeamsService teamsService;
-    private readonly ICategoryProvider categoryProvider;
 
-    public LeaderboardsViewModel(ITeamsService teamsService, ICategoryProvider categoryProvider)
+    public LeaderboardsViewModel(ITeamsService teamsService)
     {
         this.teamsService = teamsService;
-        this.categoryProvider = categoryProvider;
-
-        categoryProvider.CategoryChanged += async _ => await LoadAsync();
     }
 
     [ObservableProperty]
@@ -35,10 +31,10 @@ public partial class LeaderboardsViewModel : ObservableObject
     public bool HasError => !string.IsNullOrWhiteSpace(ErrorMessage);
 
     [ObservableProperty]
-    private bool isShowingTeams = true;
+    private bool isShowingPilots = true;
 
     [ObservableProperty]
-    private bool isShowingPilots;
+    private bool isShowingTeams;
 
     public ObservableCollection<TeamEntry> Teams { get; } = new();
     public ObservableCollection<DriverStandingsEntry> Drivers { get; } = new();
@@ -82,6 +78,13 @@ public partial class LeaderboardsViewModel : ObservableObject
     }
 
     [RelayCommand]
+    private async Task NavigateToDriverAsync(int driverNumber)
+    {
+        if (driverNumber <= 0) return;
+        await Shell.Current.GoToAsync($"driver-detail?driverNumber={driverNumber}");
+    }
+
+    [RelayCommand]
     private async Task NavigateToDetailAsync(string teamName)
     {
         await Shell.Current.GoToAsync($"team-detail?teamName={Uri.EscapeDataString(teamName)}");
@@ -89,7 +92,7 @@ public partial class LeaderboardsViewModel : ObservableObject
 
     private async Task LoadTeamsAsync()
     {
-        var teams = await teamsService.GetTeamsAsync(categoryProvider.CurrentCategory.Id);
+        var teams = await teamsService.GetTeamsAsync("f1");
         Teams.Clear();
         foreach (var team in teams)
         {
@@ -100,7 +103,7 @@ public partial class LeaderboardsViewModel : ObservableObject
 
     private async Task LoadDriversAsync()
     {
-        var drivers = await teamsService.GetDriversAsync(categoryProvider.CurrentCategory.Id);
+        var drivers = await teamsService.GetDriversAsync("f1");
         Drivers.Clear();
         foreach (var driver in drivers)
         {

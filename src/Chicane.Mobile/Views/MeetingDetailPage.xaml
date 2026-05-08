@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:Chicane.Mobile.ViewModels"
+             xmlns:models="clr-namespace:Chicane.Mobile.Models"
+             x:Class="Chicane.Mobile.Views.MeetingDetailPage"
+             x:DataType="viewmodels:MeetingDetailViewModel"
+             Title="{Binding MeetingName}"
+             BackgroundColor="#0b1320">
+
+    <Grid RowDefinitions="Auto,Auto,*">
+
+        <!-- Compact Header -->
+        <Border Grid.Row="0" StrokeThickness="0" Padding="20,12,20,8">
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                    <GradientStop Color="#111827" Offset="0" />
+                    <GradientStop Color="#1e1b4b" Offset="0.5" />
+                    <GradientStop Color="#4c1d95" Offset="1" />
+                </LinearGradientBrush>
+            </Border.Background>
+            <HorizontalStackLayout Spacing="4" HorizontalOptions="Center">
+                <Label Text="&#x1F3C1;" FontSize="14" VerticalOptions="Center" />
+                <Label Text="CHICANE" FontFamily="OutfitBold" FontSize="20"
+                       FontAttributes="Italic" TextColor="White" VerticalOptions="Center"
+                       CharacterSpacing="2" />
+            </HorizontalStackLayout>
+        </Border>
+
+        <!-- Meeting Info -->
+        <Border Grid.Row="1" StrokeThickness="1" Stroke="#E10600"
+                StrokeShape="RoundRectangle 12"
+                BackgroundColor="#1e293b" Margin="16,10,16,6" Padding="14,12">
+            <VerticalStackLayout Spacing="4">
+                <Label Text="{Binding MeetingName}"
+                       FontFamily="TitilliumWebBold" FontSize="18"
+                       TextColor="White" />
+                <Label Text="{Binding CircuitInfo}"
+                       FontFamily="TitilliumWebRegular" FontSize="13"
+                       TextColor="#9CA3AF" />
+            </VerticalStackLayout>
+        </Border>
+
+        <!-- Session List -->
+        <CollectionView Grid.Row="2" ItemsSource="{Binding Sessions}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:SessionTime">
+                    <Border StrokeThickness="1" Stroke="#2a3441"
+                            StrokeShape="RoundRectangle 10"
+                            BackgroundColor="#1e293b"
+                            Padding="14,12" Margin="16,0,16,6">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MeetingDetailViewModel}}, Path=NavigateToSessionCommand}"
+                                CommandParameter="{Binding .}" />
+                        </Border.GestureRecognizers>
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                            <VerticalStackLayout Grid.Column="0" Spacing="2">
+                                <Label Text="{Binding SessionName}"
+                                       FontFamily="TitilliumWebBold" FontSize="14"
+                                       TextColor="White" />
+                                <Label Text="{Binding DateTime, StringFormat='{0:dd MMM yyyy · HH:mm}'}"
+                                       FontFamily="TitilliumWebRegular" FontSize="11"
+                                       TextColor="#9CA3AF" />
+                            </VerticalStackLayout>
+                            <Label Grid.Column="1" Text="›" FontSize="20"
+                                   TextColor="#9CA3AF" VerticalOptions="Center" />
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentPage>

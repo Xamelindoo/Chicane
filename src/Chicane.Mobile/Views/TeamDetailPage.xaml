@@ -39,6 +39,11 @@
 
                 <!-- Centered Team Name + Points -->
                 <VerticalStackLayout Spacing="4" Padding="20,16">
+                    <Image Source="{Binding TeamLogo}"
+                           HeightRequest="60"
+                           Aspect="AspectFit"
+                           HorizontalOptions="Center"
+                           Margin="0,0,0,8" />
                     <Label Text="{Binding TeamName}"
                            FontFamily="TitilliumWebBold" FontSize="24"
                            TextColor="{StaticResource PureWhite}"
@@ -151,138 +156,6 @@
                         </BindableLayout.ItemTemplate>
                     </HorizontalStackLayout>
                 </ScrollView>
-
-                <!-- ═══════════ SEASON RECORDS ═══════════ -->
-                <Border Stroke="{StaticResource BorderSubtle}" StrokeThickness="1"
-                        StrokeShape="RoundRectangle 4" BackgroundColor="{StaticResource SurfaceLow}"
-                        Padding="16" Margin="20,24,20,0">
-                    <VerticalStackLayout Spacing="0">
-                        <Label Text="SEASON RECORDS" FontFamily="TitilliumWebBold" FontSize="13"
-                               TextColor="{StaticResource PureWhite}" CharacterSpacing="3" Margin="0,0,0,12" />
-
-                        <Grid ColumnDefinitions="*,Auto" Padding="0,6" ColumnSpacing="8"
-                              IsVisible="{Binding SeasonStats.Championships, FallbackValue=True}">
-                            <Label Grid.Column="0" Text="Championships" FontFamily="TitilliumWebRegular" FontSize="12"
-                                   TextColor="{StaticResource CoolSlate}" VerticalOptions="Center" />
-                            <Label Grid.Column="1" Text="{Binding SeasonStats.Championships}" FontFamily="TitilliumWebBold" FontSize="14"
-                                   TextColor="{StaticResource PureWhite}" VerticalOptions="Center" />
-                        </Grid>
-                        <Grid ColumnDefinitions="*,Auto" Padding="0,6" ColumnSpacing="8"
-                              IsVisible="{Binding SeasonStats.RaceWins, FallbackValue=True}">
-                            <Label Grid.Column="0" Text="Race Wins" FontFamily="TitilliumWebRegular" FontSize="12"
-                                   TextColor="{StaticResource CoolSlate}" VerticalOptions="Center" />
-                            <Label Grid.Column="1" Text="{Binding SeasonStats.RaceWins}" FontFamily="TitilliumWebBold" FontSize="14"
-                                   TextColor="{StaticResource PureWhite}" VerticalOptions="Center" />
-                        </Grid>
-                        <Grid ColumnDefinitions="*,Auto" Padding="0,6" ColumnSpacing="8"
-                              IsVisible="{Binding SeasonStats.Podiums, FallbackValue=True}">
-                            <Label Grid.Column="0" Text="Podiums" FontFamily="TitilliumWebRegular" FontSize="12"
-                                   TextColor="{StaticResource CoolSlate}" VerticalOptions="Center" />
-                            <Label Grid.Column="1" Text="{Binding SeasonStats.Podiums}" FontFamily="TitilliumWebBold" FontSize="14"
-                                   TextColor="{StaticResource PureWhite}" VerticalOptions="Center" />
-                        </Grid>
-                        <Grid ColumnDefinitions="*,Auto" Padding="0,6" ColumnSpacing="8"
-                              IsVisible="{Binding SeasonStats.PolePositions, FallbackValue=True}">
-                            <Label Grid.Column="0" Text="Pole Positions" FontFamily="TitilliumWebRegular" FontSize="12"
-                                   TextColor="{StaticResource CoolSlate}" VerticalOptions="Center" />
-                            <Label Grid.Column="1" Text="{Binding SeasonStats.PolePositions}" FontFamily="TitilliumWebBold" FontSize="14"
-                                   TextColor="{StaticResource PureWhite}" VerticalOptions="Center" />
-                        </Grid>
-                        <Grid ColumnDefinitions="*,Auto" Padding="0,6" ColumnSpacing="8"
-                              IsVisible="{Binding SeasonStats.FastestLaps, FallbackValue=True}">
-                            <Label Grid.Column="0" Text="Fastest Laps" FontFamily="TitilliumWebRegular" FontSize="12"
-                                   TextColor="{StaticResource CoolSlate}" VerticalOptions="Center" />
-                            <Label Grid.Column="1" Text="{Binding SeasonStats.FastestLaps}" FontFamily="TitilliumWebBold" FontSize="14"
-                                   TextColor="{StaticResource PureWhite}" VerticalOptions="Center" />
-                        </Grid>
-                        <Grid ColumnDefinitions="*,Auto" Padding="0,6" ColumnSpacing="8"
-                              IsVisible="{Binding SeasonStats.FirstSeason, FallbackValue=False}">
-                            <Label Grid.Column="0" Text="First Season" FontFamily="TitilliumWebRegular" FontSize="12"
-                                   TextColor="{StaticResource CoolSlate}" VerticalOptions="Center" />
-                            <Label Grid.Column="1" Text="{Binding SeasonStats.FirstSeason}" FontFamily="TitilliumWebBold" FontSize="14"
-                                   TextColor="{StaticResource PureWhite}" VerticalOptions="Center" />
-                        </Grid>
-                        <Grid ColumnDefinitions="*,Auto" Padding="0,6" ColumnSpacing="8"
-                              IsVisible="{Binding SeasonStats.HomeRace, FallbackValue=False}">
-                            <Label Grid.Column="0" Text="Home Race" FontFamily="TitilliumWebRegular" FontSize="12"
-                                   TextColor="{StaticResource CoolSlate}" VerticalOptions="Center" />
-                            <Label Grid.Column="1" Text="{Binding SeasonStats.HomeRace}" FontFamily="TitilliumWebBold" FontSize="14"
-                                   TextColor="{StaticResource PureWhite}" VerticalOptions="Center" />
-                        </Grid>
-                    </VerticalStackLayout>
-                </Border>
-
-                <!-- ═══════════ TEAM PROFILE ═══════════ -->
-                <Border Stroke="{StaticResource BorderSubtle}" StrokeThickness="1"
-                        StrokeShape="RoundRectangle 4" BackgroundColor="{StaticResource SurfaceLow}"
-                        Padding="16" Margin="20,24,20,20">
-                    <VerticalStackLayout Spacing="0">
-                        <Label Text="TEAM PROFILE" FontFamily="TitilliumWebBold" FontSize="13"
-                               TextColor="{StaticResource PureWhite}" CharacterSpacing="3" Margin="0,0,0,12" />
-
-                        <Grid ColumnDefinitions="*,Auto" Padding="0,6" ColumnSpacing="8"
-                              IsVisible="{Binding Profile.FullName, FallbackValue=False}">
-                            <Label Grid.Column="0" Text="{Binding Profile.FullName}" FontFamily="TitilliumWebBold" FontSize="14"
-                                   TextColor="{StaticResource PureWhite}" VerticalOptions="Center" />
-                        </Grid>
-                        <Grid ColumnDefinitions="Auto,*" Padding="0,6" ColumnSpacing="12"
-                              IsVisible="{Binding Profile.Chassis, FallbackValue=False}">
-                            <Label Grid.Column="0" Text="Chassis" FontFamily="TitilliumWebRegular" FontSize="12"
-                                   TextColor="{StaticResource CoolSlate}" VerticalOptions="Center" WidthRequest="90" />
-                            <Label Grid.Column="1" Text="{Binding Profile.Chassis}" FontFamily="TitilliumWebBold" FontSize="12"
-                                   TextColor="{StaticResource PureWhite}" VerticalOptions="Center" />
-                        </Grid>
-                        <Grid ColumnDefinitions="Auto,*" Padding="0,6" ColumnSpacing="12"
-                              IsVisible="{Binding Profile.Base, FallbackValue=False}">
-                            <Label Grid.Column="0" Text="Base" FontFamily="TitilliumWebRegular" FontSize="12"
-                                   TextColor="{StaticResource CoolSlate}" VerticalOptions="Center" WidthRequest="90" />
-                            <Label Grid.Column="1" Text="{Binding Profile.Base}" FontFamily="TitilliumWebBold" FontSize="12"
-                                   TextColor="{StaticResource PureWhite}" VerticalOptions="Center" />
-                        </Grid>
-                        <Grid ColumnDefinitions="Auto,*" Padding="0,6" ColumnSpacing="12"
-                              IsVisible="{Binding Profile.PowerUnit, FallbackValue=False}">
-                            <Label Grid.Column="0" Text="Power Unit" FontFamily="TitilliumWebRegular" FontSize="12"
-                                   TextColor="{StaticResource CoolSlate}" VerticalOptions="Center" WidthRequest="90" />
-                            <Label Grid.Column="1" Text="{Binding Profile.PowerUnit}" FontFamily="TitilliumWebBold" FontSize="12"
-                                   TextColor="{StaticResource PureWhite}" VerticalOptions="Center" />
-                        </Grid>
-                        <Grid ColumnDefinitions="Auto,*" Padding="0,6" ColumnSpacing="12"
-                              IsVisible="{Binding Profile.TeamPrincipal, FallbackValue=False}">
-                            <Label Grid.Column="0" Text="T. Principal" FontFamily="TitilliumWebRegular" FontSize="12"
-                                   TextColor="{StaticResource CoolSlate}" VerticalOptions="Center" WidthRequest="90" />
-                            <Label Grid.Column="1" Text="{Binding Profile.TeamPrincipal}" FontFamily="TitilliumWebBold" FontSize="12"
-                                   TextColor="{StaticResource PureWhite}" VerticalOptions="Center" />
-                        </Grid>
-                        <Grid ColumnDefinitions="Auto,*" Padding="0,6" ColumnSpacing="12"
-                              IsVisible="{Binding Profile.TechnicalDirector, FallbackValue=False}">
-                            <Label Grid.Column="0" Text="Tech. Director" FontFamily="TitilliumWebRegular" FontSize="12"
-                                   TextColor="{StaticResource CoolSlate}" VerticalOptions="Center" WidthRequest="90" />
-                            <Label Grid.Column="1" Text="{Binding Profile.TechnicalDirector}" FontFamily="TitilliumWebBold" FontSize="12"
-                                   TextColor="{StaticResource PureWhite}" VerticalOptions="Center" />
-                        </Grid>
-                        <Grid ColumnDefinitions="Auto,*" Padding="0,6" ColumnSpacing="12"
-                              IsVisible="{Binding Profile.ReserveDriver, FallbackValue=False}">
-                            <Label Grid.Column="0" Text="Reserve Driver" FontFamily="TitilliumWebRegular" FontSize="12"
-                                   TextColor="{StaticResource CoolSlate}" VerticalOptions="Center" WidthRequest="90" />
-                            <Label Grid.Column="1" Text="{Binding Profile.ReserveDriver}" FontFamily="TitilliumWebBold" FontSize="12"
-                                   TextColor="{StaticResource PureWhite}" VerticalOptions="Center" />
-                        </Grid>
-
-                        <BoxView HeightRequest="1" Color="{StaticResource BorderSubtle}" Margin="0,10"
-                                 IsVisible="{Binding Profile.History, FallbackValue=False}" />
-
-                        <Label Text="{Binding Profile.History}" FontFamily="TitilliumWebRegular" FontSize="12"
-                               TextColor="{StaticResource CoolSlate}" LineHeight="1.6"
-                               IsVisible="{Binding Profile.History, FallbackValue=False}" />
-
-                        <BoxView HeightRequest="1" Color="{StaticResource BorderSubtle}" Margin="0,10"
-                                 IsVisible="{Binding Profile.PreviousSeasonSummary, FallbackValue=False}" />
-
-                        <Label Text="{Binding Profile.PreviousSeasonSummary}" FontFamily="TitilliumWebRegular" FontSize="12"
-                               TextColor="{StaticResource CoolSlate}" LineHeight="1.6"
-                               IsVisible="{Binding Profile.PreviousSeasonSummary, FallbackValue=False}" />
-                    </VerticalStackLayout>
-                </Border>
 
             </VerticalStackLayout>
         </ScrollView>
