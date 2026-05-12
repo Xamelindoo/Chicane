@@ -12,4 +12,5 @@ public class RaceResultEntry
     public bool IsDsq { get; init; }
     public string? GapToLeader { get; set; }
     public int NumberOfLaps { get; init; }
+    public string HeadshotUrl { get; set; } = string.Empty;
 }

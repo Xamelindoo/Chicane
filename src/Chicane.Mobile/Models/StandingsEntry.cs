@@ -8,5 +8,5 @@ public class StandingsEntry
     public int Points { get; init; }
     public int DriverNumber { get; init; }
     public int PositionStart { get; init; }
-    public string HeadshotUrl { get; init; } = string.Empty;
+    public string HeadshotUrl { get; set; } = string.Empty;
 }

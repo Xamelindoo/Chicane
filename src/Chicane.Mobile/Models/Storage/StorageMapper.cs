@@ -14,6 +14,7 @@ public static class StorageMapper
         Points = entry.Points,
         DriverNumber = entry.DriverNumber,
         PositionStart = entry.PositionStart,
+        HeadshotUrl = entry.HeadshotUrl,
     };
 
     public static StandingsEntry ToDomain(StandingsRecord record) => new()
@@ -24,6 +25,7 @@ public static class StorageMapper
         Points = record.Points,
         DriverNumber = record.DriverNumber,
         PositionStart = record.PositionStart,
+        HeadshotUrl = record.HeadshotUrl,
     };
 
     // Constructor standings
@@ -78,6 +80,63 @@ public static class StorageMapper
         Top3Result = record.Top3Result,
         MeetingName = record.MeetingName,
         MeetingKey = record.MeetingKey,
+    };
+
+    // Session Results
+    public static SessionResultRecord ToRecord(RaceResultEntry entry, int sessionKey) => new()
+    {
+        SessionKey = sessionKey,
+        Position = entry.Position,
+        DriverName = entry.DriverName,
+        TeamName = entry.TeamName,
+        HeadshotUrl = entry.HeadshotUrl,
+        TimeOrDnf = entry.TimeOrDnf,
+        GapToLeader = entry.GapToLeader,
+        NumberOfLaps = entry.NumberOfLaps,
+        IsFastestLap = entry.IsFastestLap,
+        IsDnf = entry.IsDnf,
+    };
+
+    public static RaceResultEntry ToDomain(SessionResultRecord record) => new()
+    {
+        Position = record.Position,
+        DriverName = record.DriverName,
+        TeamName = record.TeamName,
+        HeadshotUrl = record.HeadshotUrl,
+        TimeOrDnf = record.TimeOrDnf,
+        GapToLeader = record.GapToLeader,
+        NumberOfLaps = record.NumberOfLaps,
+        IsFastestLap = record.IsFastestLap,
+        IsDnf = record.IsDnf,
+    };
+
+    // Race Weekends
+    public static RaceWeekendRecord ToRecord(RaceWeekendCard card) => new()
+    {
+        MeetingKey = card.MeetingKey,
+        MeetingName = card.MeetingName,
+        CircuitName = card.CircuitName,
+        Country = card.Country,
+        DateStart = card.DateStart,
+        DateEnd = card.DateEnd,
+        CircuitImageUrl = card.CircuitImageUrl,
+        WeatherCondition = card.WeatherCondition,
+        WeatherIcon = card.WeatherIcon,
+        TemperatureC = card.TemperatureC,
+    };
+
+    public static RaceWeekendCard ToDomain(RaceWeekendRecord record) => new()
+    {
+        MeetingKey = record.MeetingKey,
+        MeetingName = record.MeetingName,
+        CircuitName = record.CircuitName,
+        Country = record.Country,
+        DateStart = record.DateStart,
+        DateEnd = record.DateEnd,
+        CircuitImageUrl = record.CircuitImageUrl,
+        WeatherCondition = record.WeatherCondition,
+        WeatherIcon = record.WeatherIcon,
+        TemperatureC = (int)record.TemperatureC,
     };
 
     // Teams

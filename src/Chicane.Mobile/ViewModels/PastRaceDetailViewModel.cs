@@ -38,8 +38,6 @@ public partial class PastRaceDetailViewModel : ObservableObject
     private string eventDateText = string.Empty;
 
     public ObservableCollection<RaceResultEntry> Results { get; } = new();
-    public ObservableCollection<StandingsEntry> DriverStandings { get; } = new();
-    public ObservableCollection<ConstructorStandingsEntry> ConstructorStandings { get; } = new();
 
     partial void OnSessionKeyChanged(int value)
     {
@@ -77,24 +75,12 @@ public partial class PastRaceDetailViewModel : ObservableObject
                 Results.Add(r);
             }
 
-            DriverStandings.Clear();
-            foreach (var d in detail.DriverStandings)
-            {
-                DriverStandings.Add(d);
-            }
-
-            ConstructorStandings.Clear();
-            foreach (var c in detail.ConstructorStandings)
-            {
-                ConstructorStandings.Add(c);
-            }
-
-            HasData = Results.Count > 0;
+            HasData = true;
             IsEmptyState = Results.Count == 0;
         }
         catch (Exception)
         {
-            ErrorMessage = "Unable to load race results.";
+            ErrorMessage = "Unable to load race results (API may be rate-limited — try again in a moment).";
             HasData = false;
         }
         finally

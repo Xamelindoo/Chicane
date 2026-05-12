@@ -4,6 +4,14 @@ using Chicane.Mobile.Services.Repositories;
 
 namespace Chicane.Mobile.Services;
 
+/// <summary>
+/// Team and driver data service with SQLite caching.
+/// Provides teams list, driver standings (for leaderboards), and team details.
+/// All F1 reads are cache-first; cache misses trigger API calls via CachedF1DataService
+/// (which itself is cache-first, creating a layered cache architecture).
+/// Non-F1 categories fall back to MockTeamsService.
+/// Contains static helpers for team colors, emojis, and logo filenames.
+/// </summary>
 public class CachedTeamsService : ITeamsService
 {
     private readonly MockTeamsService _mock;
@@ -19,14 +27,26 @@ public class CachedTeamsService : ITeamsService
         _openF1 = openF1;
     }
 
+    // -------- Teams List (cache-first) --------
+
+    /// <summary>
+    /// Returns the full list of F1 teams with positions, points, colors, logos, and drivers.
+    /// Cache-first: reads from SQLite; on miss, fetches from downstream services and saves to cache.
+    /// </summary>
     public async Task<List<TeamEntry>> GetTeamsAsync(string categoryId)
     {
         try
         {
+            // Check SQLite cache first
+            var cached = await _teamsRepo.GetByCategoryAsync(categoryId);
+            if (cached.Count > 0)
+                return cached.Select(StorageMapper.ToDomain).ToList();
+
             List<TeamEntry> teams;
 
             if (categoryId == "f1")
             {
+                // Fetch standings from cached services (layered cache: SQLite → API)
                 var constructorStandings = await _f1Data.GetConstructorStandingsAsync(categoryId);
                 var driverStandings = await _f1Data.GetStandingsAsync(categoryId);
                 var realColors = await _openF1.GetTeamColorsAsync();
@@ -52,14 +72,13 @@ public class CachedTeamsService : ITeamsService
                         TeamLogo = GetTeamLogo(cs.TeamName),
                     };
                 }).ToList();
-
-                System.Diagnostics.Debug.WriteLine($"[Teams] F1 teams: {string.Join(", ", teams.Select(t => t.TeamName))}");
             }
             else
             {
                 teams = await _mock.GetTeamsAsync(categoryId);
             }
 
+            // Write to cache
             var records = teams.Select(t => StorageMapper.ToRecord(t, categoryId)).ToList();
             await _teamsRepo.UpsertAsync(categoryId, records);
             return teams;
@@ -67,13 +86,24 @@ public class CachedTeamsService : ITeamsService
         catch
         {
             var records = await _teamsRepo.GetByCategoryAsync(categoryId);
-            return records.Select(StorageMapper.ToDomain).ToList();
+            if (records.Count > 0)
+                return records.Select(StorageMapper.ToDomain).ToList();
+            return await _mock.GetTeamsAsync(categoryId);
         }
     }
 
+    // -------- Driver Standings (for Leaderboards, cache-first) --------
+
+    /// <summary>
+    /// Returns driver standings with position arrows, headshots, and team colors.
+    /// Uses CachedF1DataService.GetStandingsAsync (cache-first) underneath.
+    /// </summary>
     public async Task<List<DriverStandingsEntry>> GetDriversAsync(string categoryId)
     {
-        if (categoryId == "f1")
+        if (categoryId != "f1")
+            return await _mock.GetDriversAsync(categoryId);
+
+        try
         {
             var standings = await _f1Data.GetStandingsAsync(categoryId);
             var realColors = await _openF1.GetTeamColorsAsync();
@@ -91,9 +121,18 @@ public class CachedTeamsService : ITeamsService
                 HeadshotUrl = s.HeadshotUrl,
             }).ToList();
         }
-        return await _mock.GetDriversAsync(categoryId);
+        catch
+        {
+            return await _mock.GetDriversAsync(categoryId);
+        }
     }
 
+    // -------- Team Detail (API-first, with fallback) --------
+
+    /// <summary>
+    /// Returns full detail for a single team: colors, logo, drivers, and race results.
+    /// Race results are not yet populated from API (placeholder for future).
+    /// </summary>
     public async Task<TeamDetail> GetTeamDetailAsync(string teamName, string categoryId)
     {
         if (categoryId != "f1")
@@ -113,6 +152,7 @@ public class CachedTeamsService : ITeamsService
             {
                 TeamName = team?.TeamName ?? teamName,
                 TeamLogo = GetTeamLogo(teamName),
+                TeamLogoTransparent = GetTeamLogoTransparent(teamName),
                 BorderColor = color,
                 GradientColor = color,
                 TotalPoints = team?.Points ?? 0,
@@ -131,6 +171,9 @@ public class CachedTeamsService : ITeamsService
         }
     }
 
+    // -------- Static helpers: colors, emojis, logos --------
+
+    /// <summary> Resolves team color: API-provided first, hardcoded fallback. </summary>
     private static string ResolveTeamColor(string teamName, Dictionary<string, string>? realColors)
     {
         if (realColors?.TryGetValue(teamName, out var realColor) == true)
@@ -138,6 +181,7 @@ public class CachedTeamsService : ITeamsService
         return GetHardcodedTeamColor(teamName);
     }
 
+    /// <summary> Hardcoded F1 team colors used when API colors are unavailable. </summary>
     private static string GetHardcodedTeamColor(string teamName) => teamName switch
     {
         "Red Bull" or "Red Bull Racing" => "#1A3A5C",
@@ -154,6 +198,7 @@ public class CachedTeamsService : ITeamsService
         _ => "#333333",
     };
 
+    /// <summary> Unicode emoji for each F1 team. </summary>
     private static string GetTeamEmoji(string teamName) => teamName switch
     {
         "Ferrari" => "\U0001f3ce",
@@ -170,19 +215,37 @@ public class CachedTeamsService : ITeamsService
         _ => "\U0001f3ce",
     };
 
+    /// <summary> Maps team name to transparent PNG logo filename. </summary>
     private static string GetTeamLogo(string teamName) => teamName switch
     {
-        "Ferrari" => "team_ferrari.png",
-        "Red Bull" or "Red Bull Racing" => "team_redbull.png",
-        "Mercedes" => "team_mercedes.png",
-        "McLaren" => "team_mclaren.png",
-        "Aston Martin" => "team_astonmartin.png",
-        "Alpine" => "team_alpine.png",
-        "Racing Bulls" => "team_racingbulls.png",
-        "Haas F1 Team" or "Haas" => "team_haas.png",
-        "Williams" => "team_williams.png",
-        "Audi" => "team_audi.png",
-        "Cadillac" => "team_cadillac.png",
+        "Ferrari" => "team_ferrari_transparent.png",
+        "Red Bull" or "Red Bull Racing" => "team_redbull_transparent.png",
+        "Mercedes" => "team_mercedes_transparent.png",
+        "McLaren" => "team_mclaren_transparent.png",
+        "Aston Martin" => "team_astonmartin_transparent.png",
+        "Alpine" => "team_alpine_transparent.png",
+        "Racing Bulls" => "team_racingbulls_transparent.png",
+        "Haas F1 Team" or "Haas" => "team_haas_transparent.png",
+        "Williams" => "team_williams_transparent.png",
+        "Audi" => "team_audi_transparent.png",
+        "Cadillac" => "team_cadillac_transparent.png",
+        _ => "",
+    };
+
+    /// <summary> Same as GetTeamLogo — kept as separate method for future differentiation. </summary>
+    private static string GetTeamLogoTransparent(string teamName) => teamName switch
+    {
+        "Ferrari" => "team_ferrari_transparent.png",
+        "Red Bull" or "Red Bull Racing" => "team_redbull_transparent.png",
+        "Mercedes" => "team_mercedes_transparent.png",
+        "McLaren" => "team_mclaren_transparent.png",
+        "Aston Martin" => "team_astonmartin_transparent.png",
+        "Alpine" => "team_alpine_transparent.png",
+        "Racing Bulls" => "team_racingbulls_transparent.png",
+        "Haas F1 Team" or "Haas" => "team_haas_transparent.png",
+        "Williams" => "team_williams_transparent.png",
+        "Audi" => "team_audi_transparent.png",
+        "Cadillac" => "team_cadillac_transparent.png",
         _ => "",
     };
 }

@@ -521,6 +521,7 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
                         IsDsq = r.Dsq,
                         GapToLeader = gap,
                         NumberOfLaps = r.NumberOfLaps,
+                        HeadshotUrl = DriverHeadshot(r.DriverNumber),
                     };
                 })
                 .ToList();
@@ -553,17 +554,17 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
 
     private static string TeamLogoFor(string teamName) => teamName switch
     {
-        "Ferrari" => "team_ferrari.png",
-        "Red Bull" or "Red Bull Racing" => "team_redbull.png",
-        "Mercedes" => "team_mercedes.png",
-        "McLaren" => "team_mclaren.png",
-        "Aston Martin" => "team_astonmartin.png",
-        "Alpine" => "team_alpine.png",
-        "Racing Bulls" => "team_racingbulls.png",
-        "Haas F1 Team" or "Haas" => "team_haas.png",
-        "Williams" => "team_williams.png",
-        "Audi" => "team_audi.png",
-        "Cadillac" => "team_cadillac.png",
+        "Ferrari" => "team_ferrari_transparent.png",
+        "Red Bull" or "Red Bull Racing" => "team_redbull_transparent.png",
+        "Mercedes" => "team_mercedes_transparent.png",
+        "McLaren" => "team_mclaren_transparent.png",
+        "Aston Martin" => "team_astonmartin_transparent.png",
+        "Alpine" => "team_alpine_transparent.png",
+        "Racing Bulls" => "team_racingbulls_transparent.png",
+        "Haas F1 Team" or "Haas" => "team_haas_transparent.png",
+        "Williams" => "team_williams_transparent.png",
+        "Audi" => "team_audi_transparent.png",
+        "Cadillac" => "team_cadillac_transparent.png",
         _ => "",
     };
 

@@ -104,20 +104,21 @@
 
         <!-- Driver Standings List -->
         <CollectionView Grid.Row="2" ItemsSource="{Binding Drivers}"
-                        IsVisible="{Binding IsShowingPilots}" Margin="0,0,0,0">
+                        IsVisible="{Binding IsShowingPilots}" Margin="0,0,0,0"
+                        VerticalScrollBarVisibility="Never">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:DriverStandingsEntry">
                     <Border StrokeThickness="1" Stroke="#2a3441" StrokeShape="RoundRectangle 10"
-                            BackgroundColor="#1e293b" Padding="12,10" Margin="16,0,16,6">
+                            BackgroundColor="#1e293b" Padding="14,12" Margin="16,0,16,6">
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer
                                 Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:LeaderboardsViewModel}}, Path=NavigateToDriverCommand}"
                                 CommandParameter="{Binding DriverNumber}" />
                         </Border.GestureRecognizers>
-                        <Grid ColumnDefinitions="24,32,*,Auto,Auto" ColumnSpacing="10">
+                        <Grid ColumnDefinitions="32,42,*,Auto,Auto" ColumnSpacing="10">
                             <!-- Position -->
                             <Label Grid.Column="0" Text="{Binding Position, StringFormat='{0}'}"
-                                   FontFamily="TitilliumWebBold" FontSize="15"
+                                   FontFamily="TitilliumWebBold" FontSize="17"
                                    VerticalOptions="Center" HorizontalTextAlignment="Center">
                                 <Label.Triggers>
                                     <DataTrigger TargetType="Label" Binding="{Binding Position}" Value="1">
@@ -133,27 +134,27 @@
                             </Label>
                             <!-- Headshot -->
                             <Border Grid.Column="1" StrokeThickness="1" Stroke="#2a3441"
-                                    StrokeShape="RoundRectangle 16" WidthRequest="32" HeightRequest="32"
+                                    StrokeShape="RoundRectangle 21" WidthRequest="42" HeightRequest="42"
                                     BackgroundColor="#0f172a">
                                 <Image Source="{Binding HeadshotUrl}" Aspect="AspectFill" />
                             </Border>
                             <!-- Name + Team -->
                             <VerticalStackLayout Grid.Column="2" VerticalOptions="Center" Spacing="1">
                                 <Label Text="{Binding DriverName}" FontFamily="TitilliumWebRegular"
-                                       FontSize="13" TextColor="White" LineBreakMode="TailTruncation" />
-                                <Label Text="{Binding TeamName}" FontSize="10" TextColor="#9CA3AF"
+                                       FontSize="15" TextColor="White" LineBreakMode="TailTruncation" />
+                                <Label Text="{Binding TeamName}" FontSize="11" TextColor="#9CA3AF"
                                        LineBreakMode="TailTruncation" />
                             </VerticalStackLayout>
                             <!-- Position Change Arrow -->
                             <Label Grid.Column="3" Text="{Binding PositionArrow}"
                                    TextColor="{Binding PositionArrowColor}"
-                                   FontFamily="TitilliumWebBold" FontSize="13"
+                                   FontFamily="TitilliumWebBold" FontSize="15"
                                    VerticalOptions="Center" HorizontalTextAlignment="Center"
-                                   WidthRequest="22" />
+                                   WidthRequest="24" />
                             <!-- Points -->
                             <Label Grid.Column="4" Text="{Binding Points}" FontFamily="TitilliumWebBold"
-                                   FontSize="15" TextColor="White" VerticalOptions="Center"
-                                   HorizontalTextAlignment="End" WidthRequest="45" />
+                                   FontSize="17" TextColor="White" VerticalOptions="Center"
+                                   HorizontalTextAlignment="End" WidthRequest="50" />
                         </Grid>
                     </Border>
                 </DataTemplate>
@@ -162,20 +163,21 @@
 
         <!-- Team Standings List -->
         <CollectionView Grid.Row="2" ItemsSource="{Binding Teams}"
-                        IsVisible="{Binding IsShowingTeams}" Margin="0,0,0,0">
+                        IsVisible="{Binding IsShowingTeams}" Margin="0,0,0,0"
+                        VerticalScrollBarVisibility="Never">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:TeamEntry">
                     <Border StrokeThickness="1" Stroke="#2a3441" StrokeShape="RoundRectangle 10"
-                            BackgroundColor="#1e293b" Padding="12,10" Margin="16,0,16,6">
+                            BackgroundColor="#1e293b" Padding="14,12" Margin="16,0,16,6">
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer
                                 Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:LeaderboardsViewModel}}, Path=NavigateToDetailCommand}"
                                 CommandParameter="{Binding TeamName}" />
                         </Border.GestureRecognizers>
-                        <Grid ColumnDefinitions="24,32,*,Auto" ColumnSpacing="10">
+                        <Grid ColumnDefinitions="32,42,*,Auto" ColumnSpacing="10">
                             <!-- Position -->
                             <Label Grid.Column="0" Text="{Binding Position, StringFormat='{0}'}"
-                                   FontFamily="TitilliumWebBold" FontSize="15"
+                                   FontFamily="TitilliumWebBold" FontSize="17"
                                    VerticalOptions="Center" HorizontalTextAlignment="Center">
                                 <Label.Triggers>
                                     <DataTrigger TargetType="Label" Binding="{Binding Position}" Value="1">
@@ -191,18 +193,18 @@
                             </Label>
                             <!-- Team Logo -->
                             <Border Grid.Column="1" StrokeThickness="1" Stroke="#2a3441"
-                                    StrokeShape="RoundRectangle 16" WidthRequest="32" HeightRequest="32"
+                                    StrokeShape="RoundRectangle 21" WidthRequest="42" HeightRequest="42"
                                     BackgroundColor="#0f172a" Padding="2">
                                 <Image Source="{Binding TeamLogo}" Aspect="AspectFit" />
                             </Border>
                             <!-- Team Name -->
                             <Label Grid.Column="2" Text="{Binding TeamName}" FontFamily="TitilliumWebRegular"
-                                   FontSize="13" TextColor="White" VerticalOptions="Center"
+                                   FontSize="15" TextColor="White" VerticalOptions="Center"
                                    LineBreakMode="TailTruncation" />
                             <!-- Points -->
                             <Label Grid.Column="3" Text="{Binding Points}" FontFamily="TitilliumWebBold"
-                                   FontSize="14" TextColor="White" VerticalOptions="Center"
-                                   HorizontalTextAlignment="End" WidthRequest="45" />
+                                   FontSize="16" TextColor="White" VerticalOptions="Center"
+                                   HorizontalTextAlignment="End" WidthRequest="50" />
                         </Grid>
                     </Border>
                 </DataTemplate>

@@ -17,4 +17,5 @@ public class StandingsRecord
     public int Points { get; set; }
     public int DriverNumber { get; set; }
     public int PositionStart { get; set; }
+    public string HeadshotUrl { get; set; } = string.Empty;
 }

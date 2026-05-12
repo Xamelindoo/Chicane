@@ -6,6 +6,14 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace Chicane.Mobile.ViewModels;
 
+/// <summary>
+/// ViewModel for the Leaderboards tab (PILOTI / TEAM toggle).
+/// Loads driver standings (with position arrows, headshots, team colors)
+/// and team standings from cached services.
+/// Supports navigation to driver and team detail pages.
+/// Accepts a "tab" query parameter to pre-select PILOTI or TEAM.
+/// </summary>
+[QueryProperty(nameof(Tab), "tab")]
 public partial class LeaderboardsViewModel : ObservableObject
 {
     private readonly ITeamsService teamsService;
@@ -35,6 +43,20 @@ public partial class LeaderboardsViewModel : ObservableObject
 
     [ObservableProperty]
     private bool isShowingTeams;
+
+    private string? _tab;
+    public string? Tab
+    {
+        set
+        {
+            _tab = value;
+            if (value == "teams")
+            {
+                IsShowingTeams = true;
+                IsShowingPilots = false;
+            }
+        }
+    }
 
     public ObservableCollection<TeamEntry> Teams { get; } = new();
     public ObservableCollection<DriverStandingsEntry> Drivers { get; } = new();

@@ -20,10 +20,10 @@ public class DriverStandingsEntry
         _ => "-"
     };
 
-    public string PositionArrowColor => PositionChange switch
+    public Color PositionArrowColor => PositionChange switch
     {
-        > 0 => "#10B981",
-        < 0 => "#EF4444",
-        _ => "#9CA3AF"
+        > 0 => Color.FromArgb("#10B981"),
+        < 0 => Color.FromArgb("#EF4444"),
+        _ => Color.FromArgb("#9CA3AF")
     };
 }

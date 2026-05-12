@@ -6,20 +6,28 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace Chicane.Mobile.ViewModels;
 
+/// <summary>
+/// Main view model for the Home tab.
+/// Orchestrates loading of: next event countdown, GP weekend cards, weather,
+/// driver/constructor standings previews, and top news.
+/// Most data comes from cache-first services (instant after first load).
+/// </summary>
 public partial class HomeViewModel : ObservableObject
 {
     private readonly IF1DataService f1DataService;
     private readonly IWeatherService weatherService;
     private readonly OpenF1ApiService openF1;
+    private readonly CachedScheduleService cachedSchedule;
     private readonly INewsService newsService;
     private IDispatcherTimer? countdownTimer;
     private DateTime eventDateTime;
 
-    public HomeViewModel(IF1DataService f1DataService, IWeatherService weatherService, OpenF1ApiService openF1, INewsService newsService)
+    public HomeViewModel(IF1DataService f1DataService, IWeatherService weatherService, OpenF1ApiService openF1, CachedScheduleService cachedSchedule, INewsService newsService)
     {
         this.f1DataService = f1DataService;
         this.weatherService = weatherService;
         this.openF1 = openF1;
+        this.cachedSchedule = cachedSchedule;
         this.newsService = newsService;
     }
 
@@ -95,6 +103,15 @@ public partial class HomeViewModel : ObservableObject
     private string circuitImage = string.Empty;
 
     [ObservableProperty]
+    private string weatherIcon = string.Empty;
+
+    [ObservableProperty]
+    private string weatherCondition = string.Empty;
+
+    [ObservableProperty]
+    private double temperatureC;
+
+    [ObservableProperty]
     private string sessionName = string.Empty;
 
     [ObservableProperty]
@@ -132,7 +149,7 @@ public partial class HomeViewModel : ObservableObject
 
             var displayInfo = DeviceDisplay.Current.MainDisplayInfo;
             HeroHeight = displayInfo.Height / displayInfo.Density;
-            ScreenWidth = displayInfo.Width / displayInfo.Density - 32;
+            ScreenWidth = displayInfo.Width / displayInfo.Density - 36;
 
             var raceEvent = await f1DataService.GetNextEventAsync("f1");
 
@@ -147,25 +164,30 @@ public partial class HomeViewModel : ObservableObject
             HasCircuitMap = !string.IsNullOrWhiteSpace(CircuitMapUrl);
 
             UpcomingWeekends.Clear();
-            foreach (var w in await openF1.GetUpcomingWeekendsAsync(3))
+            foreach (var w in await cachedSchedule.GetUpcomingWeekendsAsync(3))
                 UpcomingWeekends.Add(w);
 
             if (UpcomingWeekends.Count > 0)
-            {
-                var first = UpcomingWeekends[0];
-                var forecast = await weatherService.GetForecastAsync(first.CircuitName, first.Country, first.DateStart);
-                if (forecast is not null)
                 {
-                    first.WeatherCondition = forecast.Condition;
-                    first.WeatherIcon = forecast.IconGlyph;
-                    first.TemperatureC = forecast.TemperatureC;
+                    var first = UpcomingWeekends[0];
+                    var forecast = await weatherService.GetForecastAsync(first.CircuitName, first.Country, first.DateStart);
+                    if (forecast is not null)
+                    {
+                        first.WeatherCondition = forecast.Condition;
+                        first.WeatherIcon = forecast.IconGlyph;
+                        first.TemperatureC = forecast.TemperatureC;
+                        WeatherCondition = forecast.Condition;
+                        WeatherIcon = forecast.IconGlyph;
+                        TemperatureC = forecast.TemperatureC;
+                    }
+                    else
+                    {
+                        first.WeatherCondition = "Check later";
+                        first.WeatherIcon = "\u26A0";
+                        WeatherCondition = "Check later";
+                        WeatherIcon = "\u26A0";
+                    }
                 }
-                else
-                {
-                    first.WeatherCondition = "Check later";
-                    first.WeatherIcon = "\u26A0";
-                }
-            }
 
             TopNews.Clear();
             foreach (var n in (await newsService.GetNewsAsync("f1")).Take(4))

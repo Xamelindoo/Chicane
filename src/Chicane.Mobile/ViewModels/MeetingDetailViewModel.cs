@@ -65,6 +65,7 @@ public partial class MeetingDetailViewModel : ObservableObject
     private async Task NavigateToSessionAsync(SessionTime session)
     {
         if (session.SessionKey <= 0) return;
+        if (session.DateTime > DateTime.UtcNow) return;
         await Shell.Current.GoToAsync($"past-race-detail?sessionKey={session.SessionKey}");
     }
 }

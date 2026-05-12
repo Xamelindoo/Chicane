@@ -53,6 +53,7 @@
 
         <!-- News List -->
         <CollectionView Grid.Row="1"
+                        VerticalScrollBarVisibility="Never"
                         ItemsSource="{Binding Articles}"
                         IsVisible="{Binding HasData}"
                         x:DataType="viewmodels:NewsViewModel"

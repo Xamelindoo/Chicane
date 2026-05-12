@@ -44,6 +44,12 @@ public partial class TeamDetailViewModel : ObservableObject
     private string emoji = "🏎️";
 
     [ObservableProperty]
+    private string teamLogo = string.Empty;
+
+    [ObservableProperty]
+    private string teamLogoTransparent = string.Empty;
+
+    [ObservableProperty]
     private string gradientColor = "#333333";
 
     [ObservableProperty]
@@ -78,6 +84,8 @@ public partial class TeamDetailViewModel : ObservableObject
             TeamName = detail.TeamName;
             BorderColor = detail.BorderColor;
             Emoji = detail.Emoji;
+            TeamLogo = detail.TeamLogo;
+            TeamLogoTransparent = detail.TeamLogoTransparent;
             GradientColor = detail.GradientColor;
             TotalPoints = detail.TotalPoints;
             SeasonStats = detail.SeasonStats;

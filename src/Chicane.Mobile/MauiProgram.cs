@@ -19,9 +19,6 @@ public static class MauiProgram
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 fonts.AddFont("SpaceMono-Regular.ttf", "SpaceMonoRegular");
                 fonts.AddFont("SpaceMono-Bold.ttf", "SpaceMonoBold");
-                fonts.AddFont("JetBrainsMono-Regular.ttf", "JetBrainsMonoRegular");
-                fonts.AddFont("JetBrainsMono-Bold.ttf", "JetBrainsMonoBold");
-                fonts.AddFont("Outfit-Regular.ttf", "OutfitRegular");
                 fonts.AddFont("Outfit-Bold.ttf", "OutfitBold");
                 fonts.AddFont("TitilliumWeb-Regular.ttf", "TitilliumWebRegular");
                 fonts.AddFont("TitilliumWeb-SemiBold.ttf", "TitilliumWebSemiBold");
@@ -43,23 +40,31 @@ public static class MauiProgram
 
         // SQLite infrastructure
         builder.Services.AddSingleton<DatabaseService>();
+        builder.Services.AddSingleton<ImageCacheService>();
         builder.Services.AddSingleton<StandingsRepository>();
         builder.Services.AddSingleton<ConstructorStandingsRepository>();
         builder.Services.AddSingleton<ScheduleRepository>();
         builder.Services.AddSingleton<TeamsRepository>();
+        builder.Services.AddSingleton<SessionResultRepository>();
+        builder.Services.AddSingleton<RaceWeekendRepository>();
 
         // Mock services (fallback only)
         builder.Services.AddSingleton<MockTeamsService>();
-        builder.Services.AddSingleton<MockRaceCalendarService>();
 
         // Cached services (OpenF1 → SQLite → return)
         builder.Services.AddSingleton<IF1DataService>(sp => new CachedF1DataService(
             sp.GetRequiredService<OpenF1ApiService>(),
             sp.GetRequiredService<StandingsRepository>(),
-            sp.GetRequiredService<ConstructorStandingsRepository>()));
+            sp.GetRequiredService<ConstructorStandingsRepository>(),
+            sp.GetRequiredService<ImageCacheService>()));
         builder.Services.AddSingleton<IRaceCalendarService>(sp => new CachedScheduleService(
             sp.GetRequiredService<OpenF1ApiService>(),
-            sp.GetRequiredService<ScheduleRepository>()));
+            sp.GetRequiredService<OpenF1ApiService>(),
+            sp.GetRequiredService<ScheduleRepository>(),
+            sp.GetRequiredService<SessionResultRepository>(),
+            sp.GetRequiredService<RaceWeekendRepository>(),
+            sp.GetRequiredService<ImageCacheService>()));
+        builder.Services.AddSingleton<CachedScheduleService>(sp => (CachedScheduleService)sp.GetRequiredService<IRaceCalendarService>());
         builder.Services.AddSingleton<ITeamsService, CachedTeamsService>();
 
         builder.Services.AddTransient<HomeViewModel>();

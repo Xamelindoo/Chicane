@@ -19,6 +19,7 @@ public class SessionTime
     public string SessionName { get; init; } = string.Empty;
     public DateTime DateTime { get; init; }
     public int SessionKey { get; init; }
+    public bool IsPast => DateTime < System.DateTime.UtcNow;
 }
 
 public class Top3Driver

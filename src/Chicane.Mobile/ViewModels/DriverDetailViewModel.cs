@@ -3,6 +3,7 @@ using Chicane.Mobile.Models;
 using Chicane.Mobile.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Maui.Graphics;
 
 namespace Chicane.Mobile.ViewModels;
 
@@ -47,7 +48,7 @@ public partial class DriverDetailViewModel : ObservableObject
     private string teamName = string.Empty;
 
     [ObservableProperty]
-    private string teamColour = "#333333";
+    private Color teamColour = Color.FromArgb("#333333");
 
     [ObservableProperty]
     private string headshotUrl = string.Empty;
@@ -87,7 +88,7 @@ public partial class DriverDetailViewModel : ObservableObject
             FullName = detail.FullName;
             NameAcronym = detail.NameAcronym;
             TeamName = detail.TeamName;
-            TeamColour = detail.TeamColour;
+            TeamColour = Color.FromArgb(detail.TeamColour is not null && !detail.TeamColour.StartsWith("#") ? "#" + detail.TeamColour : (detail.TeamColour ?? "333333"));
             HeadshotUrl = detail.HeadshotUrl;
             TotalPoints = detail.Points;
             Position = detail.Position;

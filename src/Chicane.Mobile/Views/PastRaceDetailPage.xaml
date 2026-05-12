@@ -5,312 +5,119 @@
              xmlns:models="clr-namespace:Chicane.Mobile.Models"
              x:Class="Chicane.Mobile.Views.PastRaceDetailPage"
              x:DataType="viewmodels:PastRaceDetailViewModel"
-              Title="Race Results"
-             BackgroundColor="{StaticResource CarbonBlack}">
+             Title="Race Results"
+             BackgroundColor="#0b1320">
 
     <Grid RowDefinitions="*">
+
         <!-- Loading -->
         <VerticalStackLayout IsVisible="{Binding IsBusy}"
-                             VerticalOptions="Center"
-                             HorizontalOptions="Center"
-                             Spacing="12">
-            <ActivityIndicator IsRunning="{Binding IsBusy}"
-                               Color="{StaticResource RacingRed}"
-                               HeightRequest="48"
-                               WidthRequest="48" />
-            <Label Text="Loading results..."
-                   Style="{StaticResource Caption}"
-                   HorizontalOptions="Center" />
+                             VerticalOptions="Center" HorizontalOptions="Center" Spacing="12">
+            <ActivityIndicator IsRunning="{Binding IsBusy}" Color="#E10600"
+                               HeightRequest="48" WidthRequest="48" />
+            <Label Text="Loading results..." FontFamily="TitilliumWebRegular" FontSize="12"
+                   TextColor="#666666" HorizontalOptions="Center" />
         </VerticalStackLayout>
 
         <!-- Error -->
         <VerticalStackLayout IsVisible="{Binding HasError}"
-                             VerticalOptions="Center"
-                             HorizontalOptions="Center"
-                             Spacing="16"
-                             Padding="32">
-            <Label Text="&#x26A0;"
-                   FontSize="48"
-                   HorizontalOptions="Center"
-                   TextColor="{StaticResource RacingRed}" />
-            <Label Text="{Binding ErrorMessage}"
-                   Style="{StaticResource SubHeadline}"
-                   HorizontalOptions="Center" />
-            <Button Text="RETRY"
-                    Style="{StaticResource PrimaryButton}"
-                    Command="{Binding LoadCommand}"
-                    HorizontalOptions="Center" />
+                             VerticalOptions="Center" HorizontalOptions="Center" Spacing="16" Padding="32">
+            <Label Text="&#x26A0;" FontSize="48" HorizontalOptions="Center" TextColor="#E10600" />
+            <Label Text="{Binding ErrorMessage}" FontFamily="TitilliumWebSemiBold" FontSize="14"
+                   TextColor="#A0A0A0" HorizontalOptions="Center" HorizontalTextAlignment="Center" />
+            <Button Text="RETRY" BackgroundColor="#E10600" TextColor="#FFFFFF"
+                    FontFamily="TitilliumWebBold" FontSize="12" CornerRadius="4" Padding="24,10"
+                    Command="{Binding LoadCommand}" HorizontalOptions="Center" />
         </VerticalStackLayout>
 
         <!-- Content -->
-        <ScrollView IsVisible="{Binding HasData}">
+        <ScrollView IsVisible="{Binding HasData}" VerticalScrollBarVisibility="Never">
             <VerticalStackLayout Spacing="0" Padding="0,0,0,20">
 
-                <!-- RACE RESULTS -->
+                <!-- Session Date -->
                 <Label Text="{Binding EventDateText}"
-                       FontFamily="TitilliumWebRegular"
-                       FontSize="11"
-                       TextColor="{StaticResource TextMuted}"
-                       HorizontalOptions="Center"
-                       Margin="0,16,0,0" />
-                <Border Stroke="{StaticResource BorderSubtle}"
-                        StrokeThickness="1"
-                        StrokeShape="RoundRectangle 4"
-                        BackgroundColor="{StaticResource SurfaceLow}"
-                        Padding="16"
-                        Margin="20,16,20,0">
-                    <Label Text="RACE RESULTS"
-                           FontFamily="TitilliumWebBold"
-                           FontSize="14"
-                           TextColor="{StaticResource RacingRed}"
-                           CharacterSpacing="4"
-                           HorizontalOptions="Center" />
-                </Border>
+                       FontFamily="TitilliumWebRegular" FontSize="12"
+                       TextColor="#9CA3AF" HorizontalOptions="Center"
+                       Margin="0,16,0,8" />
 
-                <Grid ColumnDefinitions="14,24,*,Auto"
-                      Padding="20,8,20,4"
-                      ColumnSpacing="6">
-                    <Label Grid.Column="1"
-                           Text="#"
-                           FontFamily="TitilliumWebBold"
-                           FontSize="10"
-                           TextColor="{StaticResource TextMuted}"
-                           CharacterSpacing="2" />
-                    <Label Grid.Column="2"
-                           Text="DRIVER"
-                           FontFamily="TitilliumWebBold"
-                           FontSize="10"
-                           TextColor="{StaticResource TextMuted}"
-                           CharacterSpacing="2" />
-                    <Label Grid.Column="3"
-                           Text="TIME"
-                           FontFamily="TitilliumWebBold"
-                           FontSize="10"
-                           TextColor="{StaticResource TextMuted}"
-                           CharacterSpacing="2"
-                           HorizontalTextAlignment="End" />
-                </Grid>
+                <!-- Results List -->
+                <Label Text="No results available for this session."
+                       FontFamily="TitilliumWebRegular" FontSize="14"
+                       TextColor="#9CA3AF" HorizontalOptions="Center"
+                       IsVisible="{Binding IsEmptyState}" Margin="0,20,0,0" />
 
                 <CollectionView ItemsSource="{Binding Results}"
-                                Margin="0,0,0,0">
+                                VerticalScrollBarVisibility="Never">
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="models:RaceResultEntry">
-                            <Grid ColumnDefinitions="14,24,*,Auto"
-                                  Padding="20,5"
-                                  ColumnSpacing="6">
-                                <!-- FL Dot -->
-                                <BoxView Grid.Column="0"
-                                         WidthRequest="8"
-                                         HeightRequest="8"
-                                         CornerRadius="4"
-                                         Color="#B15BE4"
-                                         VerticalOptions="Center"
-                                         IsVisible="{Binding IsFastestLap}" />
-                                <!-- Position -->
-                                <Label Grid.Column="1"
-                                       Text="{Binding Position}"
-                                       FontFamily="TitilliumWebBold"
-                                       FontSize="13"
-                                       TextColor="{StaticResource PureWhite}"
-                                       VerticalOptions="Center" />
-                                <!-- Driver -->
-                                <VerticalStackLayout Grid.Column="2"
-                                                     VerticalOptions="Center"
-                                                     Spacing="1">
-                                    <Label Text="{Binding DriverName}"
-                                           FontFamily="TitilliumWebRegular"
-                                           FontSize="12"
-                                           TextColor="{StaticResource PureWhite}" />
-                                    <Label Text="{Binding TeamName}"
-                                           FontSize="10"
-                                           TextColor="{StaticResource TextMuted}" />
-                                    <HorizontalStackLayout Spacing="8">
-                                        <Label FontFamily="TitilliumWebRegular"
-                                               FontSize="9"
-                                               TextColor="{StaticResource CoolSlate}"
-                                               IsVisible="{Binding GapToLeader, FallbackValue=False}">
-                                            <Label.Text>
-                                                <Binding Path="GapToLeader" />
-                                            </Label.Text>
-                                        </Label>
-                                        <Label FontFamily="TitilliumWebRegular"
-                                               FontSize="9"
-                                               TextColor="{StaticResource CoolSlate}">
-                                            <Label.Text>
-                                                <Binding Path="NumberOfLaps"
-                                                         StringFormat="{}{0} laps" />
-                                            </Label.Text>
-                                        </Label>
-                                    </HorizontalStackLayout>
-                                </VerticalStackLayout>
-                                <!-- Time or DNF -->
-                                <Label Grid.Column="3"
-                                       Text="{Binding TimeOrDnf}"
-                                       FontFamily="TitilliumWebBold"
-                                       FontSize="13"
-                                       HorizontalTextAlignment="End"
-                                       VerticalOptions="Center">
-                                    <Label.Triggers>
-                                        <DataTrigger TargetType="Label"
-                                                     Binding="{Binding IsDnf}"
-                                                     Value="True">
-                                            <Setter Property="TextColor" Value="{StaticResource TextMuted}" />
-                                        </DataTrigger>
-                                        <DataTrigger TargetType="Label"
-                                                     Binding="{Binding IsDnf}"
-                                                     Value="False">
-                                            <Setter Property="TextColor" Value="{StaticResource PureWhite}" />
-                                        </DataTrigger>
-                                    </Label.Triggers>
-                                </Label>
-                            </Grid>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
-
-                <!-- YELLOW FLAGS -->
-                <Border Stroke="{StaticResource BorderSubtle}"
-                        StrokeThickness="1"
-                        StrokeShape="RoundRectangle 4"
-                        BackgroundColor="{StaticResource SurfaceLow}"
-                        Padding="14"
-                        Margin="20,24,20,0">
-                    <Label Text="{Binding EventDateText}"
-                           FontFamily="TitilliumWebBold"
-                           FontSize="12"
-                           TextColor="{StaticResource CoolSlate}"
-                           HorizontalOptions="Center" />
-                </Border>
-
-                <!-- DRIVER STANDINGS -->
-                <Border Stroke="{StaticResource BorderSubtle}"
-                        StrokeThickness="1"
-                        StrokeShape="RoundRectangle 4"
-                        BackgroundColor="{StaticResource SurfaceLow}"
-                        Padding="16"
-                        Margin="20,24,20,0">
-                    <Label Text="DRIVER STANDINGS"
-                           FontFamily="TitilliumWebBold"
-                           FontSize="13"
-                           TextColor="{StaticResource PureWhite}"
-                           CharacterSpacing="3"
-                           HorizontalOptions="Center" />
-                </Border>
-
-                <Grid ColumnDefinitions="28,*,Auto"
-                      Padding="20,8,20,4"
-                      ColumnSpacing="8">
-                    <Label Grid.Column="0"
-                           Text="#"
-                           FontFamily="TitilliumWebBold"
-                           FontSize="10"
-                           TextColor="{StaticResource TextMuted}" />
-                    <Label Grid.Column="1"
-                           Text="DRIVER"
-                           FontFamily="TitilliumWebBold"
-                           FontSize="10"
-                           TextColor="{StaticResource TextMuted}" />
-                    <Label Grid.Column="2"
-                           Text="PTS"
-                           FontFamily="TitilliumWebBold"
-                           FontSize="10"
-                           TextColor="{StaticResource TextMuted}" />
-                </Grid>
-
-                <CollectionView ItemsSource="{Binding DriverStandings}">
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate x:DataType="models:StandingsEntry">
-                            <Grid ColumnDefinitions="28,*,Auto"
-                                  Padding="20,4"
-                                  ColumnSpacing="8">
-                                <Label Grid.Column="0"
-                                       Text="{Binding Position}"
-                                       FontFamily="TitilliumWebBold"
-                                       FontSize="12"
-                                       TextColor="{StaticResource PureWhite}"
-                                       VerticalOptions="Center" />
-                                <VerticalStackLayout Grid.Column="1"
-                                                     VerticalOptions="Center"
-                                                     Spacing="1">
-                                    <Label Text="{Binding DriverName}"
-                                           FontFamily="TitilliumWebRegular"
-                                           FontSize="12"
-                                           TextColor="{StaticResource PureWhite}" />
-                                    <Label Text="{Binding TeamName}"
-                                           FontSize="9"
-                                           TextColor="{StaticResource TextMuted}" />
-                                </VerticalStackLayout>
-                                <Label Grid.Column="2"
-                                       Text="{Binding Points}"
-                                       FontFamily="TitilliumWebBold"
-                                       FontSize="13"
-                                       TextColor="{StaticResource RacingRed}"
-                                       VerticalOptions="Center" />
-                            </Grid>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
-
-                <!-- CONSTRUCTOR STANDINGS -->
-                <Border Stroke="{StaticResource BorderSubtle}"
-                        StrokeThickness="1"
-                        StrokeShape="RoundRectangle 4"
-                        BackgroundColor="{StaticResource SurfaceLow}"
-                        Padding="16"
-                        Margin="20,24,20,0">
-                    <Label Text="CONSTRUCTOR STANDINGS"
-                           FontFamily="TitilliumWebBold"
-                           FontSize="13"
-                           TextColor="{StaticResource PureWhite}"
-                           CharacterSpacing="3"
-                           HorizontalOptions="Center" />
-                </Border>
-
-                <Grid ColumnDefinitions="28,*,Auto"
-                      Padding="20,8,20,4"
-                      ColumnSpacing="8">
-                    <Label Grid.Column="0"
-                           Text="#"
-                           FontFamily="TitilliumWebBold"
-                           FontSize="10"
-                           TextColor="{StaticResource TextMuted}" />
-                    <Label Grid.Column="1"
-                           Text="TEAM"
-                           FontFamily="TitilliumWebBold"
-                           FontSize="10"
-                           TextColor="{StaticResource TextMuted}" />
-                    <Label Grid.Column="2"
-                           Text="PTS"
-                           FontFamily="TitilliumWebBold"
-                           FontSize="10"
-                           TextColor="{StaticResource TextMuted}" />
-                </Grid>
-
-                <CollectionView ItemsSource="{Binding ConstructorStandings}">
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate x:DataType="models:ConstructorStandingsEntry">
-                            <Grid ColumnDefinitions="28,*,Auto"
-                                  Padding="20,4"
-                                  ColumnSpacing="8">
-                                <Label Grid.Column="0"
-                                       Text="{Binding Position}"
-                                       FontFamily="TitilliumWebBold"
-                                       FontSize="12"
-                                       TextColor="{StaticResource PureWhite}"
-                                       VerticalOptions="Center" />
-                                <Label Grid.Column="1"
-                                       Text="{Binding TeamName}"
-                                       FontFamily="TitilliumWebRegular"
-                                       FontSize="12"
-                                       TextColor="{StaticResource PureWhite}"
-                                       VerticalOptions="Center" />
-                                <Label Grid.Column="2"
-                                       Text="{Binding Points}"
-                                       FontFamily="TitilliumWebBold"
-                                       FontSize="13"
-                                       TextColor="{StaticResource RacingRed}"
-                                       VerticalOptions="Center" />
-                            </Grid>
+                            <Border StrokeThickness="1" Stroke="#2a3441" StrokeShape="RoundRectangle 10"
+                                    BackgroundColor="#1e293b" Padding="14,12" Margin="16,0,16,6">
+                                <Grid ColumnDefinitions="32,42,*,Auto" ColumnSpacing="10">
+                                    <!-- Position -->
+                                    <Label Grid.Column="0" Text="{Binding Position, StringFormat='{0}'}"
+                                           FontFamily="TitilliumWebBold" FontSize="17"
+                                           VerticalOptions="Center" HorizontalTextAlignment="Center">
+                                        <Label.Triggers>
+                                            <DataTrigger TargetType="Label" Binding="{Binding Position}" Value="1">
+                                                <Setter Property="TextColor" Value="#FCD34D" />
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="Label" Binding="{Binding Position}" Value="2">
+                                                <Setter Property="TextColor" Value="#E2E8F0" />
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="Label" Binding="{Binding Position}" Value="3">
+                                                <Setter Property="TextColor" Value="#F87171" />
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+                                    <!-- Headshot -->
+                                    <Border Grid.Column="1" StrokeThickness="1" Stroke="#2a3441"
+                                            StrokeShape="RoundRectangle 21" WidthRequest="42" HeightRequest="42"
+                                            BackgroundColor="#0f172a">
+                                        <Image Source="{Binding HeadshotUrl}" Aspect="AspectFill" />
+                                    </Border>
+                                    <!-- Name + Team + Info -->
+                                    <VerticalStackLayout Grid.Column="2" VerticalOptions="Center" Spacing="1">
+                                        <HorizontalStackLayout Spacing="6">
+                                            <Label Text="{Binding DriverName}" FontFamily="TitilliumWebRegular"
+                                                   FontSize="15" TextColor="White" VerticalOptions="Center" />
+                                            <Label FontFamily="TitilliumWebRegular" FontSize="10"
+                                                   TextColor="#A0A0A0" VerticalOptions="Center"
+                                                   IsVisible="{Binding GapToLeader, FallbackValue=False}">
+                                                <Label.Text>
+                                                    <Binding Path="GapToLeader" />
+                                                </Label.Text>
+                                            </Label>
+                                            <Label FontFamily="TitilliumWebRegular" FontSize="10"
+                                                   TextColor="#A0A0A0" VerticalOptions="Center">
+                                                <Label.Text>
+                                                    <Binding Path="NumberOfLaps"
+                                                             StringFormat="{}{0} laps" />
+                                                </Label.Text>
+                                            </Label>
+                                            <Border StrokeThickness="0" BackgroundColor="#B15BE4"
+                                                    StrokeShape="RoundRectangle 3" Padding="4,1"
+                                                    VerticalOptions="Center"
+                                                    IsVisible="{Binding IsFastestLap}">
+                                                <Label Text="FL" FontFamily="TitilliumWebBold" FontSize="8"
+                                                       TextColor="White" />
+                                            </Border>
+                                        </HorizontalStackLayout>
+                                        <Label Text="{Binding TeamName}" FontSize="11" TextColor="#9CA3AF"
+                                               LineBreakMode="TailTruncation" />
+                                    </VerticalStackLayout>
+                                    <!-- Time / DNF -->
+                                    <Label Grid.Column="3" Text="{Binding TimeOrDnf}"
+                                           FontFamily="TitilliumWebBold" FontSize="15"
+                                           HorizontalTextAlignment="End" VerticalOptions="Center"
+                                           TextColor="White">
+                                        <Label.Triggers>
+                                            <DataTrigger TargetType="Label" Binding="{Binding IsDnf}" Value="True">
+                                                <Setter Property="TextColor" Value="#9CA3AF" />
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+                                </Grid>
+                            </Border>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>

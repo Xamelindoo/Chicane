@@ -29,38 +29,64 @@
         </Border>
 
         <!-- Scrollable Content -->
-        <ScrollView Grid.Row="1">
+        <ScrollView Grid.Row="1" VerticalScrollBarVisibility="Never">
             <VerticalStackLayout Spacing="0" Padding="0,0,0,20">
 
                 <!-- Pre-Race -->
                 <VerticalStackLayout IsVisible="{Binding IsPreRace}" Spacing="0">
 
-                    <!-- Next Race Countdown -->
-                    <Border StrokeThickness="1" Stroke="#E10600" StrokeShape="RoundRectangle 12"
-                            Margin="16,14,16,0" Padding="0"
-                            BackgroundColor="#1e293b">
-                        <Grid ColumnDefinitions="*,Auto" Padding="14,10" ColumnSpacing="10">
-                            <VerticalStackLayout Grid.Column="0" Spacing="3">
-                                <Label Text="{Binding EventName}"
-                                       FontFamily="TitilliumWebBold" FontSize="14"
-                                       TextColor="#E10600" CharacterSpacing="2" />
-                                <Label Text="{Binding MeetingName}"
-                                       FontFamily="TitilliumWebBold" FontSize="18"
-                                       TextColor="White" LineBreakMode="TailTruncation" />
-                                <Label Text="{Binding CircuitLocation}"
-                                       FontFamily="TitilliumWebRegular" FontSize="13"
-                                       TextColor="#9CA3AF" />
-                            </VerticalStackLayout>
-                            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
-                                <Label Text="{Binding Countdown}"
-                                       FontFamily="JetBrainsMonoBold" FontSize="24"
-                                       TextColor="#FCD34D" HorizontalTextAlignment="End" />
-                                <Label Text="{Binding EventDate, StringFormat='{0:dd MMM · HH:mm}'}"
-                                       FontFamily="TitilliumWebRegular" FontSize="12"
-                                       TextColor="#9CA3AF" HorizontalTextAlignment="End" />
-                            </VerticalStackLayout>
-                        </Grid>
-                    </Border>
+                     <!-- Next Race Countdown -->
+                     <Border StrokeThickness="1" Stroke="#E10600" StrokeShape="RoundRectangle 12"
+                             Margin="16,14,16,0" Padding="12,6"
+                             BackgroundColor="#1e293b">
+                         <VerticalStackLayout Spacing="3">
+                             <!-- Row 1: GP Name + Weather -->
+                             <Grid ColumnDefinitions="*,Auto">
+                                 <Label Grid.Column="0" Text="{Binding MeetingName}"
+                                        FontFamily="TitilliumWebBold" FontSize="11"
+                                        TextColor="White" LineBreakMode="TailTruncation"
+                                        VerticalOptions="Center" />
+                                 <Border Grid.Column="1" StrokeThickness="1" Stroke="#2a3441"
+                                         StrokeShape="RoundRectangle 6" BackgroundColor="#1a2332"
+                                         Padding="4,2" VerticalOptions="Center" Margin="6,0,0,0">
+                                     <HorizontalStackLayout Spacing="2">
+                                         <Label Text="{Binding WeatherIcon}" FontSize="9" VerticalOptions="Center" />
+                                         <Label FontFamily="TitilliumWebRegular" FontSize="8" TextColor="#9CA3AF"
+                                                VerticalOptions="Center">
+                                             <Label.Text>
+                                                 <MultiBinding StringFormat="{}{0} · {1}°">
+                                                     <Binding Path="WeatherCondition" />
+                                                     <Binding Path="TemperatureC" />
+                                                 </MultiBinding>
+                                             </Label.Text>
+                                         </Label>
+                                     </HorizontalStackLayout>
+                                 </Border>
+                             </Grid>
+                             <!-- Row 2: Session Name + Countdown -->
+                             <Grid ColumnDefinitions="*,Auto">
+                                 <Label Grid.Column="0" Text="{Binding EventName}"
+                                        FontFamily="TitilliumWebBold" FontSize="21"
+                                        TextColor="#E10600" CharacterSpacing="2"
+                                        VerticalOptions="Center" LineBreakMode="TailTruncation" />
+                                 <Label Grid.Column="1" Text="{Binding Countdown}"
+                                        FontFamily="SpaceMonoBold" FontSize="21"
+                                        TextColor="#FCD34D" HorizontalTextAlignment="End"
+                                        VerticalOptions="Center" Margin="10,0,0,0" />
+                             </Grid>
+                             <!-- Row 3: Circuit + Date -->
+                             <Grid ColumnDefinitions="*,Auto">
+                                 <Label Grid.Column="0" Text="{Binding CircuitLocation}"
+                                        FontFamily="TitilliumWebRegular" FontSize="12"
+                                        TextColor="#9CA3AF" VerticalOptions="Center"
+                                        LineBreakMode="TailTruncation" />
+                                 <Label Grid.Column="1" Text="{Binding EventDate, StringFormat='{0:dd MMM · HH:mm}'}"
+                                        FontFamily="TitilliumWebRegular" FontSize="12"
+                                        TextColor="#9CA3AF" HorizontalTextAlignment="End"
+                                        VerticalOptions="Center" Margin="12,0,0,0" />
+                             </Grid>
+                         </VerticalStackLayout>
+                     </Border>
 
                     <!-- PROSSIME GARE -->
                     <Grid Padding="20,20,16,8">
@@ -76,19 +102,20 @@
                         </Grid>
                     </Grid>
 
-                    <!-- Horizontal GP Cards -->
-                    <CollectionView ItemsSource="{Binding UpcomingWeekends}"
-                                    ItemsLayout="HorizontalList"
-                                    HeightRequest="260"
-                                    HorizontalOptions="Center"
-                                    Margin="0,4,0,8">
+                     <!-- Horizontal GP Cards -->
+                     <CollectionView ItemsSource="{Binding UpcomingWeekends}"
+                                     ItemsLayout="HorizontalList"
+                                      HeightRequest="255"
+                                     HorizontalOptions="Center"
+                                     Margin="20,4,16,8"
+                                     HorizontalScrollBarVisibility="Never">
                         <CollectionView.ItemTemplate>
                             <DataTemplate x:DataType="models:RaceWeekendCard">
                                 <Border StrokeThickness="1" Stroke="#E10600"
                                         StrokeShape="RoundRectangle 12"
                                         WidthRequest="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:HomeViewModel}}, Path=ScreenWidth}"
                                         Padding="0"
-                                        Margin="6,0,6,0">
+                                        Margin="0,0,0,0">
                                     <Border.Background>
                                         <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
                                             <GradientStop Color="#161f2e" Offset="0" />
@@ -99,18 +126,18 @@
                                         <Border StrokeThickness="0"
                                                 StrokeShape="RoundRectangle 12,12,0,0"
                                                 BackgroundColor="#90111d"
-                                                Padding="12,7">
+                                                Padding="10,5">
                                             <Label Text="{Binding MeetingName}"
                                                    FontFamily="TitilliumWebBold" FontSize="13"
                                                    TextColor="White"
                                                    LineBreakMode="TailTruncation" />
                                         </Border>
                                         <Image Source="{Binding CircuitImageUrl}"
-                                               HeightRequest="130"
+                                                HeightRequest="152"
                                                Aspect="AspectFit"
                                                Margin="0,6,0,0"
                                                HorizontalOptions="Center" />
-                                        <Grid Padding="12,8" ColumnSpacing="10">
+                                        <Grid Padding="12,12" ColumnSpacing="10">
                                             <VerticalStackLayout Spacing="3">
                                                 <Label FontFamily="TitilliumWebSemiBold" FontSize="13"
                                                        TextColor="#E2E8F0">
@@ -131,25 +158,6 @@
                                                     </Label.Text>
                                                 </Label>
                                             </VerticalStackLayout>
-                                            <!-- Weather Badge -->
-                                            <Border Grid.Column="1" StrokeThickness="1"
-                                                    Stroke="#2a3441" StrokeShape="RoundRectangle 6"
-                                                    BackgroundColor="#1a2332" Padding="6,4"
-                                                    VerticalOptions="End" HorizontalOptions="End">
-                                                <HorizontalStackLayout Spacing="4">
-                                                    <Label Text="{Binding WeatherIcon}" FontSize="12"
-                                                           VerticalOptions="Center" />
-                                                    <Label FontFamily="TitilliumWebRegular" FontSize="10"
-                                                           TextColor="#9CA3AF" VerticalOptions="Center">
-                                                        <Label.Text>
-                                                            <MultiBinding StringFormat="{}{0} · {1}°">
-                                                                <Binding Path="WeatherCondition" />
-                                                                <Binding Path="TemperatureC" />
-                                                            </MultiBinding>
-                                                        </Label.Text>
-                                                    </Label>
-                                                </HorizontalStackLayout>
-                                            </Border>
                                         </Grid>
                                     </VerticalStackLayout>
                                 </Border>
@@ -196,8 +204,8 @@
                                             </Label>
                                             <!-- Headshot -->
                                             <Border Grid.Column="1" StrokeThickness="1" Stroke="#2a3441"
-                                                    StrokeShape="RoundRectangle 14"
-                                                    WidthRequest="28" HeightRequest="28"
+                                                    StrokeShape="RoundRectangle 16"
+                                                    WidthRequest="32" HeightRequest="32"
                                                     BackgroundColor="#0f172a">
                                                 <Image Source="{Binding HeadshotUrl}"
                                                        Aspect="AspectFill" />
@@ -259,8 +267,8 @@
                                             </Label>
                                             <!-- Team Logo -->
                                             <Border Grid.Column="1" StrokeThickness="1" Stroke="#2a3441"
-                                                    StrokeShape="RoundRectangle 14"
-                                                    WidthRequest="28" HeightRequest="28"
+                                                    StrokeShape="RoundRectangle 16"
+                                                    WidthRequest="32" HeightRequest="32"
                                                     BackgroundColor="#0f172a" Padding="2">
                                                 <Image Source="{Binding TeamLogo}" Aspect="AspectFit" />
                                             </Border>
