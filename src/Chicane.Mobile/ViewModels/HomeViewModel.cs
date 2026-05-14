@@ -1,5 +1,6 @@
 using Chicane.Mobile.Models;
 using Chicane.Mobile.Services;
+using Chicane.Mobile.Services.Repositories;
 using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.Input;
@@ -19,20 +20,25 @@ public partial class HomeViewModel : ObservableObject
     private readonly OpenF1ApiService openF1;
     private readonly CachedScheduleService cachedSchedule;
     private readonly INewsService newsService;
+    private readonly StandingsRepository standingsRepo;
     private IDispatcherTimer? countdownTimer;
     private DateTime eventDateTime;
 
-    public HomeViewModel(IF1DataService f1DataService, IWeatherService weatherService, OpenF1ApiService openF1, CachedScheduleService cachedSchedule, INewsService newsService)
+    public HomeViewModel(IF1DataService f1DataService, IWeatherService weatherService, OpenF1ApiService openF1, CachedScheduleService cachedSchedule, INewsService newsService, StandingsRepository standingsRepo)
     {
         this.f1DataService = f1DataService;
         this.weatherService = weatherService;
         this.openF1 = openF1;
         this.cachedSchedule = cachedSchedule;
         this.newsService = newsService;
+        this.standingsRepo = standingsRepo;
     }
 
     [ObservableProperty]
     private bool isBusy;
+
+    [ObservableProperty]
+    private bool isRefreshing;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HasError))]
@@ -236,6 +242,18 @@ public partial class HomeViewModel : ObservableObject
         {
             IsBusy = false;
         }
+    }
+
+    [RelayCommand]
+    private async Task RefreshAsync()
+    {
+        IsRefreshing = true;
+        try
+        {
+            await standingsRepo.DeleteByCategoryAsync("f1");
+            await LoadAsync();
+        }
+        finally { IsRefreshing = false; }
     }
 
     [RelayCommand]

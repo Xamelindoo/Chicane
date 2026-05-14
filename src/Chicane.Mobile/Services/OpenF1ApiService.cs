@@ -11,6 +11,8 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
     private readonly HttpClient _http;
     private readonly OpenF1TokenService _token;
     private List<OpenF1Meeting>? _meetingsCache;
+    private List<OpenF1Session>? _sessionsCache;
+    private int? _sessionsCacheYear;
     private Dictionary<int, OpenF1Driver>? _driverCache;
     private int? _driverCacheSessionKey;
     private bool? _tokenWorks;
@@ -599,8 +601,14 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
         {
             var year = DateTime.UtcNow.Year;
             var meetings = await GetMeetingsAsync(year);
-            var sessions = await GetAsync<List<OpenF1Session>>(
-                $"https://api.openf1.org/v1/sessions?year={year}");
+
+            if (_sessionsCache is null || _sessionsCacheYear != year)
+            {
+                _sessionsCache = await GetAsync<List<OpenF1Session>>(
+                    $"https://api.openf1.org/v1/sessions?year={year}");
+                _sessionsCacheYear = year;
+            }
+            var sessions = _sessionsCache;
 
             var relevant = meetings.Where(m =>
                 !string.IsNullOrWhiteSpace(m.MeetingName) &&
@@ -641,7 +649,8 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
                     var raceSession = meetingSessions.FirstOrDefault(s => s.SessionName == "Race");
                     if (raceSession is not null)
                     {
-                        await GetDriversAsync(raceSession.SessionKey);
+                        if (_driverCache is null or { Count: 0 })
+                            await GetDriversAsync(raceSession.SessionKey);
                         var top3 = await GetAsync<List<OpenF1SessionResult>>(
                             $"https://api.openf1.org/v1/session_result?session_key={raceSession.SessionKey}&position<=3");
                         if (top3 is { Count: > 0 })
@@ -652,7 +661,7 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
                                 HeadshotUrl = _driverCache?.TryGetValue(t.DriverNumber, out var d) == true
                                     ? d.HeadshotUrl ?? "" : "",
                                 Initials = _driverCache?.TryGetValue(t.DriverNumber, out var dr) == true
-                                    ? dr.NameAcronym ?? dr.BroadcastName?[..3] ?? $"D{t.DriverNumber}" : $"D{t.DriverNumber}",
+                                    ? dr.NameAcronym ?? dr.BroadcastName?[..3] ?? $"P{t.Position}" : $"P{t.Position}",
                                 TimeOrDnf = t.Dnf ? "DNF" : t.Dsq ? "DSQ" :
                                     t.Duration.HasValue ? FormatDuration(t.Duration.Value) : "--:--",
                             }).ToList();

@@ -103,7 +103,8 @@
         </VerticalStackLayout>
 
         <!-- Driver Standings List -->
-        <CollectionView Grid.Row="2" ItemsSource="{Binding Drivers}"
+        <RefreshView Grid.Row="2" IsRefreshing="{Binding IsRefreshing}" Command="{Binding RefreshCommand}">
+        <CollectionView ItemsSource="{Binding Drivers}"
                         IsVisible="{Binding IsShowingPilots}" Margin="0,0,0,0"
                         VerticalScrollBarVisibility="Never">
             <CollectionView.ItemTemplate>
@@ -210,6 +211,7 @@
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
+        </RefreshView>
 
     </Grid>
 

@@ -17,6 +17,12 @@ public class SessionResultRepository
             .ToListAsync();
     }
 
+    public async Task DeleteBySessionKeyAsync(int sessionKey)
+    {
+        var conn = await _db.GetConnectionAsync();
+        await conn.ExecuteAsync("DELETE FROM SessionResults WHERE SessionKey = ?", sessionKey);
+    }
+
     public async Task UpsertAsync(int sessionKey, List<SessionResultRecord> records)
     {
         var conn = await _db.GetConnectionAsync();

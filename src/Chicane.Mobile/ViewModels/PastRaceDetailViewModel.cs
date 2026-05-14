@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using Chicane.Mobile.Models;
 using Chicane.Mobile.Services;
+using Chicane.Mobile.Services.Repositories;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -10,14 +11,19 @@ namespace Chicane.Mobile.ViewModels;
 public partial class PastRaceDetailViewModel : ObservableObject
 {
     private readonly IRaceCalendarService calendarService;
+    private readonly SessionResultRepository _sessionRepo;
 
-    public PastRaceDetailViewModel(IRaceCalendarService calendarService)
+    public PastRaceDetailViewModel(IRaceCalendarService calendarService, SessionResultRepository sessionRepo)
     {
         this.calendarService = calendarService;
+        _sessionRepo = sessionRepo;
     }
 
     [ObservableProperty]
     private bool isBusy;
+
+    [ObservableProperty]
+    private bool isRefreshing;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HasError))]
@@ -87,5 +93,19 @@ public partial class PastRaceDetailViewModel : ObservableObject
         {
             IsBusy = false;
         }
+    }
+
+    [RelayCommand]
+    private async Task RefreshAsync()
+    {
+        IsRefreshing = true;
+        try
+        {
+            // Clear old cached data before re-fetching from API
+            if (SessionKey > 0)
+                await _sessionRepo.DeleteBySessionKeyAsync(SessionKey);
+            await LoadAsync();
+        }
+        finally { IsRefreshing = false; }
     }
 }

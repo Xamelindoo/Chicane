@@ -52,6 +52,7 @@
         </VerticalStackLayout>
 
         <!-- News List -->
+        <RefreshView IsRefreshing="{Binding IsRefreshing}" Command="{Binding RefreshCommand}">
         <CollectionView Grid.Row="1"
                         VerticalScrollBarVisibility="Never"
                         ItemsSource="{Binding Articles}"
@@ -115,6 +116,7 @@
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
+        </RefreshView>
 
     </Grid>
 

@@ -29,7 +29,8 @@
         </Border>
 
         <!-- Scrollable Content -->
-        <ScrollView Grid.Row="1" VerticalScrollBarVisibility="Never">
+        <RefreshView Grid.Row="1" IsRefreshing="{Binding IsRefreshing}" Command="{Binding RefreshCommand}">
+        <ScrollView VerticalScrollBarVisibility="Never">
             <VerticalStackLayout Spacing="0" Padding="0,0,0,20">
 
                 <!-- Pre-Race -->
@@ -374,6 +375,7 @@
 
             </VerticalStackLayout>
         </ScrollView>
+        </RefreshView>
 
         <!-- Weather Modal -->
         <Border IsVisible="{Binding ShowWeatherDetail}" BackgroundColor="#F00A0A0A"

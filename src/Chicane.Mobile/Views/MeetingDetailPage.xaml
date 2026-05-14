@@ -11,6 +11,7 @@
     <Grid RowDefinitions="*">
 
         <!-- Session List -->
+        <RefreshView IsRefreshing="{Binding IsRefreshing}" Command="{Binding RefreshCommand}">
         <CollectionView Grid.Row="0" ItemsSource="{Binding Sessions}"
                         VerticalScrollBarVisibility="Never">
             <CollectionView.ItemTemplate>
@@ -48,5 +49,6 @@
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
+        </RefreshView>
     </Grid>
 </ContentPage>

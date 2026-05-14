@@ -100,8 +100,17 @@
                     FontSize="12" CornerRadius="4" Padding="24,10" HorizontalOptions="Center" />
         </VerticalStackLayout>
 
+        <VerticalStackLayout Grid.Row="2" IsVisible="{Binding IsEmptyState}"
+                              VerticalOptions="Center" HorizontalOptions="Center" Spacing="8" Padding="32">
+            <Label Text="No meetings available." FontFamily="TitilliumWebRegular" FontSize="14"
+                   TextColor="#9CA3AF" HorizontalOptions="Center" />
+            <Label Text="Pull down to refresh." FontFamily="TitilliumWebRegular" FontSize="11"
+                   TextColor="#666666" HorizontalOptions="Center" />
+        </VerticalStackLayout>
+
         <!-- Meeting Cards -->
-        <CollectionView Grid.Row="2" ItemsSource="{Binding Meetings}" IsVisible="{Binding HasData}"
+        <RefreshView Grid.Row="2" IsRefreshing="{Binding IsRefreshing}" Command="{Binding RefreshCommand}">
+        <CollectionView ItemsSource="{Binding Meetings}" IsVisible="{Binding HasData}"
                         VerticalScrollBarVisibility="Never">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:MeetingScheduleCard">
@@ -186,7 +195,19 @@
                                                 <Label Grid.Column="0"
                                                        Text="{Binding Position, StringFormat='P{0}'}"
                                                        FontFamily="TitilliumWebBold" FontSize="11"
-                                                       TextColor="#E10600" VerticalOptions="Center" />
+                                                       TextColor="#E10600" VerticalOptions="Center">
+                                                    <Label.Triggers>
+                                                        <DataTrigger TargetType="Label" Binding="{Binding Position}" Value="1">
+                                                            <Setter Property="TextColor" Value="#FCD34D" />
+                                                        </DataTrigger>
+                                                        <DataTrigger TargetType="Label" Binding="{Binding Position}" Value="2">
+                                                            <Setter Property="TextColor" Value="#E2E8F0" />
+                                                        </DataTrigger>
+                                                        <DataTrigger TargetType="Label" Binding="{Binding Position}" Value="3">
+                                                            <Setter Property="TextColor" Value="#F87171" />
+                                                        </DataTrigger>
+                                                    </Label.Triggers>
+                                                </Label>
                                                 <Border Grid.Column="1" StrokeThickness="1" Stroke="#2a3441"
                                                         StrokeShape="RoundRectangle 14"
                                                         WidthRequest="28" HeightRequest="28"
@@ -211,5 +232,6 @@
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
+        </RefreshView>
     </Grid>
 </ContentPage>

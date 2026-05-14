@@ -20,6 +20,9 @@ public partial class MeetingDetailViewModel : ObservableObject
     private bool isBusy;
 
     [ObservableProperty]
+    private bool isRefreshing;
+
+    [ObservableProperty]
     private int meetingKey;
 
     [ObservableProperty]
@@ -59,6 +62,14 @@ public partial class MeetingDetailViewModel : ObservableObject
         {
             IsBusy = false;
         }
+    }
+
+    [RelayCommand]
+    private async Task RefreshAsync()
+    {
+        IsRefreshing = true;
+        try { await LoadAsync(); }
+        finally { IsRefreshing = false; }
     }
 
     [RelayCommand]

@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using Chicane.Mobile.Models;
 using Chicane.Mobile.Services;
+using Chicane.Mobile.Services.Repositories;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -17,10 +18,12 @@ namespace Chicane.Mobile.ViewModels;
 public partial class LeaderboardsViewModel : ObservableObject
 {
     private readonly ITeamsService teamsService;
+    private readonly StandingsRepository standingsRepo;
 
-    public LeaderboardsViewModel(ITeamsService teamsService)
+    public LeaderboardsViewModel(ITeamsService teamsService, StandingsRepository standingsRepo)
     {
         this.teamsService = teamsService;
+        this.standingsRepo = standingsRepo;
     }
 
     [ObservableProperty]
@@ -61,6 +64,9 @@ public partial class LeaderboardsViewModel : ObservableObject
     public ObservableCollection<TeamEntry> Teams { get; } = new();
     public ObservableCollection<DriverStandingsEntry> Drivers { get; } = new();
 
+    [ObservableProperty]
+    private bool isRefreshing;
+
     [RelayCommand]
     private async Task LoadAsync()
     {
@@ -71,11 +77,14 @@ public partial class LeaderboardsViewModel : ObservableObject
 
         try
         {
+            System.Diagnostics.Debug.WriteLine("[Leaderboards] Loading...");
             await LoadTeamsAsync();
             await LoadDriversAsync();
+            System.Diagnostics.Debug.WriteLine($"[Leaderboards] Loaded: Teams={Teams.Count} Drivers={Drivers.Count}");
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            System.Diagnostics.Debug.WriteLine($"[Leaderboards] ERROR: {ex.Message}");
             ErrorMessage = "Unable to load leaderboards.";
             HasData = false;
         }
@@ -83,6 +92,18 @@ public partial class LeaderboardsViewModel : ObservableObject
         {
             IsBusy = false;
         }
+    }
+
+    [RelayCommand]
+    private async Task RefreshAsync()
+    {
+        IsRefreshing = true;
+        try
+        {
+            await standingsRepo.DeleteByCategoryAsync("f1");
+            await LoadAsync();
+        }
+        finally { IsRefreshing = false; }
     }
 
     [RelayCommand]

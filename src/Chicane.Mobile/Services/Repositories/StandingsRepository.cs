@@ -33,6 +33,12 @@ public class StandingsRepository
         }
     }
 
+    public async Task DeleteByCategoryAsync(string categoryId)
+    {
+        var conn = await _db.GetConnectionAsync();
+        await conn.ExecuteAsync("DELETE FROM DriverStandings WHERE CategoryId = ?", categoryId);
+    }
+
     public async Task<List<StandingsRecord>> GetByCategoryAsync(string categoryId)
     {
         var conn = await _db.GetConnectionAsync();
