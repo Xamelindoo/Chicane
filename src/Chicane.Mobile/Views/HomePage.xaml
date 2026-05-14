@@ -40,10 +40,11 @@
                      <Border StrokeThickness="1" Stroke="#E10600" StrokeShape="RoundRectangle 12"
                              Margin="16,14,16,0" Padding="12,6"
                              BackgroundColor="#1e293b">
-                         <Border.GestureRecognizers>
+                          <Border.GestureRecognizers>
                              <TapGestureRecognizer
                                                    Command="{Binding NavigateToLiveCommand}" />
                          </Border.GestureRecognizers>
+                         <Grid>
                          <!-- Pre-Race State -->
                          <VerticalStackLayout Spacing="3" IsVisible="{Binding IsPreRace}">
                              <!-- Row 1: GP Name + Weather -->
@@ -111,6 +112,7 @@
                                         TextColor="#9CA3AF" VerticalOptions="Center" />
                              </HorizontalStackLayout>
                          </VerticalStackLayout>
+                         </Grid>
                      </Border>
 
                     <!-- PROSSIME GARE -->
