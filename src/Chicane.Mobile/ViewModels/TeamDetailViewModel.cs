@@ -61,11 +61,6 @@ public partial class TeamDetailViewModel : ObservableObject
     public ObservableCollection<DriverEntry> Drivers { get; } = new();
     public ObservableCollection<TeamRaceResult> RaceResults { get; } = new();
 
-    public List<int> AvailableYears => Enumerable.Range(2024, DateTime.UtcNow.Year - 2023).Reverse().ToList();
-
-    [ObservableProperty]
-    private int selectedYear = DateTime.UtcNow.Year;
-
     partial void OnTeamNameChanged(string value)
     {
         if (!string.IsNullOrWhiteSpace(value) && !HasData && !IsBusy)

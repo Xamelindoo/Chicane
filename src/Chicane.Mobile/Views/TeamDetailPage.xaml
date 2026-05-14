@@ -30,7 +30,7 @@
             <VerticalStackLayout Spacing="0" Padding="0,0,0,20">
 
                 <!-- Gradient Banner -->
-                <Border StrokeThickness="0" HeightRequest="230">
+                <Border StrokeThickness="0" HeightRequest="220">
                     <Border.Background>
                         <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
                             <GradientStop Color="{Binding GradientColor}" Offset="0.0" />
@@ -42,17 +42,6 @@
                                HeightRequest="130"
                                Aspect="AspectFit"
                                HorizontalOptions="Center" />
-                        <!-- Season Picker (blends with gradient) -->
-                        <HorizontalStackLayout Spacing="4" HorizontalOptions="Center" Opacity="0.6">
-                            <Label Text="Season" FontFamily="TitilliumWebRegular"
-                                   FontSize="10" TextColor="#9CA3AF" VerticalOptions="Center" />
-                            <Picker ItemsSource="{Binding AvailableYears}"
-                                    SelectedItem="{Binding SelectedYear}"
-                                    FontFamily="TitilliumWebBold" FontSize="11"
-                                    TextColor="White" VerticalOptions="Center"
-                                    BackgroundColor="Transparent"
-                                    WidthRequest="80" />
-                        </HorizontalStackLayout>
                     </VerticalStackLayout>
                 </Border>
 
