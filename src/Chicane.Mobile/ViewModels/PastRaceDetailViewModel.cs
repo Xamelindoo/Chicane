@@ -71,9 +71,10 @@ public partial class PastRaceDetailViewModel : ObservableObject
             EventDateText = detail.EventDate.ToString("dd MMM yyyy");
 
             Results.Clear();
+            // Sort: finishers by position (ascending), then DNS/DSQ/DNF at bottom (alphabetically)
             var sorted = detail.Results
-                .OrderBy(r => r.IsDnf ? 1 : 0)
-                .ThenBy(r => r.IsDnf ? r.DriverName : null)
+                .OrderBy(r => (r.IsDnf || r.IsDns || r.IsDsq) ? 1 : 0)
+                .ThenBy(r => (r.IsDnf || r.IsDns || r.IsDsq) ? r.DriverName : "")
                 .ThenBy(r => r.Position)
                 .ToList();
             foreach (var r in sorted)

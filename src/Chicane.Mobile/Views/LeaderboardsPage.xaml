@@ -102,8 +102,9 @@
                     FontSize="12" CornerRadius="4" Padding="24,10" HorizontalOptions="Center" />
         </VerticalStackLayout>
 
-        <!-- Driver Standings List -->
+        <!-- Driver & Team Standings -->
         <RefreshView Grid.Row="2" IsRefreshing="{Binding IsRefreshing}" Command="{Binding RefreshCommand}">
+        <Grid>
         <CollectionView ItemsSource="{Binding Drivers}"
                         IsVisible="{Binding IsShowingPilots}" Margin="0,0,0,0"
                         VerticalScrollBarVisibility="Never">
@@ -211,6 +212,7 @@
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
+        </Grid>
         </RefreshView>
 
     </Grid>
