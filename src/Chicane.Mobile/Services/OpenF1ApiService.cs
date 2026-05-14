@@ -314,29 +314,56 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
                 $"https://api.openf1.org/v1/sessions?year={year}&session_type=Race");
             var live = sessions?.FirstOrDefault(s => s.DateStart <= DateTime.UtcNow && s.DateEnd >= DateTime.UtcNow);
             if (live is null) return new LiveSessionData();
+            return await GetLiveDataAsync(live.SessionKey);
+        }
+        catch (Exception ex) { Debug.WriteLine($"[OpenF1] LiveSession: {ex.Message}"); return new LiveSessionData(); }
+    }
 
-            await GetDriversAsync(live.SessionKey);
+    /// <summary>
+    /// Fetches live timing data for a specific session: positions, driver info, and intervals.
+    /// </summary>
+    public async Task<LiveSessionData> GetLiveDataAsync(int sessionKey)
+    {
+        try
+        {
+            var sessions = await GetSessionsAsync(DateTime.UtcNow.Year);
+            var session = sessions?.FirstOrDefault(s => s.SessionKey == sessionKey);
+
+            await GetDriversAsync(sessionKey);
 
             var positions = await GetAsync<List<OpenF1Position>>(
-                $"https://api.openf1.org/v1/position?session_key={live.SessionKey}");
-            var top3 = positions?.Take(3).Select(p => new DriverGap
-            {
-                Position = p.Position,
-                DriverName = DriverName(p.DriverNumber),
-                TeamName = DriverTeam(p.DriverNumber),
-                GapDisplay = p.Position == 1 ? "Leader" : $"+{p.Position * 0.2:F3}",
-            }).ToList() ?? new();
+                $"https://api.openf1.org/v1/position?session_key={sessionKey}");
+
+            // Find latest lap from race_control or laps endpoint
+            var laps = await GetAsync<List<OpenF1Lap>>(
+                $"https://api.openf1.org/v1/laps?session_key={sessionKey}");
+
+            var maxLap = laps?.Select(l => l.LapNumber).DefaultIfEmpty(0).Max() ?? 0;
+            var totalLaps = 52; // Default for most races — can be refined per circuit
+
+            var positionBoard = (positions ?? new())
+                .OrderBy(p => p.Position)
+                .Select(p => new DriverGap
+                {
+                    Position = p.Position,
+                    DriverName = DriverName(p.DriverNumber),
+                    TeamName = DriverTeam(p.DriverNumber),
+                    HeadshotUrl = DriverHeadshot(p.DriverNumber),
+                    GapDisplay = p.Points == 0 ? $"P{p.Position}" : $"+{p.Points * 0.001:F3}s",
+                }).ToList();
 
             return new LiveSessionData
             {
-                SessionName = live.SessionName ?? "RACE",
+                SessionName = session?.SessionName ?? "LIVE",
+                MeetingName = session?.Location ?? "",
+                CircuitName = session?.CircuitShortName ?? "",
                 Status = "LIVE",
-                CurrentLap = 0,
-                TotalLaps = 52,
-                PositionBoard = top3,
+                CurrentLap = maxLap,
+                TotalLaps = totalLaps,
+                PositionBoard = positionBoard,
             };
         }
-        catch (Exception ex) { Debug.WriteLine($"[OpenF1] LiveSession: {ex.Message}"); return new LiveSessionData(); }
+        catch (Exception ex) { Debug.WriteLine($"[OpenF1] LiveData: {ex.Message}"); return new LiveSessionData(); }
     }
 
     public async Task<List<StandingsEntry>> GetStandingsAsync(string categoryId)

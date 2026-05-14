@@ -129,6 +129,12 @@ public partial class HomeViewModel : ObservableObject
     [ObservableProperty]
     private int totalLaps;
 
+    [ObservableProperty]
+    private int sessionKey;
+
+    [ObservableProperty]
+    private string liveLabel = "SEGUI LIVE";
+
     public ObservableCollection<DriverGap> PositionBoard { get; } = new();
     public ObservableCollection<StandingsEntry> Standings { get; } = new();
     public ObservableCollection<ConstructorStandingsEntry> ConstructorStandings { get; } = new();
@@ -161,6 +167,7 @@ public partial class HomeViewModel : ObservableObject
 
             EventName = raceEvent.EventName;
             MeetingName = raceEvent.MeetingName;
+            SessionKey = raceEvent.SessionKey;
             CircuitImageUrl = raceEvent.CircuitImageUrl;
             eventDateTime = raceEvent.ScheduledDateTime;
             EventDate = raceEvent.ScheduledDateTime;
@@ -360,6 +367,13 @@ public partial class HomeViewModel : ObservableObject
     private void CloseWeatherDetail()
     {
         ShowWeatherDetail = false;
+    }
+
+    [RelayCommand]
+    private async Task NavigateToLiveAsync()
+    {
+        if (SessionKey <= 0) return;
+        await Shell.Current.GoToAsync($"live?sessionKey={SessionKey}");
     }
 
     [RelayCommand]

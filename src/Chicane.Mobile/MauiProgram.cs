@@ -82,6 +82,9 @@ public static class MauiProgram
         builder.Services.AddTransient<DriverDetailViewModel>();
         builder.Services.AddTransient<DriverDetailPage>();
 
+        builder.Services.AddTransient<LiveViewModel>();
+        builder.Services.AddTransient<LivePage>();
+
         builder.Services.AddTransient<LeaderboardsViewModel>();
         builder.Services.AddTransient<LeaderboardsPage>();
 

@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:Chicane.Mobile.ViewModels"
+             xmlns:models="clr-namespace:Chicane.Mobile.Models"
+             x:Class="Chicane.Mobile.Views.LivePage"
+             x:DataType="viewmodels:LiveViewModel"
+             Title="LIVE"
+             BackgroundColor="#0b1320">
+
+    <Grid RowDefinitions="*">
+
+        <!-- Loading -->
+        <VerticalStackLayout IsVisible="{Binding IsBusy}"
+                             VerticalOptions="Center" HorizontalOptions="Center" Spacing="12">
+            <ActivityIndicator IsRunning="{Binding IsBusy}" Color="#E10600" HeightRequest="48" WidthRequest="48" />
+            <Label Text="Connecting to live session..."
+                   FontFamily="TitilliumWebRegular" FontSize="12"
+                   TextColor="#666666" HorizontalOptions="Center" />
+        </VerticalStackLayout>
+
+        <!-- Error -->
+        <VerticalStackLayout IsVisible="{Binding HasError}"
+                             VerticalOptions="Center" HorizontalOptions="Center" Spacing="16" Padding="32">
+            <Label Text="&#x26A0;" FontSize="48" HorizontalOptions="Center" TextColor="#E10600" />
+            <Label Text="{Binding ErrorMessage}"
+                   FontFamily="TitilliumWebSemiBold" FontSize="14"
+                   TextColor="#A0A0A0" HorizontalOptions="Center" HorizontalTextAlignment="Center" />
+            <Button Text="RETRY" BackgroundColor="#E10600" TextColor="#FFFFFF"
+                    FontFamily="TitilliumWebBold" FontSize="12" CornerRadius="4" Padding="24,10"
+                    Command="{Binding LoadCommand}" HorizontalOptions="Center" />
+        </VerticalStackLayout>
+
+        <!-- Content -->
+        <ScrollView IsVisible="{Binding HasData}" VerticalScrollBarVisibility="Never">
+            <VerticalStackLayout Spacing="0" Padding="0,0,0,20">
+
+                <!-- Live Header Banner -->
+                <Border StrokeThickness="0" BackgroundColor="#E10600" Padding="20,14">
+                    <VerticalStackLayout Spacing="2" HorizontalOptions="Center">
+                        <Label Text="LIVE"
+                               FontFamily="TitilliumWebBold" FontSize="14"
+                               TextColor="White" CharacterSpacing="6"
+                               HorizontalOptions="Center" />
+                        <Label Text="{Binding SessionName}"
+                               FontFamily="TitilliumWebBold" FontSize="16"
+                               TextColor="White" HorizontalOptions="Center"
+                               CharacterSpacing="2" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Race Info -->
+                <Border StrokeThickness="1" Stroke="#2a3441"
+                        StrokeShape="RoundRectangle 10"
+                        BackgroundColor="#1e293b"
+                        Padding="16,12" Margin="16,10,16,0">
+                    <VerticalStackLayout Spacing="4" HorizontalOptions="Center">
+                        <Label Text="{Binding MeetingName}"
+                               FontFamily="TitilliumWebBold" FontSize="18"
+                               TextColor="White" HorizontalOptions="Center" />
+                        <Label Text="{Binding CircuitName}"
+                               FontFamily="TitilliumWebRegular" FontSize="13"
+                               TextColor="#9CA3AF" HorizontalOptions="Center" />
+                        <Border StrokeThickness="0" BackgroundColor="#E10600"
+                                StrokeShape="RoundRectangle 8"
+                                Padding="20,8" Margin="0,6,0,0"
+                                HorizontalOptions="Center">
+                            <Label Text="{Binding LapsDisplay}"
+                                   FontFamily="SpaceMonoBold" FontSize="32"
+                                   TextColor="White" HorizontalOptions="Center" />
+                        </Border>
+                        <Label Text="LAPS" FontFamily="TitilliumWebRegular" FontSize="11"
+                               TextColor="#9CA3AF" HorizontalOptions="Center"
+                               CharacterSpacing="3" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Live Positions -->
+                <Label Text="POSITIONS" FontFamily="TitilliumWebBold" FontSize="13"
+                       TextColor="#FFFFFF" CharacterSpacing="3"
+                       Margin="20,20,20,8" />
+
+                <CollectionView ItemsSource="{Binding Positions}"
+                                VerticalScrollBarVisibility="Never">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:DriverGap">
+                            <Border StrokeThickness="1" Stroke="#2a3441" StrokeShape="RoundRectangle 10"
+                                    BackgroundColor="#1e293b" Padding="14,12" Margin="16,0,16,6">
+                                <Grid ColumnDefinitions="32,42,*,Auto" ColumnSpacing="10">
+                                    <!-- Position -->
+                                    <Label Grid.Column="0"
+                                           Text="{Binding Position}"
+                                           FontFamily="TitilliumWebBold" FontSize="17"
+                                           TextColor="#E10600"
+                                           VerticalOptions="Center" HorizontalTextAlignment="Center" />
+                                    <!-- Headshot -->
+                                    <Border Grid.Column="1" StrokeThickness="1" Stroke="#2a3441"
+                                            StrokeShape="RoundRectangle 21" WidthRequest="42" HeightRequest="42"
+                                            BackgroundColor="#0f172a">
+                                        <Image Source="{Binding HeadshotUrl}" Aspect="AspectFill" />
+                                    </Border>
+                                    <!-- Name + Team -->
+                                    <VerticalStackLayout Grid.Column="2" VerticalOptions="Center" Spacing="1">
+                                        <Label Text="{Binding DriverName}"
+                                               FontFamily="TitilliumWebRegular" FontSize="15"
+                                               TextColor="White" LineBreakMode="TailTruncation" />
+                                        <Label Text="{Binding TeamName}"
+                                               FontFamily="TitilliumWebRegular" FontSize="11"
+                                               TextColor="#9CA3AF" LineBreakMode="TailTruncation" />
+                                    </VerticalStackLayout>
+                                    <!-- Gap -->
+                                    <Border Grid.Column="3" BackgroundColor="#1a2332" StrokeThickness="0"
+                                            StrokeShape="RoundRectangle 4" Padding="8,3"
+                                            VerticalOptions="Center">
+                                        <Label Text="{Binding GapDisplay}"
+                                               FontFamily="TitilliumWebBold" FontSize="13"
+                                               TextColor="White" />
+                                    </Border>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+
+</ContentPage>

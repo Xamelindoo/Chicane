@@ -13,5 +13,6 @@ public partial class AppShell : Shell
         Routing.RegisterRoute("team-detail", typeof(TeamDetailPage));
         Routing.RegisterRoute("team-race-list", typeof(TeamRaceListPage));
         Routing.RegisterRoute("driver-detail", typeof(DriverDetailPage));
+        Routing.RegisterRoute("live", typeof(LivePage));
     }
 }

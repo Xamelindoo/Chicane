@@ -36,11 +36,16 @@
                 <!-- Pre-Race -->
                 <VerticalStackLayout IsVisible="{Binding IsPreRace}" Spacing="0">
 
-                     <!-- Next Race Countdown -->
+                     <!-- Next Race Countdown / Live -->
                      <Border StrokeThickness="1" Stroke="#E10600" StrokeShape="RoundRectangle 12"
                              Margin="16,14,16,0" Padding="12,6"
                              BackgroundColor="#1e293b">
-                         <VerticalStackLayout Spacing="3">
+                         <Border.GestureRecognizers>
+                             <TapGestureRecognizer
+                                                   Command="{Binding NavigateToLiveCommand}" />
+                         </Border.GestureRecognizers>
+                         <!-- Pre-Race State -->
+                         <VerticalStackLayout Spacing="3" IsVisible="{Binding IsPreRace}">
                              <!-- Row 1: GP Name + Weather -->
                              <Grid ColumnDefinitions="*,Auto">
                                  <Label Grid.Column="0" Text="{Binding MeetingName}"
@@ -86,6 +91,25 @@
                                         TextColor="#9CA3AF" HorizontalTextAlignment="End"
                                         VerticalOptions="Center" Margin="12,0,0,0" />
                              </Grid>
+                         </VerticalStackLayout>
+
+                         <!-- Live State -->
+                         <VerticalStackLayout Spacing="3" IsVisible="{Binding IsLive}">
+                             <Label Text="{Binding MeetingName}"
+                                    FontFamily="TitilliumWebBold" FontSize="12"
+                                    TextColor="White" LineBreakMode="TailTruncation" />
+                             <Label Text="{Binding SessionName}"
+                                    FontFamily="TitilliumWebBold" FontSize="14"
+                                    TextColor="#E10600" CharacterSpacing="2" />
+                             <HorizontalStackLayout Spacing="8">
+                                 <Label Text="🔴" FontSize="16" VerticalOptions="Center" />
+                                 <Label Text="SEGUI LIVE"
+                                        FontFamily="TitilliumWebBold" FontSize="18"
+                                        TextColor="#E10600" VerticalOptions="Center" />
+                                 <Label Text="{Binding CircuitLocation}"
+                                        FontFamily="TitilliumWebRegular" FontSize="12"
+                                        TextColor="#9CA3AF" VerticalOptions="Center" />
+                             </HorizontalStackLayout>
                          </VerticalStackLayout>
                      </Border>
 
