@@ -6,7 +6,7 @@
              x:Class="Chicane.Mobile.Views.DriverDetailPage"
              x:DataType="viewmodels:DriverDetailViewModel"
              Title="{Binding BroadcastName}"
-              BackgroundColor="#0A0A0A">
+             BackgroundColor="#0b1320">
 
     <Grid RowDefinitions="*">
 
@@ -132,28 +132,42 @@
                 <CollectionView ItemsSource="{Binding RaceResults}" Margin="0,0,0,0">
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="models:DriverRaceResult">
-                            <Border StrokeThickness="1" Stroke="#333333"
+                            <Border StrokeThickness="1" Stroke="#2a3441"
                                     StrokeShape="RoundRectangle 10"
-                                    BackgroundColor="#131313"
-                                    Padding="14,12" Margin="20,0,20,6">
-                                <Grid ColumnDefinitions="36,*,Auto" ColumnSpacing="12">
-                                    <Label Grid.Column="0"
-                                           Text="{Binding Position, StringFormat='P{0}'}"
-                                           FontFamily="TitilliumWebBold" FontSize="15"
-                                           TextColor="#E10600"
-                                           VerticalOptions="Center" HorizontalTextAlignment="Center" />
-                                    <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                                    BackgroundColor="#1e293b"
+                                    Padding="14,12" Margin="16,0,16,6">
+                                <Grid ColumnDefinitions="44,*,Auto" ColumnSpacing="12">
+                                    <!-- Position badge -->
+                                    <Border Grid.Column="0" StrokeThickness="0"
+                                            StrokeShape="RoundRectangle 8"
+                                            BackgroundColor="#90111d"
+                                            Padding="0" HeightRequest="36" WidthRequest="44"
+                                            VerticalOptions="Center">
+                                        <Label Text="{Binding Position, StringFormat='P{0}'}"
+                                               FontFamily="TitilliumWebBold" FontSize="15"
+                                               TextColor="#FFFFFF"
+                                               VerticalOptions="Center" HorizontalOptions="Center" />
+                                    </Border>
+                                    <!-- Event info -->
+                                    <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="1">
                                         <Label Text="{Binding SessionName}"
                                                FontFamily="TitilliumWebRegular" FontSize="13"
                                                TextColor="#FFFFFF" />
-                                        <Label Text="{Binding CircuitName}"
-                                               FontFamily="TitilliumWebRegular" FontSize="11"
-                                               TextColor="#666666" />
+                                        <HorizontalStackLayout Spacing="4">
+                                            <Label Text="{Binding CircuitName}"
+                                                   FontFamily="TitilliumWebRegular" FontSize="11"
+                                                   TextColor="#9CA3AF" />
+                                            <Label Text="·" FontSize="11" TextColor="#9CA3AF" />
+                                            <Label Text="{Binding MeetingName}"
+                                                   FontFamily="TitilliumWebRegular" FontSize="11"
+                                                   TextColor="#9CA3AF" LineBreakMode="TailTruncation" />
+                                        </HorizontalStackLayout>
                                     </VerticalStackLayout>
+                                    <!-- Date -->
                                     <Label Grid.Column="2"
-                                           Text="{Binding EventDate, StringFormat='{0:dd MMM}'}"
+                                           Text="{Binding EventDate, StringFormat='{0:dd MMM yyyy}'}"
                                            FontFamily="TitilliumWebRegular" FontSize="12"
-                                           TextColor="#A0A0A0"
+                                           TextColor="#9CA3AF"
                                            VerticalOptions="Center" />
                                 </Grid>
                             </Border>

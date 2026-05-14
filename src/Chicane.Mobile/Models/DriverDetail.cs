@@ -20,6 +20,7 @@ public record DriverRaceResult
 {
     public string SessionName { get; init; } = string.Empty;
     public string CircuitName { get; init; } = string.Empty;
+    public string? MeetingName { get; init; }
     public int SessionKey { get; init; }
     public int Position { get; init; }
     public double Points { get; init; }

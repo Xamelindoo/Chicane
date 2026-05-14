@@ -153,8 +153,7 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
         try
         {
             var year = DateTime.UtcNow.Year;
-            var sessions = await GetAsync<List<OpenF1Session>>(
-                $"https://api.openf1.org/v1/sessions?year={year}&session_type=Race");
+            var sessions = await GetSessionsAsync(year);
             if (sessions is null) return null;
 
             var latestSession = sessions.FirstOrDefault();
@@ -178,10 +177,17 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
                 foreach (var r in results)
                 {
                     var session = sessions.FirstOrDefault(s => s.SessionKey == r.SessionKey);
+                    string? meetingName = null;
+                    if (session?.MeetingKey > 0)
+                    {
+                        var meetings = await GetMeetingsAsync(year);
+                        meetingName = meetings.FirstOrDefault(m => m.MeetingKey == session.MeetingKey)?.MeetingName;
+                    }
                     raceResults.Add(new DriverRaceResult
                     {
                         SessionName = session?.SessionName ?? "",
                         CircuitName = session?.CircuitShortName ?? "",
+                        MeetingName = meetingName,
                         SessionKey = r.SessionKey,
                         Position = r.Position,
                         EventDate = session?.DateStart ?? DateTime.UtcNow,
@@ -218,6 +224,17 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
         _meetingsCache = await GetAsync<List<OpenF1Meeting>>(
             $"https://api.openf1.org/v1/meetings?year={year}");
         return _meetingsCache ?? new();
+    }
+
+    private async Task<List<OpenF1Session>> GetSessionsAsync(int year)
+    {
+        if (_sessionsCache is not null && _sessionsCacheYear == year)
+            return _sessionsCache;
+
+        _sessionsCache = await GetAsync<List<OpenF1Session>>(
+            $"https://api.openf1.org/v1/sessions?year={year}");
+        _sessionsCacheYear = year;
+        return _sessionsCache ?? new();
     }
 
     private async Task<string?> ResolveMeetingNameAsync(int meetingKey, int year, string fallback)
