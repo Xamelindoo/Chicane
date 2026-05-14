@@ -26,6 +26,15 @@
                        FontAttributes="Italic" TextColor="White" VerticalOptions="Center"
                        CharacterSpacing="2" />
             </HorizontalStackLayout>
+            <HorizontalStackLayout HorizontalOptions="Center" Spacing="4" Margin="0,4,0,0" Opacity="0.5">
+                <Label Text="Season" FontFamily="TitilliumWebRegular"
+                       FontSize="10" TextColor="#9CA3AF" VerticalOptions="Center" />
+                <Picker ItemsSource="{Binding AvailableYears}"
+                        SelectedItem="{Binding SelectedYear}"
+                        FontFamily="TitilliumWebBold" FontSize="11"
+                        TextColor="White" VerticalOptions="Center"
+                        BackgroundColor="Transparent" WidthRequest="80" />
+            </HorizontalStackLayout>
         </Border>
 
         <!-- Toggle Pilots / Teams -->

@@ -33,20 +33,8 @@
         <ScrollView IsVisible="{Binding HasData}" VerticalScrollBarVisibility="Never">
             <VerticalStackLayout Spacing="0" Padding="0,0,0,20">
 
-                <!-- Season Selector -->
-                <Grid Padding="20,8" ColumnDefinitions="Auto,Auto" ColumnSpacing="8"
-                      HorizontalOptions="Center">
-                    <Label Grid.Column="0" Text="Season:" FontFamily="TitilliumWebRegular"
-                           FontSize="12" TextColor="#9CA3AF" VerticalOptions="Center" />
-                    <Picker Grid.Column="1" ItemsSource="{Binding AvailableYears}"
-                            SelectedItem="{Binding SelectedYear}"
-                            FontFamily="TitilliumWebBold" FontSize="14" TextColor="White"
-                            BackgroundColor="#1e293b" VerticalOptions="Center"
-                            WidthRequest="100" />
-                </Grid>
-
                 <!-- Gradient Banner -->
-                <Border StrokeThickness="0" HeightRequest="220">
+                <Border StrokeThickness="0" HeightRequest="230">
                     <Border.Background>
                         <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
                             <GradientStop Color="{Binding TeamColour}" Offset="0.0" />
@@ -91,6 +79,18 @@
                                        VerticalOptions="Center" />
                             </HorizontalStackLayout>
                         </Border>
+                        <!-- Season Picker (blends with gradient) -->
+                        <HorizontalStackLayout HorizontalOptions="Center" Spacing="4"
+                                               Margin="0,8,0,0" Opacity="0.6">
+                            <Label Text="Season" FontFamily="TitilliumWebRegular"
+                                   FontSize="10" TextColor="#9CA3AF" VerticalOptions="Center" />
+                            <Picker ItemsSource="{Binding AvailableYears}"
+                                    SelectedItem="{Binding SelectedYear}"
+                                    FontFamily="TitilliumWebBold" FontSize="11"
+                                    TextColor="White" VerticalOptions="Center"
+                                    BackgroundColor="Transparent"
+                                    WidthRequest="80" />
+                        </HorizontalStackLayout>
                     </VerticalStackLayout>
                 </Border>
 

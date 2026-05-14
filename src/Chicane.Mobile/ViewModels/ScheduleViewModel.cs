@@ -41,6 +41,17 @@ public partial class ScheduleViewModel : ObservableObject
 
     public ObservableCollection<MeetingScheduleCard> Meetings { get; } = new();
 
+    public List<int> AvailableYears => Enumerable.Range(2024, DateTime.UtcNow.Year - 2023).Reverse().ToList();
+
+    [ObservableProperty]
+    private int selectedYear = DateTime.UtcNow.Year;
+
+    partial void OnSelectedYearChanged(int value)
+    {
+        if (value > 0 && !IsBusy)
+            LoadCommand.Execute(null);
+    }
+
     [RelayCommand]
     private async Task LoadAsync()
     {
@@ -96,7 +107,7 @@ public partial class ScheduleViewModel : ObservableObject
 
     private async Task LoadMeetingsAsync()
     {
-        var meetings = await _openF1.GetMeetingScheduleAsync(!IsShowingUpcoming);
+        var meetings = await _openF1.GetMeetingScheduleAsync(!IsShowingUpcoming, SelectedYear);
         Meetings.Clear();
         foreach (var m in meetings)
             Meetings.Add(m);

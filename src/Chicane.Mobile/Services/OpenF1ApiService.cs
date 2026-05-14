@@ -11,6 +11,7 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
     private readonly HttpClient _http;
     private readonly OpenF1TokenService _token;
     private List<OpenF1Meeting>? _meetingsCache;
+    private int? _meetingsCacheYear;
     private List<OpenF1Session>? _sessionsCache;
     private int? _sessionsCacheYear;
     private Dictionary<int, OpenF1Driver>? _driverCache;
@@ -163,16 +164,17 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
             var sessions = await GetSessionsAsync(year);
             var sessionByKey = (sessions ?? new()).ToDictionary(s => s.SessionKey);
 
-            var latestSession = sessions?.FirstOrDefault();
-            if (latestSession is null) return null;
+            // Use a Race session to populate the driver cache (all 22 drivers)
+            var raceSession = sessions?.FirstOrDefault(s => s.SessionName == "Race");
+            if (raceSession is null) return null;
 
-            await GetDriversAsync(latestSession.SessionKey);
+            await GetDriversAsync(raceSession.SessionKey);
             if (_driverCache is null || !_driverCache.TryGetValue(driverNumber, out var driver))
                 return null;
 
-            // Fetch standings and race results for the selected year
+            // Fetch standings (all years — filtered client-side) and race results for selected year
             var standings = await GetAsync<List<OpenF1ChampionshipDriver>>(
-                $"https://api.openf1.org/v1/championship_drivers?driver_number={driverNumber}&year={year}");
+                $"https://api.openf1.org/v1/championship_drivers?driver_number={driverNumber}");
             var currentEntry = standings?.OrderByDescending(s => s.SessionKey).FirstOrDefault();
 
             var results = await GetAsync<List<OpenF1SessionResult>>(
@@ -227,11 +229,12 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
 
     private async Task<List<OpenF1Meeting>> GetMeetingsAsync(int year)
     {
-        if (_meetingsCache is not null)
+        if (_meetingsCache is not null && _meetingsCacheYear == year)
             return _meetingsCache;
 
         _meetingsCache = await GetAsync<List<OpenF1Meeting>>(
             $"https://api.openf1.org/v1/meetings?year={year}");
+        _meetingsCacheYear = year;
         return _meetingsCache ?? new();
     }
 
@@ -621,11 +624,11 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
         catch (Exception ex) { Debug.WriteLine($"[OpenF1] UpcomingWeekends: {ex.Message}"); return new(); }
     }
 
-    public async Task<List<MeetingScheduleCard>> GetMeetingScheduleAsync(bool isPast)
+    public async Task<List<MeetingScheduleCard>> GetMeetingScheduleAsync(bool isPast, int year = 0)
     {
         try
         {
-            var year = DateTime.UtcNow.Year;
+            if (year <= 0) year = DateTime.UtcNow.Year;
             var meetings = await GetMeetingsAsync(year);
 
             if (_sessionsCache is null || _sessionsCacheYear != year)

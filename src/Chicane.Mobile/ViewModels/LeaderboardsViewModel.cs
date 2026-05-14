@@ -64,6 +64,11 @@ public partial class LeaderboardsViewModel : ObservableObject
     public ObservableCollection<TeamEntry> Teams { get; } = new();
     public ObservableCollection<DriverStandingsEntry> Drivers { get; } = new();
 
+    public List<int> AvailableYears => Enumerable.Range(2024, DateTime.UtcNow.Year - 2023).Reverse().ToList();
+
+    [ObservableProperty]
+    private int selectedYear = DateTime.UtcNow.Year;
+
     [ObservableProperty]
     private bool isRefreshing;
 
