@@ -172,7 +172,7 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
             var currentEntry = standings?.OrderByDescending(s => s.SessionKey).FirstOrDefault();
 
             var results = await GetAsync<List<OpenF1SessionResult>>(
-                $"https://api.openf1.org/v1/session_result?driver_number={driverNumber}&year={year}");
+                $"https://api.openf1.org/v1/session_result?driver_number={driverNumber}");
 
             // Build meeting lookup dict for O(1) meeting name resolution
             var meetings = await GetMeetingsAsync(year);
@@ -183,7 +183,9 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
             {
                 foreach (var r in results)
                 {
-                    sessionByKey.TryGetValue(r.SessionKey, out var session);
+                    // Skip results outside the current year (session not in our cache)
+                    if (!sessionByKey.TryGetValue(r.SessionKey, out var session))
+                        continue;
                     string? meetingName = null;
                     if (session?.MeetingKey > 0)
                         meetingNameByKey.TryGetValue(session.MeetingKey, out meetingName);
