@@ -148,41 +148,50 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
             .ToDictionary(g => g.Key, g => $"#{g.First().Value.TeamColour}");
     }
 
-    public async Task<DriverDetail?> GetDriverDetailAsync(int driverNumber)
+    /// <summary>
+    /// Returns full driver detail (info, stats, race results) for a given season.
+    /// Uses Dictionary-based O(1) lookups for session and meeting matching.
+    /// Adds year filter to reduce API payload (from ~80 results to ~20).
+    /// </summary>
+    public async Task<DriverDetail?> GetDriverDetailAsync(int driverNumber, int year = 0)
     {
         try
         {
-            var year = DateTime.UtcNow.Year;
-            var sessions = await GetSessionsAsync(year);
-            if (sessions is null) return null;
+            if (year <= 0) year = DateTime.UtcNow.Year;
 
-            var latestSession = sessions.FirstOrDefault();
+            // Build session lookup dict (SessionKey → OpenF1Session) for O(1) access
+            var sessions = await GetSessionsAsync(year);
+            var sessionByKey = (sessions ?? new()).ToDictionary(s => s.SessionKey);
+
+            var latestSession = sessions?.FirstOrDefault();
             if (latestSession is null) return null;
 
             await GetDriversAsync(latestSession.SessionKey);
             if (_driverCache is null || !_driverCache.TryGetValue(driverNumber, out var driver))
                 return null;
 
+            // Fetch standings and race results for the selected year
             var standings = await GetAsync<List<OpenF1ChampionshipDriver>>(
-                $"https://api.openf1.org/v1/championship_drivers?driver_number={driverNumber}");
-            if (standings is null) return null;
-
-            var currentEntry = standings.OrderByDescending(s => s.SessionKey).FirstOrDefault();
+                $"https://api.openf1.org/v1/championship_drivers?driver_number={driverNumber}&year={year}");
+            var currentEntry = standings?.OrderByDescending(s => s.SessionKey).FirstOrDefault();
 
             var results = await GetAsync<List<OpenF1SessionResult>>(
-                $"https://api.openf1.org/v1/session_result?driver_number={driverNumber}");
+                $"https://api.openf1.org/v1/session_result?driver_number={driverNumber}&year={year}");
+
+            // Build meeting lookup dict for O(1) meeting name resolution
+            var meetings = await GetMeetingsAsync(year);
+            var meetingNameByKey = (meetings ?? new()).ToDictionary(m => m.MeetingKey, m => m.MeetingName);
+
             var raceResults = new List<DriverRaceResult>();
             if (results is not null)
             {
                 foreach (var r in results)
                 {
-                    var session = sessions.FirstOrDefault(s => s.SessionKey == r.SessionKey);
+                    sessionByKey.TryGetValue(r.SessionKey, out var session);
                     string? meetingName = null;
                     if (session?.MeetingKey > 0)
-                    {
-                        var meetings = await GetMeetingsAsync(year);
-                        meetingName = meetings.FirstOrDefault(m => m.MeetingKey == session.MeetingKey)?.MeetingName;
-                    }
+                        meetingNameByKey.TryGetValue(session.MeetingKey, out meetingName);
+
                     raceResults.Add(new DriverRaceResult
                     {
                         SessionName = session?.SessionName ?? "",

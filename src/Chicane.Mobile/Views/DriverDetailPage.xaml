@@ -33,6 +33,18 @@
         <ScrollView IsVisible="{Binding HasData}" VerticalScrollBarVisibility="Never">
             <VerticalStackLayout Spacing="0" Padding="0,0,0,20">
 
+                <!-- Season Selector -->
+                <Grid Padding="20,8" ColumnDefinitions="Auto,Auto" ColumnSpacing="8"
+                      HorizontalOptions="Center">
+                    <Label Grid.Column="0" Text="Season:" FontFamily="TitilliumWebRegular"
+                           FontSize="12" TextColor="#9CA3AF" VerticalOptions="Center" />
+                    <Picker Grid.Column="1" ItemsSource="{Binding AvailableYears}"
+                            SelectedItem="{Binding SelectedYear}"
+                            FontFamily="TitilliumWebBold" FontSize="14" TextColor="White"
+                            BackgroundColor="#1e293b" VerticalOptions="Center"
+                            WidthRequest="100" />
+                </Grid>
+
                 <!-- Gradient Banner -->
                 <Border StrokeThickness="0" HeightRequest="220">
                     <Border.Background>

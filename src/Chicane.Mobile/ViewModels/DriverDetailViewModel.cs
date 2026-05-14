@@ -61,6 +61,18 @@ public partial class DriverDetailViewModel : ObservableObject
 
     public ObservableCollection<DriverRaceResult> RaceResults { get; } = new();
 
+    /// <summary>Available seasons (current year down to 2024).</summary>
+    public List<int> AvailableYears => Enumerable.Range(2024, DateTime.UtcNow.Year - 2023).Reverse().ToList();
+
+    [ObservableProperty]
+    private int selectedYear = DateTime.UtcNow.Year;
+
+    partial void OnSelectedYearChanged(int value)
+    {
+        if (value > 0 && !IsBusy && DriverNumber > 0)
+            LoadCommand.Execute(null);
+    }
+
     partial void OnDriverNumberChanged(int value)
     {
         HasData = false;
@@ -77,7 +89,7 @@ public partial class DriverDetailViewModel : ObservableObject
 
         try
         {
-            var detail = await _openF1.GetDriverDetailAsync(DriverNumber);
+            var detail = await _openF1.GetDriverDetailAsync(DriverNumber, SelectedYear);
             if (detail is null)
             {
                 IsEmptyState = true;
