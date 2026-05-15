@@ -41,10 +41,10 @@ public class CachedScheduleService : IRaceCalendarService
     // -------- Race Schedule (upcoming / past, cache-first) --------
 
     public async Task<List<RaceScheduleEntry>> GetUpcomingRacesAsync(string categoryId)
-        => await CacheAndReturn(categoryId, () => _primary.GetUpcomingRacesAsync(categoryId));
+        => await CacheAndReturn($"{categoryId}_up", () => _primary.GetUpcomingRacesAsync(categoryId));
 
     public async Task<List<RaceScheduleEntry>> GetPastRacesAsync(string categoryId)
-        => await CacheAndReturn(categoryId, () => _primary.GetPastRacesAsync(categoryId));
+        => await CacheAndReturn($"{categoryId}_past", () => _primary.GetPastRacesAsync(categoryId));
 
     // -------- Past Race Detail (immutable — cache-first, never re-fetched) --------
 
