@@ -57,7 +57,7 @@ public class Rss2JsonService : INewsService
         try
         {
             var encodedUrl = Uri.EscapeDataString(rssUrl);
-            var apiUrl = $"https://api.rss2json.com/v1/api.json?rss_url={encodedUrl}&api_key={SecretsConfig.Rss2JsonApiKey}";
+            var apiUrl = $"https://api.rss2json.com/v1/api.json?rss_url={encodedUrl}&api_key={Env.Get("RSS2JSON_API_KEY")}";
 
             var json = await _http.GetStringAsync(apiUrl);
             var response = JsonSerializer.Deserialize<Rss2JsonResponse>(json);

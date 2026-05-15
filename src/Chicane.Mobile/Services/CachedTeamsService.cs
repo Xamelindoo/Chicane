@@ -152,9 +152,8 @@ public class CachedTeamsService : ITeamsService
 
                     // Populate race results from cached session results
                     var raceResults = new List<TeamRaceResult>();
-                    var pastRaces = (await _scheduleService.GetPastRacesAsync(categoryId))
-                        .Where(r => r.EventDate < DateTime.UtcNow)
-                        .Take(10);
+                    var pastRaces = (await _openF1.GetPastRacesAsync(categoryId))
+                        .Where(r => r.EventDate < DateTime.UtcNow);
                     foreach (var race in pastRaces)
                     {
                         if (race.SessionKey <= 0) continue;
@@ -171,12 +170,18 @@ public class CachedTeamsService : ITeamsService
                             {
                                 EventName = race.MeetingName ?? race.EventName,
                                 SessionName = race.EventName,
+                                SessionKey = race.SessionKey,
+                                MeetingKey = race.MeetingKey,
+                                CircuitName = race.CircuitName ?? "",
+                                Country = race.Country ?? "",
                                 EventDate = race.EventDate,
                                 Driver1Name = teamResults.Count > 0 ? teamResults[0].DriverName : "",
+                                Driver1Code = teamResults.Count > 0 ? teamResults[0].DriverAcronym : "",
                                 Driver1Position = teamResults.Count > 0 ? teamResults[0].Position : 0,
                                 Driver1Points = teamResults.Count > 0 ? F1Points(teamResults[0].Position) : 0,
                                 Driver1BestLap = teamResults.Count > 0 && teamResults[0].IsFastestLap ? teamResults[0].TimeOrDnf : null,
                                 Driver2Name = teamResults.Count > 1 ? teamResults[1].DriverName : "",
+                                Driver2Code = teamResults.Count > 1 ? teamResults[1].DriverAcronym : "",
                                 Driver2Position = teamResults.Count > 1 ? teamResults[1].Position : 0,
                                 Driver2Points = teamResults.Count > 1 ? F1Points(teamResults[1].Position) : 0,
                                 Driver2BestLap = teamResults.Count > 1 && teamResults[1].IsFastestLap ? teamResults[1].TimeOrDnf : null,

@@ -10,6 +10,7 @@ public class SessionResultRecord
     public int SessionKey { get; set; }
     public int Position { get; set; }
     public string DriverName { get; set; } = string.Empty;
+    public string DriverAcronym { get; set; } = string.Empty;
     public string TeamName { get; set; } = string.Empty;
     public string HeadshotUrl { get; set; } = string.Empty;
     public string TimeOrDnf { get; set; } = string.Empty;

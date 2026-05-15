@@ -41,6 +41,7 @@ public static class MauiProgram
         // SQLite infrastructure
         builder.Services.AddSingleton<DatabaseService>();
         builder.Services.AddSingleton<ImageCacheService>();
+        builder.Services.AddSingleton<ICacheService, CacheService>();
         builder.Services.AddSingleton<StandingsRepository>();
         builder.Services.AddSingleton<ConstructorStandingsRepository>();
         builder.Services.AddSingleton<ScheduleRepository>();
@@ -94,8 +95,14 @@ public static class MauiProgram
         builder.Services.AddTransient<TeamRaceListViewModel>();
         builder.Services.AddTransient<TeamRaceListPage>();
 
+        builder.Services.AddTransient<TeamGPSessionsViewModel>();
+        builder.Services.AddTransient<TeamGPSessionsPage>();
+
         builder.Services.AddTransient<NewsViewModel>();
         builder.Services.AddTransient<NewsPage>();
+
+        builder.Services.AddTransient<SettingsViewModel>();
+        builder.Services.AddTransient<SettingsPage>();
 
         return builder.Build();
     }

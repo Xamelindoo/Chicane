@@ -203,7 +203,7 @@
                                                 <Setter Property="BackgroundColor" Value="#90111d" />
                                                 <Style.Triggers>
                                                     <DataTrigger TargetType="Border" Binding="{Binding Position}" Value="1">
-                                                        <Setter Property="BackgroundColor" Value="#FCD34D" />
+                                                        <Setter Property="BackgroundColor" Value="#FFD700" />
                                                     </DataTrigger>
                                                     <DataTrigger TargetType="Border" Binding="{Binding Position}" Value="2">
                                                         <Setter Property="BackgroundColor" Value="#C0C0C0" />
@@ -222,7 +222,8 @@
                                     <!-- Event info -->
                                     <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="1">
                                         <Label Text="{Binding SessionName}"
-                                               FontFamily="TitilliumWebRegular" FontSize="13"
+                                               TextTransform="Uppercase"
+                                               FontFamily="TitilliumWebBold" FontSize="13"
                                                TextColor="#FFFFFF" />
                                         <HorizontalStackLayout Spacing="4">
                                             <Label Text="{Binding CircuitName}"

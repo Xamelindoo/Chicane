@@ -20,12 +20,21 @@
                     <GradientStop Color="#4c1d95" Offset="1" />
                 </LinearGradientBrush>
             </Border.Background>
-            <HorizontalStackLayout Spacing="4" HorizontalOptions="Center">
-                <Label Text="&#x1F3C1;" FontSize="14" VerticalOptions="Center" />
-                <Label Text="CHICANE" FontFamily="OutfitBold" FontSize="22"
-                       FontAttributes="Italic" TextColor="White" VerticalOptions="Center"
-                       CharacterSpacing="2" />
-            </HorizontalStackLayout>
+            <Grid>
+                <HorizontalStackLayout Spacing="4" HorizontalOptions="Center" VerticalOptions="Center">
+                    <Label Text="&#x1F3C1;" FontSize="14" VerticalOptions="Center" />
+                    <Label Text="CHICANE" FontFamily="OutfitBold" FontSize="20"
+                           FontAttributes="Italic" TextColor="White" VerticalOptions="Center"
+                           CharacterSpacing="2" />
+                </HorizontalStackLayout>
+                <Border StrokeThickness="0" Padding="4" VerticalOptions="Center"
+                        HorizontalOptions="End">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding OpenSettingsCommand}" />
+                    </Border.GestureRecognizers>
+                    <Label Text="&#x2699;" FontSize="24" TextColor="#9CA3AF" VerticalOptions="Center" />
+                </Border>
+            </Grid>
         </Border>
 
         <!-- Scrollable Content -->
@@ -219,13 +228,13 @@
                                                    VerticalOptions="Center" HorizontalTextAlignment="Center">
                                                 <Label.Triggers>
                                                     <DataTrigger TargetType="Label" Binding="{Binding Position}" Value="1">
-                                                        <Setter Property="TextColor" Value="#FCD34D" />
+                                                        <Setter Property="TextColor" Value="#FFD700" />
                                                     </DataTrigger>
                                                     <DataTrigger TargetType="Label" Binding="{Binding Position}" Value="2">
-                                                        <Setter Property="TextColor" Value="#E2E8F0" />
+                                                        <Setter Property="TextColor" Value="#C0C0C0" />
                                                     </DataTrigger>
                                                     <DataTrigger TargetType="Label" Binding="{Binding Position}" Value="3">
-                                                        <Setter Property="TextColor" Value="#F87171" />
+                                                        <Setter Property="TextColor" Value="#CD7F32" />
                                                     </DataTrigger>
                                                 </Label.Triggers>
                                             </Label>
@@ -282,13 +291,13 @@
                                                    VerticalOptions="Center" HorizontalTextAlignment="Center">
                                                 <Label.Triggers>
                                                     <DataTrigger TargetType="Label" Binding="{Binding Position}" Value="1">
-                                                        <Setter Property="TextColor" Value="#FCD34D" />
+                                                        <Setter Property="TextColor" Value="#FFD700" />
                                                     </DataTrigger>
                                                     <DataTrigger TargetType="Label" Binding="{Binding Position}" Value="2">
-                                                        <Setter Property="TextColor" Value="#E2E8F0" />
+                                                        <Setter Property="TextColor" Value="#C0C0C0" />
                                                     </DataTrigger>
                                                     <DataTrigger TargetType="Label" Binding="{Binding Position}" Value="3">
-                                                        <Setter Property="TextColor" Value="#F87171" />
+                                                        <Setter Property="TextColor" Value="#CD7F32" />
                                                     </DataTrigger>
                                                 </Label.Triggers>
                                             </Label>

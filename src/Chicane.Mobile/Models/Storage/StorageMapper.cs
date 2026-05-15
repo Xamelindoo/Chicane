@@ -95,6 +95,7 @@ public static class StorageMapper
         NumberOfLaps = entry.NumberOfLaps,
         IsFastestLap = entry.IsFastestLap,
         IsDnf = entry.IsDnf,
+        DriverAcronym = entry.DriverAcronym,
     };
 
     public static RaceResultEntry ToDomain(SessionResultRecord record) => new()
@@ -108,6 +109,7 @@ public static class StorageMapper
         NumberOfLaps = record.NumberOfLaps,
         IsFastestLap = record.IsFastestLap,
         IsDnf = record.IsDnf,
+        DriverAcronym = record.DriverAcronym,
     };
 
     // Race Weekends

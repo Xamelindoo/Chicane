@@ -60,13 +60,13 @@
                                            VerticalOptions="Center" HorizontalTextAlignment="Center">
                                         <Label.Triggers>
                                             <DataTrigger TargetType="Label" Binding="{Binding Position}" Value="1">
-                                                <Setter Property="TextColor" Value="#FCD34D" />
+                                                <Setter Property="TextColor" Value="#FFD700" />
                                             </DataTrigger>
                                             <DataTrigger TargetType="Label" Binding="{Binding Position}" Value="2">
-                                                <Setter Property="TextColor" Value="#E2E8F0" />
+                                                <Setter Property="TextColor" Value="#C0C0C0" />
                                             </DataTrigger>
                                             <DataTrigger TargetType="Label" Binding="{Binding Position}" Value="3">
-                                                <Setter Property="TextColor" Value="#F87171" />
+                                                <Setter Property="TextColor" Value="#CD7F32" />
                                             </DataTrigger>
                                         </Label.Triggers>
                                     </Label>

@@ -470,4 +470,10 @@ public partial class HomeViewModel : ObservableObject
         var text = $"{(int)remaining.TotalDays:D2}:{remaining.Hours:D2}:{remaining.Minutes:D2}:{remaining.Seconds:D2}";
         Countdown = text;
     }
+
+    [RelayCommand]
+    private async Task OpenSettingsAsync()
+    {
+        await Shell.Current.GoToAsync("settings");
+    }
 }

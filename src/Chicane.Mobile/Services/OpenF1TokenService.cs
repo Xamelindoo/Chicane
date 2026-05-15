@@ -31,8 +31,8 @@ public class OpenF1TokenService
             Debug.WriteLine("[OpenF1] POST /token...");
             var response = await _http.PostAsync(BaseAuthUrl, new FormUrlEncodedContent(new[]
             {
-                new KeyValuePair<string, string>("username", SecretsConfig.OpenF1Username),
-                new KeyValuePair<string, string>("password", SecretsConfig.OpenF1Password),
+                new KeyValuePair<string, string>("username", Env.Get("OPENF1_USERNAME")),
+                new KeyValuePair<string, string>("password", Env.Get("OPENF1_PASSWORD")),
             }));
 
             Debug.WriteLine($"[OpenF1] Token HTTP {response.StatusCode}");

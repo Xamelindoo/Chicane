@@ -74,6 +74,7 @@ public class DatabaseService
     /// <summary>
     /// Runs schema migrations based on the stored version in Preferences.
     /// v2: added HeadshotUrl column to DriverStandings table.
+    /// v3: added DriverAcronym column to SessionResults table.
     /// Migration is fire-and-forget at app startup — non-blocking.
     /// </summary>
     public async Task MigrateAsync()
@@ -90,6 +91,17 @@ public class DatabaseService
             }
             catch { /* Column already exists — safe to ignore */ }
             Preferences.Set("db_schema_version", 2);
+        }
+
+        if (version < 3)
+        {
+            try
+            {
+                await conn.ExecuteAsync("ALTER TABLE SessionResults ADD COLUMN DriverAcronym TEXT DEFAULT ''");
+                System.Diagnostics.Debug.WriteLine("[DB] Migration v3: added DriverAcronym column");
+            }
+            catch { /* Column already exists — safe to ignore */ }
+            Preferences.Set("db_schema_version", 3);
         }
     }
 }

@@ -489,7 +489,7 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
         {
             var year = DateTime.UtcNow.Year;
             var sessions = await GetAsync<List<OpenF1Session>>(
-                $"https://api.openf1.org/v1/sessions?year={year}");
+                $"https://api.openf1.org/v1/sessions?year={year}&session_type=Race");
             if (sessions is null) return new();
 
             var past = sessions
@@ -534,6 +534,17 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
         catch (Exception ex) { Debug.WriteLine($"[OpenF1] Past: {ex.Message}"); return new(); }
     }
 
+    public async Task<List<OpenF1Session>> GetSessionsByMeetingAsync(int meetingKey)
+    {
+        try
+        {
+            var sessions = await GetAsync<List<OpenF1Session>>(
+                $"https://api.openf1.org/v1/sessions?meeting_key={meetingKey}");
+            return sessions ?? new();
+        }
+        catch (Exception ex) { Debug.WriteLine($"[OpenF1] SessionsByMeeting: {ex.Message}"); return new(); }
+    }
+
     public async Task<PastRaceDetail> GetPastRaceDetailAsync(int sessionKey, string categoryId)
     {
         try
@@ -567,6 +578,7 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
                     {
                         Position = r.Position,
                         DriverName = DriverName(r.DriverNumber),
+                        DriverAcronym = NameAcronym(r.DriverNumber),
                         TeamName = DriverTeam(r.DriverNumber),
                         TimeOrDnf = time,
                         IsDnf = r.Dnf,

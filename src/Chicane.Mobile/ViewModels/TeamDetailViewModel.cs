@@ -62,54 +62,8 @@ public partial class TeamDetailViewModel : ObservableObject
     private TeamProfile? profile;
 
     public ObservableCollection<DriverEntry> Drivers { get; } = new();
-    public ObservableCollection<TeamRaceResult> RaceResults { get; } = new();
+    public ObservableCollection<RaceGroupCard> RaceGroups { get; } = new();
     private List<TeamRaceResult> _allRaceResults = new();
-
-    public List<string> AvailableFilters { get; } = new() { "ALL", "RACE", "SPRINT", "SPRINT QUALIFYING", "QUALIFYING", "PRACTICE" };
-
-    [ObservableProperty]
-    private string selectedFilter = "ALL";
-
-    [ObservableProperty]
-    private bool isFilterExpanded;
-
-    partial void OnSelectedFilterChanged(string value)
-    {
-        ApplyFilter();
-    }
-
-    [RelayCommand]
-    private void ToggleFilter()
-    {
-        IsFilterExpanded = !IsFilterExpanded;
-    }
-
-    [RelayCommand]
-    private void SelectFilter(string filter)
-    {
-        SelectedFilter = filter;
-        IsFilterExpanded = false;
-    }
-
-    private void ApplyFilter()
-    {
-        var filtered = _allRaceResults.AsEnumerable();
-        if (SelectedFilter != "ALL")
-        {
-            filtered = SelectedFilter switch
-            {
-                "RACE" => _allRaceResults.Where(r => r.SessionName.Contains("Race", StringComparison.OrdinalIgnoreCase) && !r.SessionName.Contains("Sprint")),
-                "QUALIFYING" => _allRaceResults.Where(r => r.SessionName.Contains("Qualifying", StringComparison.OrdinalIgnoreCase) && !r.SessionName.Contains("Sprint")),
-                "SPRINT" => _allRaceResults.Where(r => r.SessionName.Contains("Sprint", StringComparison.OrdinalIgnoreCase) && r.SessionName.Contains("Race") && !r.SessionName.Contains("Quali")),
-                "SPRINT QUALIFYING" => _allRaceResults.Where(r => r.SessionName.Contains("Sprint", StringComparison.OrdinalIgnoreCase) && r.SessionName.Contains("Quali")),
-                "PRACTICE" => _allRaceResults.Where(r => r.SessionName.Contains("Practice", StringComparison.OrdinalIgnoreCase)),
-                _ => _allRaceResults
-            };
-        }
-        RaceResults.Clear();
-        foreach (var r in filtered.OrderByDescending(r => r.EventDate))
-            RaceResults.Add(r);
-    }
 
     partial void OnTeamNameChanged(string value)
     {
@@ -148,7 +102,7 @@ public partial class TeamDetailViewModel : ObservableObject
             }
 
             _allRaceResults = detail.RaceResults.OrderByDescending(r => r.EventDate).ToList();
-            ApplyFilter();
+            BuildRaceGroups();
 
             HasData = true;
         }
@@ -172,14 +126,42 @@ public partial class TeamDetailViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task NavigateToRaceAsync(string eventName)
+    private async Task NavigateToGPSessionsAsync(RaceGroupCard? card)
     {
-        await Shell.Current.GoToAsync($"past-race-detail?sessionKey=0");
+        if (card is null || card.MeetingKey <= 0) return;
+        await Shell.Current.GoToAsync($"team-gp-sessions?meetingKey={card.MeetingKey}&teamName={Uri.EscapeDataString(TeamName)}");
     }
 
-    [RelayCommand]
-    private async Task NavigateToRaceListAsync()
+    private void BuildRaceGroups()
     {
-        await Shell.Current.GoToAsync($"team-race-list?teamName={Uri.EscapeDataString(TeamName)}");
+        RaceGroups.Clear();
+        var groups = _allRaceResults
+            .GroupBy(r => r.EventName)
+            .OrderByDescending(g => g.Max(r => r.EventDate));
+        foreach (var g in groups)
+        {
+            var first = g.First();
+            var d1Points = g.Sum(r => r.Driver1Points);
+            var d2Points = g.Sum(r => r.Driver2Points);
+            var raceSessions = g.Where(r => r.SessionName.Contains("Race", StringComparison.OrdinalIgnoreCase) && !r.SessionName.Contains("Sprint"));
+            var mainResult = raceSessions.FirstOrDefault() ?? first;
+            RaceGroups.Add(new RaceGroupCard
+            {
+                MeetingName = g.Key,
+                MeetingKey = mainResult.MeetingKey,
+                EventDate = first.EventDate,
+                TotalPoints = g.Sum(r => r.TotalPoints),
+                CircuitName = mainResult.CircuitName,
+                Country = mainResult.Country,
+                Driver1Name = first.Driver1Name,
+                Driver1Code = first.Driver1Code,
+                Driver1Points = d1Points,
+                Driver1Position = mainResult.Driver1Position,
+                Driver2Name = first.Driver2Name,
+                Driver2Code = first.Driver2Code,
+                Driver2Points = d2Points,
+                Driver2Position = mainResult.Driver2Position,
+            });
+        }
     }
 }

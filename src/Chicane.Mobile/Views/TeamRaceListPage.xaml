@@ -67,14 +67,29 @@
 
                             <!-- Driver 1 result -->
                             <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="8">
-                                <Border Grid.Column="0" BackgroundColor="#E10600"
-                                        StrokeThickness="0" StrokeShape="RoundRectangle 4"
+                                <Border Grid.Column="0" StrokeThickness="0" StrokeShape="RoundRectangle 4"
                                         Padding="6,2" VerticalOptions="Center">
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Setter Property="BackgroundColor" Value="#90111d" />
+                                            <Style.Triggers>
+                                                <DataTrigger TargetType="Border" Binding="{Binding Driver1Position}" Value="1">
+                                                    <Setter Property="BackgroundColor" Value="#FFD700" />
+                                                </DataTrigger>
+                                                <DataTrigger TargetType="Border" Binding="{Binding Driver1Position}" Value="2">
+                                                    <Setter Property="BackgroundColor" Value="#C0C0C0" />
+                                                </DataTrigger>
+                                                <DataTrigger TargetType="Border" Binding="{Binding Driver1Position}" Value="3">
+                                                    <Setter Property="BackgroundColor" Value="#CD7F32" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
                                     <Label Text="{Binding Driver1Position, StringFormat='P{0}'}"
                                            FontFamily="TitilliumWebBold" FontSize="11"
                                            TextColor="#FFFFFF" />
                                 </Border>
-                                <Label Grid.Column="1" Text="{Binding Driver1Name}"
+                                <Label Grid.Column="1" Text="{Binding Driver1Code}"
                                        FontFamily="TitilliumWebRegular" FontSize="13"
                                        TextColor="#FFFFFF" VerticalOptions="Center" />
                                 <Label Grid.Column="2" Text="{Binding Driver1Points}"
@@ -87,14 +102,29 @@
 
                             <!-- Driver 2 result -->
                             <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="8">
-                                <Border Grid.Column="0" BackgroundColor="#2a3441"
-                                        StrokeThickness="0" StrokeShape="RoundRectangle 4"
+                                <Border Grid.Column="0" StrokeThickness="0" StrokeShape="RoundRectangle 4"
                                         Padding="6,2" VerticalOptions="Center">
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Setter Property="BackgroundColor" Value="#90111d" />
+                                            <Style.Triggers>
+                                                <DataTrigger TargetType="Border" Binding="{Binding Driver2Position}" Value="1">
+                                                    <Setter Property="BackgroundColor" Value="#FFD700" />
+                                                </DataTrigger>
+                                                <DataTrigger TargetType="Border" Binding="{Binding Driver2Position}" Value="2">
+                                                    <Setter Property="BackgroundColor" Value="#C0C0C0" />
+                                                </DataTrigger>
+                                                <DataTrigger TargetType="Border" Binding="{Binding Driver2Position}" Value="3">
+                                                    <Setter Property="BackgroundColor" Value="#CD7F32" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
                                     <Label Text="{Binding Driver2Position, StringFormat='P{0}'}"
                                            FontFamily="TitilliumWebBold" FontSize="11"
-                                           TextColor="#A0A0A0" />
+                                           TextColor="#FFFFFF" />
                                 </Border>
-                                <Label Grid.Column="1" Text="{Binding Driver2Name}"
+                                <Label Grid.Column="1" Text="{Binding Driver2Code}"
                                        FontFamily="TitilliumWebRegular" FontSize="13"
                                        TextColor="#FFFFFF" VerticalOptions="Center" />
                                 <Label Grid.Column="2" Text="{Binding Driver2Points}"

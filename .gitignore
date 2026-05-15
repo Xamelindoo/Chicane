@@ -483,3 +483,6 @@ $RECYCLE.BIN/
 
 # Secrets
 **/secrets.json
+**/.env
+!**/.env.example
+**/Resources/Raw/.env

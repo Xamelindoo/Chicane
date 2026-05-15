@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:Chicane.Mobile.ViewModels"
+             x:Class="Chicane.Mobile.Views.SettingsPage"
+             x:DataType="viewmodels:SettingsViewModel"
+             Title="Settings"
+             Shell.NavBarIsVisible="True"
+             BackgroundColor="#0b1320">
+
+    <Grid RowDefinitions="*">
+
+        <!-- Loading -->
+        <VerticalStackLayout IsVisible="{Binding IsBusy}"
+                              VerticalOptions="Center" HorizontalOptions="Center" Spacing="12">
+            <ActivityIndicator IsRunning="{Binding IsBusy}" Color="#E10600" HeightRequest="40" WidthRequest="40" />
+        </VerticalStackLayout>
+
+        <!-- Content -->
+        <ScrollView VerticalScrollBarVisibility="Never">
+            <VerticalStackLayout Spacing="0" Padding="0,0,0,20">
+
+                <!-- Cache section -->
+                <Label Text="CACHE" FontFamily="TitilliumWebBold" FontSize="13"
+                       TextColor="#FFFFFF" CharacterSpacing="3"
+                       Margin="20,24,20,8" />
+
+                <Border StrokeThickness="1" Stroke="#2a3441"
+                        StrokeShape="RoundRectangle 12"
+                        BackgroundColor="#1e293b"
+                        Padding="16" Margin="20,0">
+                    <VerticalStackLayout Spacing="10">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Grid.Column="0" Text="Used space"
+                                   FontFamily="TitilliumWebRegular" FontSize="14"
+                                   TextColor="#FFFFFF" VerticalOptions="Center" />
+                            <Label Grid.Column="1" Text="{Binding CacheSizeMB, StringFormat='{0} MB'}"
+                                   FontFamily="TitilliumWebBold" FontSize="16"
+                                   TextColor="#E10600" VerticalOptions="Center" />
+                        </Grid>
+                        <BoxView HeightRequest="1" Color="#2a3441" />
+                        <Button Text="SVUOTA CACHE"
+                                BackgroundColor="#E10600" TextColor="#FFFFFF"
+                                FontFamily="TitilliumWebBold" FontSize="12"
+                                CornerRadius="8" Padding="16,10" HeightRequest="40"
+                                Command="{Binding ClearCacheCommand}" />
+                        <Label Text="Cache cleared" IsVisible="{Binding ShowClearedMessage}"
+                               FontFamily="TitilliumWebRegular" FontSize="11"
+                               TextColor="#10B981" HorizontalOptions="Center" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Privacy section -->
+                <Label Text="PRIVACY" FontFamily="TitilliumWebBold" FontSize="13"
+                       TextColor="#FFFFFF" CharacterSpacing="3"
+                       Margin="20,24,20,8" />
+
+                <Border StrokeThickness="1" Stroke="#2a3441"
+                        StrokeShape="RoundRectangle 12"
+                        BackgroundColor="#1e293b"
+                        Padding="16" Margin="20,0">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding OpenPrivacyPolicyCommand}" />
+                    </Border.GestureRecognizers>
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Grid.Column="0" Text="Privacy Policy"
+                               FontFamily="TitilliumWebRegular" FontSize="14"
+                               TextColor="#FFFFFF" VerticalOptions="Center" />
+                        <Label Grid.Column="1" Text="&#x2197;"
+                               FontSize="16" TextColor="#9CA3AF" VerticalOptions="Center" />
+                    </Grid>
+                </Border>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+    </Grid>
+
+</ContentPage>

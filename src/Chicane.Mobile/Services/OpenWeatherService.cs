@@ -23,7 +23,7 @@ public class OpenWeatherService : IWeatherService
             if (daysUntil > 7) return null;
 
             var query = $"{city},{country}";
-            var url = $"{BaseUrl}?q={Uri.EscapeDataString(query)}&appid={SecretsConfig.OpenWeatherApiKey}&units=metric";
+            var url = $"{BaseUrl}?q={Uri.EscapeDataString(query)}&appid={Env.Get("OPENWEATHER_API_KEY")}&units=metric";
 
             Debug.WriteLine($"[Weather] GET {url[..Math.Min(url.IndexOf("&appid="), url.Length)]}...");
             var json = await _http.GetStringAsync(url);

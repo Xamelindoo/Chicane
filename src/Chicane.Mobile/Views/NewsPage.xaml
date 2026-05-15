@@ -32,7 +32,7 @@
         <VerticalStackLayout Grid.Row="1" IsVisible="{Binding IsBusy}"
                               VerticalOptions="Center" HorizontalOptions="Center" Spacing="12">
             <ActivityIndicator IsRunning="{Binding IsBusy}" Color="#E10600" HeightRequest="40" WidthRequest="40" />
-            <Label Text="Loading news..." FontFamily="TitilliumWebRegular" FontSize="12" TextColor="#9CA3AF" HorizontalOptions="Center" />
+            <Label Text="&#x1F3CE; Loading news..." FontFamily="TitilliumWebRegular" FontSize="12" TextColor="#9CA3AF" HorizontalOptions="Center" />
         </VerticalStackLayout>
 
         <!-- Error -->
@@ -51,13 +51,20 @@
                     HorizontalOptions="Center" />
         </VerticalStackLayout>
 
+        <!-- Empty State -->
+        <VerticalStackLayout Grid.Row="1" IsVisible="{Binding IsEmptyState}"
+                              VerticalOptions="Center" HorizontalOptions="Center" Spacing="8" Padding="32">
+            <Label Text="&#x1F4F0;" FontSize="48" HorizontalOptions="Center" />
+            <Label Text="No news articles yet" FontFamily="TitilliumWebRegular" FontSize="14"
+                   TextColor="#9CA3AF" HorizontalOptions="Center" />
+        </VerticalStackLayout>
+
         <!-- News List -->
-        <RefreshView IsRefreshing="{Binding IsRefreshing}" Command="{Binding RefreshCommand}">
-        <CollectionView Grid.Row="1"
-                        VerticalScrollBarVisibility="Never"
-                        ItemsSource="{Binding Articles}"
-                        IsVisible="{Binding HasData}"
-                        x:DataType="viewmodels:NewsViewModel"
+        <RefreshView Grid.Row="1" IsRefreshing="{Binding IsRefreshing}" Command="{Binding RefreshCommand}">
+        <CollectionView VerticalScrollBarVisibility="Never"
+                         ItemsSource="{Binding Articles}"
+                         IsVisible="{Binding HasData}"
+                         x:DataType="viewmodels:NewsViewModel"
                         Margin="0,0,0,0">
             <CollectionView.Header>
                 <Label Text="ULTIME NOTIZIE"

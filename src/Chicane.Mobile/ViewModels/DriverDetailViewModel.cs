@@ -100,7 +100,7 @@ public partial class DriverDetailViewModel : ObservableObject
             {
                 "RACE" => _allRaceResults.Where(r => r.SessionName.Contains("Race", StringComparison.OrdinalIgnoreCase) && !r.SessionName.Contains("Sprint")),
                 "QUALIFYING" => _allRaceResults.Where(r => r.SessionName.Contains("Quali", StringComparison.OrdinalIgnoreCase) && !r.SessionName.Contains("Sprint")),
-                "SPRINT" => _allRaceResults.Where(r => r.SessionName.Contains("Sprint", StringComparison.OrdinalIgnoreCase) && r.SessionName.Contains("Race") && !r.SessionName.Contains("Quali")),
+                "SPRINT" => _allRaceResults.Where(r => r.SessionName.Contains("Sprint", StringComparison.OrdinalIgnoreCase) && !r.SessionName.Contains("Quali")),
                 "SPRINT QUALIFYING" => _allRaceResults.Where(r => r.SessionName.Contains("Sprint", StringComparison.OrdinalIgnoreCase) && r.SessionName.Contains("Quali")),
                 "PRACTICE" => _allRaceResults.Where(r => r.SessionName.Contains("Practice", StringComparison.OrdinalIgnoreCase)),
                 _ => _allRaceResults
