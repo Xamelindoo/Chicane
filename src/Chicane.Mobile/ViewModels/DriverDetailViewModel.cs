@@ -65,7 +65,7 @@ public partial class DriverDetailViewModel : ObservableObject
     public ObservableCollection<DriverRaceResult> RaceResults { get; } = new();
     private List<DriverRaceResult> _allRaceResults = new();
 
-    public List<string> AvailableFilters { get; } = new() { "ALL", "RACE", "QUALI", "SPRINT", "S QUALI", "P" };
+    public List<string> AvailableFilters { get; } = new() { "ALL", "RACE", "SPRINT", "SPRINT QUALIFYING", "QUALIFYING", "PRACTICE" };
 
     [ObservableProperty]
     private string selectedFilter = "ALL";
@@ -99,10 +99,10 @@ public partial class DriverDetailViewModel : ObservableObject
             filtered = SelectedFilter switch
             {
                 "RACE" => _allRaceResults.Where(r => r.SessionName.Contains("Race", StringComparison.OrdinalIgnoreCase) && !r.SessionName.Contains("Sprint")),
-                "QUALI" => _allRaceResults.Where(r => r.SessionName.Contains("Quali", StringComparison.OrdinalIgnoreCase) && !r.SessionName.Contains("Sprint")),
+                "QUALIFYING" => _allRaceResults.Where(r => r.SessionName.Contains("Quali", StringComparison.OrdinalIgnoreCase) && !r.SessionName.Contains("Sprint")),
                 "SPRINT" => _allRaceResults.Where(r => r.SessionName.Contains("Sprint", StringComparison.OrdinalIgnoreCase) && r.SessionName.Contains("Race") && !r.SessionName.Contains("Quali")),
-                "S QUALI" => _allRaceResults.Where(r => r.SessionName.Contains("Sprint", StringComparison.OrdinalIgnoreCase) && r.SessionName.Contains("Quali")),
-                "P" => _allRaceResults.Where(r => r.SessionName.Contains("Practice", StringComparison.OrdinalIgnoreCase)),
+                "SPRINT QUALIFYING" => _allRaceResults.Where(r => r.SessionName.Contains("Sprint", StringComparison.OrdinalIgnoreCase) && r.SessionName.Contains("Quali")),
+                "PRACTICE" => _allRaceResults.Where(r => r.SessionName.Contains("Practice", StringComparison.OrdinalIgnoreCase)),
                 _ => _allRaceResults
             };
         }

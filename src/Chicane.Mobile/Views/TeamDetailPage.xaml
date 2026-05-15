@@ -116,7 +116,13 @@
                         <HorizontalStackLayout Spacing="4">
                             <Label Text="{Binding SelectedFilter}" FontFamily="TitilliumWebBold"
                                    FontSize="11" TextColor="White" VerticalOptions="Center" />
-                            <Label Text="▼" FontSize="9" TextColor="#9CA3AF" VerticalOptions="Center" />
+                            <Label Text="▼" FontSize="9" TextColor="#9CA3AF" VerticalOptions="Center">
+                                <Label.Triggers>
+                                    <DataTrigger TargetType="Label" Binding="{Binding IsFilterExpanded}" Value="True">
+                                        <Setter Property="Text" Value="▲" />
+                                    </DataTrigger>
+                                </Label.Triggers>
+                            </Label>
                         </HorizontalStackLayout>
                     </Border>
                 </Grid>
