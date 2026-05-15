@@ -146,7 +146,19 @@
                                         <Label Text="{Binding Position, StringFormat='P{0}'}"
                                                FontFamily="TitilliumWebBold" FontSize="15"
                                                TextColor="#FFFFFF"
-                                               VerticalOptions="Center" HorizontalOptions="Center" />
+                                               VerticalOptions="Center" HorizontalOptions="Center">
+                                            <Label.Triggers>
+                                                <DataTrigger TargetType="Label" Binding="{Binding Position}" Value="1">
+                                                    <Setter Property="TextColor" Value="#FCD34D" />
+                                                </DataTrigger>
+                                                <DataTrigger TargetType="Label" Binding="{Binding Position}" Value="2">
+                                                    <Setter Property="TextColor" Value="#E2E8F0" />
+                                                </DataTrigger>
+                                                <DataTrigger TargetType="Label" Binding="{Binding Position}" Value="3">
+                                                    <Setter Property="TextColor" Value="#F87171" />
+                                                </DataTrigger>
+                                            </Label.Triggers>
+                                        </Label>
                                     </Border>
                                     <!-- Event info -->
                                     <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="1">

@@ -18,13 +18,15 @@ public class CachedTeamsService : ITeamsService
     private readonly TeamsRepository _teamsRepo;
     private readonly IF1DataService _f1Data;
     private readonly OpenF1ApiService _openF1;
+    private readonly IRaceCalendarService _scheduleService;
 
-    public CachedTeamsService(MockTeamsService mock, TeamsRepository teamsRepo, IF1DataService f1Data, OpenF1ApiService openF1)
+    public CachedTeamsService(MockTeamsService mock, TeamsRepository teamsRepo, IF1DataService f1Data, OpenF1ApiService openF1, IRaceCalendarService scheduleService)
     {
         _mock = mock;
         _teamsRepo = teamsRepo;
         _f1Data = f1Data;
         _openF1 = openF1;
+        _scheduleService = scheduleService;
     }
 
     // -------- Teams List (cache-first) --------
@@ -129,41 +131,73 @@ public class CachedTeamsService : ITeamsService
 
     // -------- Team Detail (API-first, with fallback) --------
 
-    /// <summary>
-    /// Returns full detail for a single team: colors, logo, drivers, and race results.
-    /// Race results are not yet populated from API (placeholder for future).
-    /// </summary>
-    public async Task<TeamDetail> GetTeamDetailAsync(string teamName, string categoryId)
-    {
-        if (categoryId != "f1")
-            return await _mock.GetTeamDetailAsync(teamName, categoryId);
-
-        try
-        {
-            var constructorStandings = await _f1Data.GetConstructorStandingsAsync(categoryId);
-            var driverStandings = await _f1Data.GetStandingsAsync(categoryId);
-            var realColors = await _openF1.GetTeamColorsAsync();
-
-            var team = constructorStandings.FirstOrDefault(cs => cs.TeamName == teamName);
-            var teamDrivers = driverStandings.Where(d => d.TeamName == teamName).ToList();
-            var color = ResolveTeamColor(teamName, realColors);
-
-            return new TeamDetail
+            /// <summary>
+            /// Returns full detail for a single team: colors, logo, drivers, and race results.
+            /// Race results are populated from cached session results (cache-first, 0 API if loaded).
+            /// </summary>
+            public async Task<TeamDetail> GetTeamDetailAsync(string teamName, string categoryId)
             {
-                TeamName = team?.TeamName ?? teamName,
-                TeamLogo = GetTeamLogo(teamName),
-                TeamLogoTransparent = GetTeamLogoTransparent(teamName),
-                BorderColor = color,
-                GradientColor = color,
-                TotalPoints = team?.Points ?? 0,
-                Emoji = GetTeamEmoji(teamName),
-                Drivers = teamDrivers.Select(d => new DriverEntry
+                if (categoryId != "f1")
+                    return await _mock.GetTeamDetailAsync(teamName, categoryId);
+
+                try
                 {
-                    Name = d.DriverName,
-                    Points = d.Points,
-                }).ToList(),
-                RaceResults = new List<TeamRaceResult>(),
-            };
+                    var constructorStandings = await _f1Data.GetConstructorStandingsAsync(categoryId);
+                    var driverStandings = await _f1Data.GetStandingsAsync(categoryId);
+                    var realColors = await _openF1.GetTeamColorsAsync();
+
+                    var team = constructorStandings.FirstOrDefault(cs => cs.TeamName == teamName);
+                    var teamDrivers = driverStandings.Where(d => d.TeamName == teamName).ToList();
+                    var color = ResolveTeamColor(teamName, realColors);
+
+                    // Populate race results from cached session results
+                    var raceResults = new List<TeamRaceResult>();
+                    var pastRaces = await _scheduleService.GetPastRacesAsync(categoryId);
+                    foreach (var race in pastRaces)
+                    {
+                        if (race.SessionKey <= 0) continue;
+                        var detail = await _scheduleService.GetPastRaceDetailAsync(race.SessionKey, categoryId);
+                        var teamResults = detail.Results
+                            .Where(r => r.TeamName == teamName)
+                            .OrderBy(r => r.Position)
+                            .Take(2)
+                            .ToList();
+
+                        if (teamResults.Count > 0)
+                        {
+                            raceResults.Add(new TeamRaceResult
+                            {
+                                EventName = race.MeetingName ?? race.EventName,
+                                EventDate = race.EventDate,
+                                Driver1Name = teamResults.Count > 0 ? teamResults[0].DriverName : "",
+                                Driver1Position = teamResults.Count > 0 ? teamResults[0].Position : 0,
+                                Driver1Points = teamResults.Count > 0 ? F1Points(teamResults[0].Position) : 0,
+                                Driver1BestLap = teamResults.Count > 0 && teamResults[0].IsFastestLap ? teamResults[0].TimeOrDnf : null,
+                                Driver2Name = teamResults.Count > 1 ? teamResults[1].DriverName : "",
+                                Driver2Position = teamResults.Count > 1 ? teamResults[1].Position : 0,
+                                Driver2Points = teamResults.Count > 1 ? F1Points(teamResults[1].Position) : 0,
+                                Driver2BestLap = teamResults.Count > 1 && teamResults[1].IsFastestLap ? teamResults[1].TimeOrDnf : null,
+                                TotalPoints = teamResults.Sum(r => F1Points(r.Position)),
+                            });
+                        }
+                    }
+
+                    return new TeamDetail
+                    {
+                        TeamName = team?.TeamName ?? teamName,
+                        TeamLogo = GetTeamLogo(teamName),
+                        TeamLogoTransparent = GetTeamLogoTransparent(teamName),
+                        BorderColor = color,
+                        GradientColor = color,
+                        TotalPoints = team?.Points ?? 0,
+                        Emoji = GetTeamEmoji(teamName),
+                        Drivers = teamDrivers.Select(d => new DriverEntry
+                        {
+                            Name = d.DriverName,
+                            Points = d.Points,
+                        }).ToList(),
+                        RaceResults = raceResults.OrderByDescending(r => r.EventDate).ToList(),
+                    };
         }
         catch
         {
@@ -247,5 +281,13 @@ public class CachedTeamsService : ITeamsService
         "Audi" => "team_audi_transparent.png",
         "Cadillac" => "team_cadillac_transparent.png",
         _ => "",
+    };
+
+    /// <summary>F1 2026 points system: 25-18-15-12-10-8-6-4-2-1 for positions 1-10.</summary>
+    private static int F1Points(int position) => position switch
+    {
+        1 => 25, 2 => 18, 3 => 15, 4 => 12, 5 => 10,
+        6 => 8, 7 => 6, 8 => 4, 9 => 2, 10 => 1,
+        _ => 0
     };
 }
