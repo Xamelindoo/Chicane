@@ -102,9 +102,17 @@
                 </CollectionView>
 
                 <!-- Race Results -->
-                <Label Text="RACE RESULTS" FontFamily="TitilliumWebBold" FontSize="13"
-                       TextColor="#FFFFFF" CharacterSpacing="3"
-                       Margin="20,20,20,8" />
+                <Grid Padding="0" Margin="20,20,20,8" ColumnDefinitions="*,Auto">
+                    <Label Grid.Column="0" Text="RACE RESULTS"
+                           FontFamily="TitilliumWebBold" FontSize="13"
+                           TextColor="#FFFFFF" CharacterSpacing="3"
+                           VerticalOptions="Center" />
+                    <Picker Grid.Column="1" ItemsSource="{Binding AvailableFilters}"
+                            SelectedItem="{Binding SelectedFilter}"
+                            FontFamily="TitilliumWebBold" FontSize="11"
+                            TextColor="White" VerticalOptions="Center"
+                            BackgroundColor="#1e293b" WidthRequest="120" />
+                </Grid>
 
                 <CollectionView ItemsSource="{Binding RaceResults}"
                                 VerticalScrollBarVisibility="Never">
@@ -162,50 +170,6 @@
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
-
-                <!-- Profile Info Section -->
-                <Label Text="TEAM INFO" FontFamily="TitilliumWebBold" FontSize="13"
-                       TextColor="#FFFFFF" CharacterSpacing="3"
-                       Margin="20,20,20,8" />
-
-                <Border StrokeThickness="1" Stroke="#333333"
-                        StrokeShape="RoundRectangle 10"
-                        BackgroundColor="#131313"
-                        Padding="16,14" Margin="20,0,20,0">
-                    <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto"
-                          RowSpacing="12" ColumnSpacing="16">
-                        <VerticalStackLayout Grid.Row="0" Grid.Column="0" Spacing="2">
-                            <Label Text="CHASSIS" FontSize="9" TextColor="#666666"
-                                   FontFamily="TitilliumWebBold" CharacterSpacing="2" />
-                            <Label Text="{Binding Profile.Chassis, FallbackValue='—'}"
-                                   FontFamily="TitilliumWebRegular" FontSize="13" TextColor="#FFFFFF" />
-                        </VerticalStackLayout>
-                        <VerticalStackLayout Grid.Row="0" Grid.Column="1" Spacing="2">
-                            <Label Text="POWER UNIT" FontSize="9" TextColor="#666666"
-                                   FontFamily="TitilliumWebBold" CharacterSpacing="2" />
-                            <Label Text="{Binding Profile.PowerUnit, FallbackValue='—'}"
-                                   FontFamily="TitilliumWebRegular" FontSize="13" TextColor="#FFFFFF" />
-                        </VerticalStackLayout>
-                        <VerticalStackLayout Grid.Row="1" Grid.Column="0" Spacing="2">
-                            <Label Text="BASE" FontSize="9" TextColor="#666666"
-                                   FontFamily="TitilliumWebBold" CharacterSpacing="2" />
-                            <Label Text="{Binding Profile.Base, FallbackValue='—'}"
-                                   FontFamily="TitilliumWebRegular" FontSize="13" TextColor="#FFFFFF" />
-                        </VerticalStackLayout>
-                        <VerticalStackLayout Grid.Row="1" Grid.Column="1" Spacing="2">
-                            <Label Text="PRINCIPAL" FontSize="9" TextColor="#666666"
-                                   FontFamily="TitilliumWebBold" CharacterSpacing="2" />
-                            <Label Text="{Binding Profile.TeamPrincipal, FallbackValue='—'}"
-                                   FontFamily="TitilliumWebRegular" FontSize="13" TextColor="#FFFFFF" />
-                        </VerticalStackLayout>
-                        <VerticalStackLayout Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Spacing="2">
-                            <Label Text="FULL NAME" FontSize="9" TextColor="#666666"
-                                   FontFamily="TitilliumWebBold" CharacterSpacing="2" />
-                            <Label Text="{Binding Profile.FullName, FallbackValue='—'}"
-                                   FontFamily="TitilliumWebRegular" FontSize="13" TextColor="#FFFFFF" />
-                        </VerticalStackLayout>
-                    </Grid>
-                </Border>
 
             </VerticalStackLayout>
         </ScrollView>

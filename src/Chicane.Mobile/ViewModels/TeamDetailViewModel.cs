@@ -63,6 +63,37 @@ public partial class TeamDetailViewModel : ObservableObject
 
     public ObservableCollection<DriverEntry> Drivers { get; } = new();
     public ObservableCollection<TeamRaceResult> RaceResults { get; } = new();
+    private List<TeamRaceResult> _allRaceResults = new();
+
+    public List<string> AvailableFilters { get; } = new() { "ALL", "RACE", "QUALIFYING", "SPRINT", "SPRINT QUALI", "PRACTICE" };
+
+    [ObservableProperty]
+    private string selectedFilter = "ALL";
+
+    partial void OnSelectedFilterChanged(string value)
+    {
+        ApplyFilter();
+    }
+
+    private void ApplyFilter()
+    {
+        var filtered = _allRaceResults.AsEnumerable();
+        if (SelectedFilter != "ALL")
+        {
+            filtered = SelectedFilter switch
+            {
+                "RACE" => _allRaceResults.Where(r => r.SessionName.Contains("Race", StringComparison.OrdinalIgnoreCase) && !r.SessionName.Contains("Sprint")),
+                "QUALIFYING" => _allRaceResults.Where(r => r.SessionName.Contains("Qualifying", StringComparison.OrdinalIgnoreCase) && !r.SessionName.Contains("Sprint")),
+                "SPRINT" => _allRaceResults.Where(r => r.SessionName.Contains("Sprint", StringComparison.OrdinalIgnoreCase) && r.SessionName.Contains("Race") && !r.SessionName.Contains("Quali")),
+                "SPRINT QUALI" => _allRaceResults.Where(r => r.SessionName.Contains("Sprint", StringComparison.OrdinalIgnoreCase) && r.SessionName.Contains("Quali")),
+                "PRACTICE" => _allRaceResults.Where(r => r.SessionName.Contains("Practice", StringComparison.OrdinalIgnoreCase)),
+                _ => _allRaceResults
+            };
+        }
+        RaceResults.Clear();
+        foreach (var r in filtered.OrderByDescending(r => r.EventDate))
+            RaceResults.Add(r);
+    }
 
     partial void OnTeamNameChanged(string value)
     {
@@ -100,11 +131,8 @@ public partial class TeamDetailViewModel : ObservableObject
                 Drivers.Add(d);
             }
 
-            RaceResults.Clear();
-            foreach (var r in detail.RaceResults.OrderByDescending(r => r.EventDate))
-            {
-                RaceResults.Add(r);
-            }
+            _allRaceResults = detail.RaceResults.OrderByDescending(r => r.EventDate).ToList();
+            ApplyFilter();
 
             HasData = true;
         }

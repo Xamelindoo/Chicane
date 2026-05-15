@@ -170,6 +170,7 @@ public class CachedTeamsService : ITeamsService
                             raceResults.Add(new TeamRaceResult
                             {
                                 EventName = race.MeetingName ?? race.EventName,
+                                SessionName = race.EventName,
                                 EventDate = race.EventDate,
                                 Driver1Name = teamResults.Count > 0 ? teamResults[0].DriverName : "",
                                 Driver1Position = teamResults.Count > 0 ? teamResults[0].Position : 0,
