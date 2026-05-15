@@ -349,3 +349,199 @@ public class SafeNonNullDoubleConverter : JsonConverter<double>
         writer.WriteNumberValue(value);
     }
 }
+
+// ── Live Data DTOs ──
+
+public class OpenF1CarData
+{
+    [JsonPropertyName("driver_number")]
+    [JsonConverter(typeof(SafeIntConverter))]
+    public int DriverNumber { get; set; }
+
+    [JsonPropertyName("session_key")]
+    [JsonConverter(typeof(SafeIntConverter))]
+    public int SessionKey { get; set; }
+
+    [JsonPropertyName("speed")]
+    [JsonConverter(typeof(SafeIntConverter))]
+    public int Speed { get; set; }
+
+    [JsonPropertyName("rpm")]
+    [JsonConverter(typeof(SafeIntConverter))]
+    public int Rpm { get; set; }
+
+    [JsonPropertyName("n_gear")]
+    [JsonConverter(typeof(SafeIntConverter))]
+    public int NGear { get; set; }
+
+    [JsonPropertyName("throttle")]
+    [JsonConverter(typeof(SafeIntConverter))]
+    public int Throttle { get; set; }
+
+    [JsonPropertyName("brake")]
+    [JsonConverter(typeof(SafeIntConverter))]
+    public int Brake { get; set; }
+
+    [JsonPropertyName("drs")]
+    [JsonConverter(typeof(SafeIntConverter))]
+    public int Drs { get; set; }
+
+    [JsonPropertyName("date")]
+    public DateTime Date { get; set; }
+}
+
+public class OpenF1Interval
+{
+    [JsonPropertyName("driver_number")]
+    [JsonConverter(typeof(SafeIntConverter))]
+    public int DriverNumber { get; set; }
+
+    [JsonPropertyName("session_key")]
+    [JsonConverter(typeof(SafeIntConverter))]
+    public int SessionKey { get; set; }
+
+    [JsonPropertyName("gap_to_leader")]
+    [JsonConverter(typeof(SafeDoubleConverter))]
+    public double? GapToLeader { get; set; }
+
+    [JsonPropertyName("interval")]
+    [JsonConverter(typeof(SafeDoubleConverter))]
+    public double? Interval { get; set; }
+
+    [JsonPropertyName("date")]
+    public DateTime Date { get; set; }
+}
+
+public class OpenF1Location
+{
+    [JsonPropertyName("driver_number")]
+    [JsonConverter(typeof(SafeIntConverter))]
+    public int DriverNumber { get; set; }
+
+    [JsonPropertyName("session_key")]
+    [JsonConverter(typeof(SafeIntConverter))]
+    public int SessionKey { get; set; }
+
+    [JsonPropertyName("x")]
+    [JsonConverter(typeof(SafeIntConverter))]
+    public int X { get; set; }
+
+    [JsonPropertyName("y")]
+    [JsonConverter(typeof(SafeIntConverter))]
+    public int Y { get; set; }
+
+    [JsonPropertyName("z")]
+    [JsonConverter(typeof(SafeIntConverter))]
+    public int Z { get; set; }
+
+    [JsonPropertyName("date")]
+    public DateTime Date { get; set; }
+}
+
+public class OpenF1RaceControl
+{
+    [JsonPropertyName("driver_number")]
+    [JsonConverter(typeof(SafeIntConverter))]
+    public int DriverNumber { get; set; }
+
+    [JsonPropertyName("session_key")]
+    [JsonConverter(typeof(SafeIntConverter))]
+    public int SessionKey { get; set; }
+
+    [JsonPropertyName("category")]
+    public string? Category { get; set; }
+
+    [JsonPropertyName("flag")]
+    public string? Flag { get; set; }
+
+    [JsonPropertyName("message")]
+    public string? Message { get; set; }
+
+    [JsonPropertyName("lap_number")]
+    [JsonConverter(typeof(SafeIntConverter))]
+    public int LapNumber { get; set; }
+
+    [JsonPropertyName("scope")]
+    public string? Scope { get; set; }
+
+    [JsonPropertyName("date")]
+    public DateTime Date { get; set; }
+}
+
+public class OpenF1Pit
+{
+    [JsonPropertyName("driver_number")]
+    [JsonConverter(typeof(SafeIntConverter))]
+    public int DriverNumber { get; set; }
+
+    [JsonPropertyName("session_key")]
+    [JsonConverter(typeof(SafeIntConverter))]
+    public int SessionKey { get; set; }
+
+    [JsonPropertyName("lap_number")]
+    [JsonConverter(typeof(SafeIntConverter))]
+    public int LapNumber { get; set; }
+
+    [JsonPropertyName("stop_duration")]
+    [JsonConverter(typeof(SafeNonNullDoubleConverter))]
+    public double StopDuration { get; set; }
+
+    [JsonPropertyName("lane_duration")]
+    [JsonConverter(typeof(SafeNonNullDoubleConverter))]
+    public double LaneDuration { get; set; }
+
+    [JsonPropertyName("date")]
+    public DateTime Date { get; set; }
+}
+
+public class OpenF1Stint
+{
+    [JsonPropertyName("driver_number")]
+    [JsonConverter(typeof(SafeIntConverter))]
+    public int DriverNumber { get; set; }
+
+    [JsonPropertyName("session_key")]
+    [JsonConverter(typeof(SafeIntConverter))]
+    public int SessionKey { get; set; }
+
+    [JsonPropertyName("compound")]
+    public string? Compound { get; set; }
+
+    [JsonPropertyName("lap_start")]
+    [JsonConverter(typeof(SafeIntConverter))]
+    public int LapStart { get; set; }
+
+    [JsonPropertyName("lap_end")]
+    [JsonConverter(typeof(SafeIntConverter))]
+    public int LapEnd { get; set; }
+
+    [JsonPropertyName("stint_number")]
+    [JsonConverter(typeof(SafeIntConverter))]
+    public int StintNumber { get; set; }
+
+    [JsonPropertyName("tyre_age_at_start")]
+    [JsonConverter(typeof(SafeIntConverter))]
+    public int TyreAgeAtStart { get; set; }
+}
+
+public class OpenF1Overtake
+{
+    [JsonPropertyName("overtaking_driver_number")]
+    [JsonConverter(typeof(SafeIntConverter))]
+    public int OvertakingDriverNumber { get; set; }
+
+    [JsonPropertyName("overtaken_driver_number")]
+    [JsonConverter(typeof(SafeIntConverter))]
+    public int OvertakenDriverNumber { get; set; }
+
+    [JsonPropertyName("session_key")]
+    [JsonConverter(typeof(SafeIntConverter))]
+    public int SessionKey { get; set; }
+
+    [JsonPropertyName("position")]
+    [JsonConverter(typeof(SafeIntConverter))]
+    public int Position { get; set; }
+
+    [JsonPropertyName("date")]
+    public DateTime Date { get; set; }
+}

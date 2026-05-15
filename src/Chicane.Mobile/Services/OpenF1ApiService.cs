@@ -97,7 +97,7 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
         return JsonSerializer.Deserialize<T>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
     }
 
-    private async Task<Dictionary<int, OpenF1Driver>> GetDriversAsync(int sessionKey)
+    public async Task<Dictionary<int, OpenF1Driver>> GetDriversAsync(int sessionKey)
     {
         if (_driverCache is not null && _driverCacheSessionKey == sessionKey)
             return _driverCache;
@@ -109,25 +109,57 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
         return _driverCache;
     }
 
-    private string DriverName(int driverNumber)
+    public string DriverName(int driverNumber)
     {
         if (_driverCache?.TryGetValue(driverNumber, out var d) == true)
             return d.BroadcastName ?? d.NameAcronym ?? $"#{driverNumber}";
         return $"#{driverNumber}";
     }
 
-    private string DriverTeam(int driverNumber)
+    public string DriverTeam(int driverNumber)
     {
         if (_driverCache?.TryGetValue(driverNumber, out var d) == true)
             return d.TeamName ?? "";
         return "";
     }
 
-    private string DriverHeadshot(int driverNumber)
+    public string DriverTeamColour(int driverNumber)
+    {
+        if (_driverCache?.TryGetValue(driverNumber, out var d) == true)
+            return d.TeamColour ?? "333333";
+        return "333333";
+    }
+
+    public string DriverHeadshot(int driverNumber)
     {
         if (_driverCache?.TryGetValue(driverNumber, out var d) == true)
             return d.HeadshotUrl ?? "";
         return "";
+    }
+
+    public string DriverCode(int driverNumber)
+    {
+        if (_driverCache?.TryGetValue(driverNumber, out var d) == true)
+            return d.NameAcronym ?? d.BroadcastName ?? $"D{driverNumber}";
+        return $"D{driverNumber}";
+    }
+
+    public string DriverLastName(int driverNumber)
+    {
+        if (_driverCache?.TryGetValue(driverNumber, out var d) == true)
+            return (d.LastName ?? d.FullName ?? $"D{driverNumber}").ToUpperInvariant();
+        return $"D{driverNumber}";
+    }
+
+    public async Task<List<OpenF1Position>> GetPositionsAsync(int sessionKey)
+    {
+        try
+        {
+            var data = await GetAsync<List<OpenF1Position>>(
+                $"https://api.openf1.org/v1/position?session_key={sessionKey}");
+            return data ?? new();
+        }
+        catch (Exception ex) { Debug.WriteLine($"[OpenF1] Positions: {ex.Message}"); return new(); }
     }
 
     public async Task<Dictionary<string, string>> GetTeamColorsAsync()
@@ -233,7 +265,7 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
         return _meetingsCache ?? new();
     }
 
-    private async Task<List<OpenF1Session>> GetSessionsAsync(int year)
+    public async Task<List<OpenF1Session>> GetSessionsAsync(int year)
     {
         if (_sessionsCache is not null && _sessionsCacheYear == year)
             return _sessionsCache;
@@ -745,6 +777,117 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
         if (_driverCache?.TryGetValue(driverNumber, out var d) == true)
             return d.NameAcronym ?? d.BroadcastName ?? $"D{driverNumber}";
         return $"D{driverNumber}";
+    }
+
+    // ── Live Data ──
+
+    public async Task<string?> GetMeetingCircuitImageAsync(int meetingKey, int year)
+    {
+        try
+        {
+            var meetings = await GetAsync<List<OpenF1Meeting>>(
+                $"https://api.openf1.org/v1/meetings?meeting_key={meetingKey}&year={year}");
+            return meetings?.FirstOrDefault()?.CircuitImage;
+        }
+        catch (Exception ex) { Debug.WriteLine($"[OpenF1] CircuitImage: {ex.Message}"); return null; }
+    }
+
+    public async Task<List<OpenF1Lap>> GetLapsPerSessionAsync(int sessionKey)
+    {
+        try
+        {
+            var data = await GetAsync<List<OpenF1Lap>>(
+                $"https://api.openf1.org/v1/laps?session_key={sessionKey}");
+            return data ?? new();
+        }
+        catch (Exception ex) { Debug.WriteLine($"[OpenF1] Laps: {ex.Message}"); return new(); }
+    }
+
+    public async Task<OpenF1CarData?> GetCarDataAsync(int sessionKey, int driverNumber)
+    {
+        try
+        {
+            var data = await GetAsync<List<OpenF1CarData>>(
+                $"https://api.openf1.org/v1/car_data?session_key={sessionKey}&driver_number={driverNumber}");
+            return data?.MaxBy(d => d.Date);
+        }
+        catch (Exception ex) { Debug.WriteLine($"[OpenF1] CarData: {ex.Message}"); return null; }
+    }
+
+    public async Task<List<OpenF1Interval>> GetIntervalsAsync(int sessionKey)
+    {
+        try
+        {
+            var data = await GetAsync<List<OpenF1Interval>>(
+                $"https://api.openf1.org/v1/intervals?session_key={sessionKey}");
+            // Group by driver, take latest for each
+            return (data ?? new())
+                .GroupBy(i => i.DriverNumber)
+                .Select(g => g.MaxBy(i => i.Date)!)
+                .Where(i => i is not null)
+                .ToList();
+        }
+        catch (Exception ex) { Debug.WriteLine($"[OpenF1] Intervals: {ex.Message}"); return new(); }
+    }
+
+    public async Task<List<OpenF1Location>> GetLocationsAsync(int sessionKey)
+    {
+        try
+        {
+            var data = await GetAsync<List<OpenF1Location>>(
+                $"https://api.openf1.org/v1/location?session_key={sessionKey}");
+            // Group by driver, take latest for each
+            return (data ?? new())
+                .GroupBy(l => l.DriverNumber)
+                .Select(g => g.MaxBy(l => l.Date)!)
+                .Where(l => l is not null)
+                .ToList();
+        }
+        catch (Exception ex) { Debug.WriteLine($"[OpenF1] Locations: {ex.Message}"); return new(); }
+    }
+
+    public async Task<List<OpenF1RaceControl>> GetRaceControlAsync(int sessionKey)
+    {
+        try
+        {
+            var data = await GetAsync<List<OpenF1RaceControl>>(
+                $"https://api.openf1.org/v1/race_control?session_key={sessionKey}");
+            return (data ?? new()).OrderByDescending(r => r.Date).Take(30).ToList();
+        }
+        catch (Exception ex) { Debug.WriteLine($"[OpenF1] RaceControl: {ex.Message}"); return new(); }
+    }
+
+    public async Task<List<OpenF1Pit>> GetPitStopsAsync(int sessionKey)
+    {
+        try
+        {
+            var data = await GetAsync<List<OpenF1Pit>>(
+                $"https://api.openf1.org/v1/pit?session_key={sessionKey}");
+            return data ?? new();
+        }
+        catch (Exception ex) { Debug.WriteLine($"[OpenF1] PitStops: {ex.Message}"); return new(); }
+    }
+
+    public async Task<List<OpenF1Stint>> GetStintsAsync(int sessionKey)
+    {
+        try
+        {
+            var data = await GetAsync<List<OpenF1Stint>>(
+                $"https://api.openf1.org/v1/stints?session_key={sessionKey}");
+            return data ?? new();
+        }
+        catch (Exception ex) { Debug.WriteLine($"[OpenF1] Stints: {ex.Message}"); return new(); }
+    }
+
+    public async Task<List<OpenF1Overtake>> GetOvertakesAsync(int sessionKey)
+    {
+        try
+        {
+            var data = await GetAsync<List<OpenF1Overtake>>(
+                $"https://api.openf1.org/v1/overtakes?session_key={sessionKey}");
+            return (data ?? new()).OrderByDescending(o => o.Date).Take(30).ToList();
+        }
+        catch (Exception ex) { Debug.WriteLine($"[OpenF1] Overtakes: {ex.Message}"); return new(); }
     }
 
     private static string FormatDuration(double seconds)
