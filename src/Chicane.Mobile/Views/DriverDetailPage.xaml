@@ -141,25 +141,28 @@
                                     <!-- Position badge -->
                                     <Border Grid.Column="0" StrokeThickness="0"
                                             StrokeShape="RoundRectangle 8"
-                                            BackgroundColor="#90111d"
                                             Padding="0" HeightRequest="36" WidthRequest="44"
                                             VerticalOptions="Center">
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Setter Property="BackgroundColor" Value="#90111d" />
+                                                <Style.Triggers>
+                                                    <DataTrigger TargetType="Border" Binding="{Binding Position}" Value="1">
+                                                        <Setter Property="BackgroundColor" Value="#FCD34D" />
+                                                    </DataTrigger>
+                                                    <DataTrigger TargetType="Border" Binding="{Binding Position}" Value="2">
+                                                        <Setter Property="BackgroundColor" Value="#C0C0C0" />
+                                                    </DataTrigger>
+                                                    <DataTrigger TargetType="Border" Binding="{Binding Position}" Value="3">
+                                                        <Setter Property="BackgroundColor" Value="#CD7F32" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
                                         <Label Text="{Binding Position, StringFormat='P{0}'}"
                                                FontFamily="TitilliumWebBold" FontSize="15"
                                                TextColor="#FFFFFF"
-                                               VerticalOptions="Center" HorizontalOptions="Center">
-                                            <Label.Triggers>
-                                                <DataTrigger TargetType="Label" Binding="{Binding Position}" Value="1">
-                                                    <Setter Property="TextColor" Value="#FCD34D" />
-                                                </DataTrigger>
-                                                <DataTrigger TargetType="Label" Binding="{Binding Position}" Value="2">
-                                                    <Setter Property="TextColor" Value="#E2E8F0" />
-                                                </DataTrigger>
-                                                <DataTrigger TargetType="Label" Binding="{Binding Position}" Value="3">
-                                                    <Setter Property="TextColor" Value="#F87171" />
-                                                </DataTrigger>
-                                            </Label.Triggers>
-                                        </Label>
+                                               VerticalOptions="Center" HorizontalOptions="Center" />
                                     </Border>
                                     <!-- Event info -->
                                     <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="1">
