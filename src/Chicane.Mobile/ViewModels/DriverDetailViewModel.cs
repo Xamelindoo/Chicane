@@ -21,6 +21,9 @@ public partial class DriverDetailViewModel : ObservableObject
     private bool isBusy;
 
     [ObservableProperty]
+    private bool isRefreshing;
+
+    [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HasError))]
     private string? errorMessage;
 
@@ -108,6 +111,14 @@ public partial class DriverDetailViewModel : ObservableObject
         {
             IsBusy = false;
         }
+    }
+
+    [RelayCommand]
+    private async Task RefreshAsync()
+    {
+        IsRefreshing = true;
+        try { await LoadAsync(); }
+        finally { IsRefreshing = false; }
     }
 
     [RelayCommand]
