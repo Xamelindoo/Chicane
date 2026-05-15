@@ -117,9 +117,58 @@
                 </Border>
 
                 <!-- Race Results -->
-                <Label Text="RACE RESULTS" FontFamily="TitilliumWebBold" FontSize="13"
-                       TextColor="#FFFFFF" CharacterSpacing="3"
-                       Margin="20,20,20,8" />
+                <Grid Padding="20,20,20,4" ColumnDefinitions="*,Auto">
+                    <Label Grid.Column="0" Text="RACE RESULTS" FontFamily="TitilliumWebBold" FontSize="13"
+                           TextColor="#FFFFFF" CharacterSpacing="3" VerticalOptions="Center" />
+                    <Border Grid.Column="1" StrokeThickness="1" Stroke="#2a3441"
+                            StrokeShape="RoundRectangle 6" BackgroundColor="#1e293b"
+                            Padding="8,4" VerticalOptions="Center">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding ToggleFilterCommand}" />
+                        </Border.GestureRecognizers>
+                        <HorizontalStackLayout Spacing="4">
+                            <Label Text="{Binding SelectedFilter}" FontFamily="TitilliumWebBold"
+                                   FontSize="11" TextColor="White" VerticalOptions="Center" />
+                            <Label Text="▼" FontSize="9" TextColor="#9CA3AF" VerticalOptions="Center" />
+                        </HorizontalStackLayout>
+                    </Border>
+                </Grid>
+
+                <!-- Filter Options -->
+                <ScrollView Orientation="Horizontal" Margin="20,0,20,4"
+                            HorizontalScrollBarVisibility="Never"
+                            IsVisible="{Binding IsFilterExpanded}">
+                    <HorizontalStackLayout Spacing="6"
+                                           BindableLayout.ItemsSource="{Binding AvailableFilters}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="x:String">
+                                <Border StrokeThickness="1" Stroke="#2a3441"
+                                        StrokeShape="RoundRectangle 6"
+                                        Padding="10,5" VerticalOptions="Center">
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Setter Property="BackgroundColor" Value="#1e293b" />
+                                            <Style.Triggers>
+                                                <DataTrigger TargetType="Border"
+                                                             Binding="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:DriverDetailViewModel}}, Path=SelectedFilter}"
+                                                             Value="{Binding .}">
+                                                    <Setter Property="BackgroundColor" Value="#E10600" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:DriverDetailViewModel}}, Path=SelectFilterCommand}"
+                                            CommandParameter="{Binding .}" />
+                                    </Border.GestureRecognizers>
+                                    <Label Text="{Binding .}" FontFamily="TitilliumWebBold"
+                                           FontSize="10" TextColor="White" />
+                                </Border>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </HorizontalStackLayout>
+                </ScrollView>
 
                 <!-- Empty State -->
                 <Label Text="No race results yet"

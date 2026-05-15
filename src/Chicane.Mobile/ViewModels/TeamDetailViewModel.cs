@@ -70,9 +70,25 @@ public partial class TeamDetailViewModel : ObservableObject
     [ObservableProperty]
     private string selectedFilter = "ALL";
 
+    [ObservableProperty]
+    private bool isFilterExpanded;
+
     partial void OnSelectedFilterChanged(string value)
     {
         ApplyFilter();
+    }
+
+    [RelayCommand]
+    private void ToggleFilter()
+    {
+        IsFilterExpanded = !IsFilterExpanded;
+    }
+
+    [RelayCommand]
+    private void SelectFilter(string filter)
+    {
+        SelectedFilter = filter;
+        IsFilterExpanded = false;
     }
 
     private void ApplyFilter()

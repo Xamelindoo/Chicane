@@ -63,6 +63,53 @@ public partial class DriverDetailViewModel : ObservableObject
     private int position;
 
     public ObservableCollection<DriverRaceResult> RaceResults { get; } = new();
+    private List<DriverRaceResult> _allRaceResults = new();
+
+    public List<string> AvailableFilters { get; } = new() { "ALL", "RACE", "QUALI", "SPRINT", "S QUALI", "P" };
+
+    [ObservableProperty]
+    private string selectedFilter = "ALL";
+
+    [ObservableProperty]
+    private bool isFilterExpanded;
+
+    partial void OnSelectedFilterChanged(string value)
+    {
+        ApplyFilter();
+    }
+
+    [RelayCommand]
+    private void ToggleFilter()
+    {
+        IsFilterExpanded = !IsFilterExpanded;
+    }
+
+    [RelayCommand]
+    private void SelectFilter(string filter)
+    {
+        SelectedFilter = filter;
+        IsFilterExpanded = false;
+    }
+
+    private void ApplyFilter()
+    {
+        var filtered = _allRaceResults.AsEnumerable();
+        if (SelectedFilter != "ALL")
+        {
+            filtered = SelectedFilter switch
+            {
+                "RACE" => _allRaceResults.Where(r => r.SessionName.Contains("Race", StringComparison.OrdinalIgnoreCase) && !r.SessionName.Contains("Sprint")),
+                "QUALI" => _allRaceResults.Where(r => r.SessionName.Contains("Quali", StringComparison.OrdinalIgnoreCase) && !r.SessionName.Contains("Sprint")),
+                "SPRINT" => _allRaceResults.Where(r => r.SessionName.Contains("Sprint", StringComparison.OrdinalIgnoreCase) && r.SessionName.Contains("Race") && !r.SessionName.Contains("Quali")),
+                "S QUALI" => _allRaceResults.Where(r => r.SessionName.Contains("Sprint", StringComparison.OrdinalIgnoreCase) && r.SessionName.Contains("Quali")),
+                "P" => _allRaceResults.Where(r => r.SessionName.Contains("Practice", StringComparison.OrdinalIgnoreCase)),
+                _ => _allRaceResults
+            };
+        }
+        RaceResults.Clear();
+        foreach (var r in filtered.OrderByDescending(r => r.EventDate))
+            RaceResults.Add(r);
+    }
 
     partial void OnDriverNumberChanged(int value)
     {
@@ -97,8 +144,8 @@ public partial class DriverDetailViewModel : ObservableObject
             Position = detail.Position;
 
             RaceResults.Clear();
-            foreach (var r in detail.RaceResults)
-                RaceResults.Add(r);
+            _allRaceResults = detail.RaceResults;
+            ApplyFilter();
 
             HasData = true;
             IsEmptyState = detail.RaceResults.Count == 0;
