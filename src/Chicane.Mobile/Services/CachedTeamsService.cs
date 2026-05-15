@@ -153,7 +153,7 @@ public class CachedTeamsService : ITeamsService
                     // Populate race results from cached session results
                     var raceResults = new List<TeamRaceResult>();
                     var pastRaces = (await _scheduleService.GetPastRacesAsync(categoryId))
-                        .Where(r => r.IsCompleted)
+                        .Where(r => r.EventDate < DateTime.UtcNow)
                         .Take(10);
                     foreach (var race in pastRaces)
                     {
