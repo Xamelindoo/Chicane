@@ -1,0 +1,25 @@
+services:
+  chicane-backend:
+    build:
+      context: .
+      dockerfile: src/Chicane.Backend/Dockerfile
+    ports:
+      - "5000:8080"
+    environment:
+      - Redis__ConnectionString=redis:6379
+      - OpenF1__Username=${OPENF1_USERNAME}
+      - OpenF1__Password=${OPENF1_PASSWORD}
+      - OpenWeather__ApiKey=${OPENWEATHER_API_KEY}
+      - Rss2Json__ApiKey=${RSS2JSON_API_KEY}
+    depends_on:
+      - redis
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+
+volumes:
+  redis_data:

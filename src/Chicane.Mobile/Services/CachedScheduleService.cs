@@ -101,35 +101,12 @@ public class CachedScheduleService : IRaceCalendarService
 
     /// <summary>
     /// Returns upcoming GP weekend cards for the Home page horizontal scroll.
-    /// Circuit images are pre-downloaded in background.
+    /// Always fetches fresh data — Redis on the backend handles shared caching (TTL 1h).
+    /// Circuit images are downloaded live by the MAUI Image control.
     /// </summary>
     public async Task<List<RaceWeekendCard>> GetUpcomingWeekendsAsync(int count = 3)
     {
-        var cached = await _weekendRepo.GetAllAsync();
-        if (cached.Count > 0)
-            return cached.Select(StorageMapper.ToDomain).Take(count).ToList();
-
-        var weekends = await _openF1.GetUpcomingWeekendsAsync(count);
-        if (weekends.Count > 0)
-        {
-            var records = weekends.Select(StorageMapper.ToRecord).ToList();
-            await _weekendRepo.UpsertAsync(records);
-
-            // Background: download circuit images.
-            // Each image is tried independently — a single failure won't abort the batch.
-            _ = Task.Run(async () =>
-            {
-                try
-                {
-                    foreach (var w in weekends)
-                        w.CircuitImageUrl = await _imgCache.CacheAsync(w.CircuitImageUrl);
-                    var updated = weekends.Select(StorageMapper.ToRecord).ToList();
-                    await _weekendRepo.UpsertAsync(updated);
-                }
-                catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"[ImgCache] Background weekends failed: {ex.Message}"); }
-            });
-        }
-        return weekends;
+        return await _openF1.GetUpcomingWeekendsAsync(count);
     }
 
     // -------- Internal: generic cache-first helper for schedule lists --------

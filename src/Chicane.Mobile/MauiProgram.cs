@@ -30,8 +30,7 @@ public static class MauiProgram
 #endif
 
         // API infrastructure
-        builder.Services.AddSingleton<HttpClient>();
-        builder.Services.AddSingleton<OpenF1TokenService>();
+        builder.Services.AddSingleton(new HttpClient { BaseAddress = new Uri("https://chicane-api.duckdns.org/") });
         builder.Services.AddSingleton<OpenF1ApiService>();
 
         // News service

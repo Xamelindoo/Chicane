@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using System.Net.Http.Headers;
 using System.Text.Json;
 using Chicane.Mobile.Models;
 using Chicane.Mobile.Models.Api;
@@ -9,93 +8,32 @@ namespace Chicane.Mobile.Services;
 public class OpenF1ApiService : IF1DataService, IRaceCalendarService
 {
     private readonly HttpClient _http;
-    private readonly OpenF1TokenService _token;
     private List<OpenF1Meeting>? _meetingsCache;
     private int? _meetingsCacheYear;
     private List<OpenF1Session>? _sessionsCache;
     private int? _sessionsCacheYear;
     private Dictionary<int, OpenF1Driver>? _driverCache;
     private int? _driverCacheSessionKey;
-    private bool? _tokenWorks;
-    private int _delayMs = 350;
 
-    public OpenF1ApiService(HttpClient http, OpenF1TokenService token)
+    public OpenF1ApiService(HttpClient http)
     {
         _http = http;
-        _token = token;
-    }
-
-    private async Task<HttpRequestMessage> CreateRequestAsync(string url)
-    {
-        var request = new HttpRequestMessage(HttpMethod.Get, url);
-        request.Headers.Accept.ParseAdd("application/json");
-
-        if (_tokenWorks ?? true)
-        {
-            try
-            {
-                var accessToken = await _token.GetTokenAsync();
-                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"[OpenF1] Token error: {ex.Message}");
-            }
-        }
-
-        return request;
     }
 
     private async Task<T?> GetAsync<T>(string url) where T : class
     {
-        var request = await CreateRequestAsync(url);
-        var response = await _http.SendAsync(request);
-        var json = await response.Content.ReadAsStringAsync();
-
-        if (!response.IsSuccessStatusCode)
+        try
         {
-            Debug.WriteLine($"[OpenF1] {url} → {(int)response.StatusCode} {response.StatusCode}");
-            if (json.Length > 0)
-                Debug.WriteLine($"[OpenF1] Body: {json[..Math.Min(json.Length, 500)]}");
-
-            if (_tokenWorks is null && response.StatusCode == System.Net.HttpStatusCode.NotFound)
-            {
-                _tokenWorks = false;
-                _delayMs = 350;
-                Debug.WriteLine("[OpenF1] Token test failed — fallback free tier (350ms delay)");
-                return await GetWithoutTokenAsync<T>(url);
-            }
-
+            var json = await _http.GetStringAsync(url);
+            var preview = json.Length <= 300 ? json : json[..300] + "...";
+            Debug.WriteLine($"[OpenF1] {url[..Math.Min(url.Length, 100)]} → {json.Length} bytes: {preview}");
+            return JsonSerializer.Deserialize<T>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"[OpenF1] {url} → {ex.Message}");
             return null;
         }
-
-        if (_tokenWorks is null)
-        {
-            _tokenWorks = true;
-            _delayMs = 180;
-            Debug.WriteLine("[OpenF1] Token test OK — paid tier (180ms delay)");
-        }
-
-        var preview = json.Length <= 300 ? json : json[..300] + "...";
-        Debug.WriteLine($"[OpenF1-OK] {url[..Math.Min(url.Length, 100)]} → {json.Length} bytes: {preview}");
-
-        return JsonSerializer.Deserialize<T>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-    }
-
-    private async Task<T?> GetWithoutTokenAsync<T>(string url) where T : class
-    {
-        var request = new HttpRequestMessage(HttpMethod.Get, url);
-        request.Headers.Accept.ParseAdd("application/json");
-        var response = await _http.SendAsync(request);
-        var json = await response.Content.ReadAsStringAsync();
-        if (!response.IsSuccessStatusCode)
-        {
-            Debug.WriteLine($"[OpenF1] (no-token) {url} → {(int)response.StatusCode} {response.StatusCode}");
-            if (json.Length > 0)
-                Debug.WriteLine($"[OpenF1] Body: {json[..Math.Min(json.Length, 500)]}");
-            return null;
-        }
-        return JsonSerializer.Deserialize<T>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
     }
 
     public async Task<Dictionary<int, OpenF1Driver>> GetDriversAsync(int sessionKey)
@@ -104,7 +42,7 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
             return _driverCache;
 
         var drivers = await GetAsync<List<OpenF1Driver>>(
-            $"https://api.openf1.org/v1/drivers?session_key={sessionKey}");
+            $"https://chicane-api.duckdns.org/api/proxy/drivers?session_key={sessionKey}");
         _driverCache = (drivers ?? new()).ToDictionary(d => d.DriverNumber);
         _driverCacheSessionKey = sessionKey;
         return _driverCache;
@@ -157,7 +95,7 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
         try
         {
             var data = await GetAsync<List<OpenF1Position>>(
-                $"https://api.openf1.org/v1/position?session_key={sessionKey}");
+                $"https://chicane-api.duckdns.org/api/proxy/position?session_key={sessionKey}");
             return data ?? new();
         }
         catch (Exception ex) { Debug.WriteLine($"[OpenF1] Positions: {ex.Message}"); return new(); }
@@ -169,7 +107,7 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
         {
             var year = DateTime.UtcNow.Year;
             var sessions = await GetAsync<List<OpenF1Session>>(
-                $"https://api.openf1.org/v1/sessions?year={year}&session_type=Race");
+                $"https://chicane-api.duckdns.org/api/proxy/sessions?year={year}&session_type=Race");
             var latest = sessions?.FirstOrDefault()
                 ?? throw new InvalidOperationException("No sessions found");
             await GetDriversAsync(latest.SessionKey);
@@ -201,11 +139,11 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
 
             // Fetch standings (all years — filtered client-side) and race results for selected year
             var standings = await GetAsync<List<OpenF1ChampionshipDriver>>(
-                $"https://api.openf1.org/v1/championship_drivers?driver_number={driverNumber}");
+                $"https://chicane-api.duckdns.org/api/proxy/championship_drivers?driver_number={driverNumber}");
             var currentEntry = standings?.OrderByDescending(s => s.SessionKey).FirstOrDefault();
 
             var results = await GetAsync<List<OpenF1SessionResult>>(
-                $"https://api.openf1.org/v1/session_result?driver_number={driverNumber}");
+                $"https://chicane-api.duckdns.org/api/proxy/session_result?driver_number={driverNumber}");
 
             // Build meeting lookup dict for O(1) meeting name resolution
             var meetings = await GetMeetingsAsync(year);
@@ -262,7 +200,7 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
             return _meetingsCache;
 
         _meetingsCache = await GetAsync<List<OpenF1Meeting>>(
-            $"https://api.openf1.org/v1/meetings?year={year}");
+            $"https://chicane-api.duckdns.org/api/proxy/meetings?year={year}");
         _meetingsCacheYear = year;
         return _meetingsCache ?? new();
     }
@@ -273,7 +211,7 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
             return _sessionsCache;
 
         _sessionsCache = await GetAsync<List<OpenF1Session>>(
-            $"https://api.openf1.org/v1/sessions?year={year}");
+            $"https://chicane-api.duckdns.org/api/proxy/sessions?year={year}");
         _sessionsCacheYear = year;
         return _sessionsCache ?? new();
     }
@@ -300,7 +238,7 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
         {
             var year = DateTime.UtcNow.Year;
             var sessions = await GetAsync<List<OpenF1Session>>(
-                $"https://api.openf1.org/v1/sessions?year={year}");
+                $"https://chicane-api.duckdns.org/api/proxy/sessions?year={year}");
             if (sessions is null || sessions.Count == 0)
                 return DefaultEvent();
 
@@ -318,6 +256,8 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
                 return new RaceEvent
                 {
                     EventName = $"{FormatEventName(next)} (COMPLETED)",
+                    MeetingName = name,
+                    CircuitImageUrl = await ResolveCircuitImageAsync(next.MeetingKey, year) ?? "",
                     ScheduledDateTime = next.DateStart.AddDays(365),
                     Circuit = new CircuitInfo { Name = next.CircuitShortName ?? "TBD", Country = next.CountryName ?? "", Location = next.Location ?? "" },
                     Weather = new WeatherInfo { Condition = "N/A", TemperatureC = 20, IconGlyph = "\u2600" },
@@ -345,7 +285,7 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
         {
             var year = DateTime.UtcNow.Year;
             var sessions = await GetAsync<List<OpenF1Session>>(
-                $"https://api.openf1.org/v1/sessions?year={year}&session_type=Race");
+                $"https://chicane-api.duckdns.org/api/proxy/sessions?year={year}&session_type=Race");
             var live = sessions?.FirstOrDefault(s => s.DateStart <= DateTime.UtcNow && s.DateEnd >= DateTime.UtcNow);
             if (live is null) return new LiveSessionData();
             return await GetLiveDataAsync(live.SessionKey);
@@ -366,11 +306,11 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
             await GetDriversAsync(sessionKey);
 
             var positions = await GetAsync<List<OpenF1Position>>(
-                $"https://api.openf1.org/v1/position?session_key={sessionKey}");
+                $"https://chicane-api.duckdns.org/api/proxy/position?session_key={sessionKey}");
 
             // Find latest lap from race_control or laps endpoint
             var laps = await GetAsync<List<OpenF1Lap>>(
-                $"https://api.openf1.org/v1/laps?session_key={sessionKey}");
+                $"https://chicane-api.duckdns.org/api/proxy/laps?session_key={sessionKey}");
 
             var maxLap = laps?.Select(l => l.LapNumber).DefaultIfEmpty(0).Max() ?? 0;
             var totalLaps = 52; // Default for most races — can be refined per circuit
@@ -406,7 +346,7 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
         {
             var year = DateTime.UtcNow.Year;
             var sessions = await GetAsync<List<OpenF1Session>>(
-                $"https://api.openf1.org/v1/sessions?year={year}&session_type=Race");
+                $"https://chicane-api.duckdns.org/api/proxy/sessions?year={year}&session_type=Race");
             if (sessions is null) return new();
 
             var latestRace = sessions
@@ -417,7 +357,7 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
             if (latestRace is null) return new();
 
             var standings = await GetAsync<List<OpenF1ChampionshipDriver>>(
-                $"https://api.openf1.org/v1/championship_drivers?session_key={latestRace.SessionKey}");
+                $"https://chicane-api.duckdns.org/api/proxy/championship_drivers?session_key={latestRace.SessionKey}");
             if (standings is null || standings.Count == 0) return new();
 
             await GetDriversAsync(latestRace.SessionKey);
@@ -445,7 +385,7 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
         {
             var year = DateTime.UtcNow.Year;
             var sessions = await GetAsync<List<OpenF1Session>>(
-                $"https://api.openf1.org/v1/sessions?year={year}&session_type=Race");
+                $"https://chicane-api.duckdns.org/api/proxy/sessions?year={year}&session_type=Race");
             if (sessions is null) return new();
 
             var latestRace = sessions
@@ -456,7 +396,7 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
             if (latestRace is null) return new();
 
             var teams = await GetAsync<List<OpenF1ChampionshipTeam>>(
-                $"https://api.openf1.org/v1/championship_teams?session_key={latestRace.SessionKey}");
+                $"https://chicane-api.duckdns.org/api/proxy/championship_teams?session_key={latestRace.SessionKey}");
             if (teams is null || teams.Count == 0) return new();
 
             return teams
@@ -488,7 +428,7 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
         {
             var year = DateTime.UtcNow.Year;
             var sessions = await GetAsync<List<OpenF1Session>>(
-                $"https://api.openf1.org/v1/sessions?year={year}");
+                $"https://chicane-api.duckdns.org/api/proxy/sessions?year={year}");
             if (sessions is null) return new();
 
             var upcoming = sessions
@@ -523,7 +463,7 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
         {
             var year = DateTime.UtcNow.Year;
             var sessions = await GetAsync<List<OpenF1Session>>(
-                $"https://api.openf1.org/v1/sessions?year={year}&session_type=Race");
+                $"https://chicane-api.duckdns.org/api/proxy/sessions?year={year}&session_type=Race");
             if (sessions is null) return new();
 
             var past = sessions
@@ -551,9 +491,9 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
             {
                 foreach (var entry in result)
                 {
-                    await Task.Delay(_delayMs);
+                    await Task.Delay(100);
                     var top3 = await GetAsync<List<OpenF1SessionResult>>(
-                        $"https://api.openf1.org/v1/session_result?session_key={entry.SessionKey}&position<=3");
+                        $"https://chicane-api.duckdns.org/api/proxy/session_result?session_key={entry.SessionKey}&position<=3");
                     if (top3 is { Count: > 0 })
                     {
                         await GetDriversAsync(entry.SessionKey);
@@ -573,7 +513,7 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
         try
         {
             var sessions = await GetAsync<List<OpenF1Session>>(
-                $"https://api.openf1.org/v1/sessions?meeting_key={meetingKey}");
+                $"https://chicane-api.duckdns.org/api/proxy/sessions?meeting_key={meetingKey}");
             return sessions ?? new();
         }
         catch (Exception ex) { Debug.WriteLine($"[OpenF1] SessionsByMeeting: {ex.Message}"); return new(); }
@@ -584,16 +524,16 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
         try
         {
             var results = await GetAsync<List<OpenF1SessionResult>>(
-                $"https://api.openf1.org/v1/session_result?session_key={sessionKey}");
+                $"https://chicane-api.duckdns.org/api/proxy/session_result?session_key={sessionKey}");
             Debug.WriteLine($"[OpenF1] PastDetail session={sessionKey} results={results?.Count ?? 0}");
             if (results is null) return new PastRaceDetail { EventDate = DateTime.UtcNow };
 
             await GetDriversAsync(sessionKey);
 
             var driverStds = await GetAsync<List<OpenF1ChampionshipDriver>>(
-                $"https://api.openf1.org/v1/championship_drivers?session_key={sessionKey}");
+                $"https://chicane-api.duckdns.org/api/proxy/championship_drivers?session_key={sessionKey}");
             var teamStds = await GetAsync<List<OpenF1ChampionshipTeam>>(
-                $"https://api.openf1.org/v1/championship_teams?session_key={sessionKey}");
+                $"https://chicane-api.duckdns.org/api/proxy/championship_teams?session_key={sessionKey}");
 
             var sorted = results
                 .OrderBy(r => r.Dnf || r.Dsq ? 1 : 0)
@@ -702,7 +642,7 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
             if (_sessionsCache is null || _sessionsCacheYear != year)
             {
                 _sessionsCache = await GetAsync<List<OpenF1Session>>(
-                    $"https://api.openf1.org/v1/sessions?year={year}");
+                    $"https://chicane-api.duckdns.org/api/proxy/sessions?year={year}");
                 _sessionsCacheYear = year;
             }
             var sessions = _sessionsCache;
@@ -749,7 +689,7 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
                         if (_driverCache is null or { Count: 0 })
                             await GetDriversAsync(raceSession.SessionKey);
                         var top3 = await GetAsync<List<OpenF1SessionResult>>(
-                            $"https://api.openf1.org/v1/session_result?session_key={raceSession.SessionKey}&position<=3");
+                            $"https://chicane-api.duckdns.org/api/proxy/session_result?session_key={raceSession.SessionKey}&position<=3");
                         if (top3 is { Count: > 0 })
                         {
                             card.Top3Drivers = top3.OrderBy(t => t.Position).Select(t => new Top3Driver
@@ -788,7 +728,7 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
         try
         {
             var meetings = await GetAsync<List<OpenF1Meeting>>(
-                $"https://api.openf1.org/v1/meetings?meeting_key={meetingKey}&year={year}");
+                $"https://chicane-api.duckdns.org/api/proxy/meetings?meeting_key={meetingKey}&year={year}");
             return meetings?.FirstOrDefault()?.CircuitImage;
         }
         catch (Exception ex) { Debug.WriteLine($"[OpenF1] CircuitImage: {ex.Message}"); return null; }
@@ -799,7 +739,7 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
         try
         {
             var data = await GetAsync<List<OpenF1Lap>>(
-                $"https://api.openf1.org/v1/laps?session_key={sessionKey}");
+                $"https://chicane-api.duckdns.org/api/proxy/laps?session_key={sessionKey}");
             return data ?? new();
         }
         catch (Exception ex) { Debug.WriteLine($"[OpenF1] Laps: {ex.Message}"); return new(); }
@@ -810,7 +750,7 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
         try
         {
             var data = await GetAsync<List<OpenF1CarData>>(
-                $"https://api.openf1.org/v1/car_data?session_key={sessionKey}&driver_number={driverNumber}");
+                $"https://chicane-api.duckdns.org/api/proxy/car_data?session_key={sessionKey}&driver_number={driverNumber}");
             return data?.MaxBy(d => d.Date);
         }
         catch (Exception ex) { Debug.WriteLine($"[OpenF1] CarData: {ex.Message}"); return null; }
@@ -821,7 +761,7 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
         try
         {
             var data = await GetAsync<List<OpenF1Interval>>(
-                $"https://api.openf1.org/v1/intervals?session_key={sessionKey}");
+                $"https://chicane-api.duckdns.org/api/proxy/intervals?session_key={sessionKey}");
             // Group by driver, take latest for each
             return (data ?? new())
                 .GroupBy(i => i.DriverNumber)
@@ -837,7 +777,7 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
         try
         {
             var data = await GetAsync<List<OpenF1Location>>(
-                $"https://api.openf1.org/v1/location?session_key={sessionKey}");
+                $"https://chicane-api.duckdns.org/api/proxy/location?session_key={sessionKey}");
             // Group by driver, take latest for each
             return (data ?? new())
                 .GroupBy(l => l.DriverNumber)
@@ -853,7 +793,7 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
         try
         {
             var data = await GetAsync<List<OpenF1RaceControl>>(
-                $"https://api.openf1.org/v1/race_control?session_key={sessionKey}");
+                $"https://chicane-api.duckdns.org/api/proxy/race_control?session_key={sessionKey}");
             return (data ?? new()).OrderByDescending(r => r.Date).Take(30).ToList();
         }
         catch (Exception ex) { Debug.WriteLine($"[OpenF1] RaceControl: {ex.Message}"); return new(); }
@@ -864,7 +804,7 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
         try
         {
             var data = await GetAsync<List<OpenF1Pit>>(
-                $"https://api.openf1.org/v1/pit?session_key={sessionKey}");
+                $"https://chicane-api.duckdns.org/api/proxy/pit?session_key={sessionKey}");
             return data ?? new();
         }
         catch (Exception ex) { Debug.WriteLine($"[OpenF1] PitStops: {ex.Message}"); return new(); }
@@ -875,7 +815,7 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
         try
         {
             var data = await GetAsync<List<OpenF1Stint>>(
-                $"https://api.openf1.org/v1/stints?session_key={sessionKey}");
+                $"https://chicane-api.duckdns.org/api/proxy/stints?session_key={sessionKey}");
             return data ?? new();
         }
         catch (Exception ex) { Debug.WriteLine($"[OpenF1] Stints: {ex.Message}"); return new(); }
@@ -886,7 +826,7 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
         try
         {
             var data = await GetAsync<List<OpenF1Overtake>>(
-                $"https://api.openf1.org/v1/overtakes?session_key={sessionKey}");
+                $"https://chicane-api.duckdns.org/api/proxy/overtakes?session_key={sessionKey}");
             return (data ?? new()).OrderByDescending(o => o.Date).Take(30).ToList();
         }
         catch (Exception ex) { Debug.WriteLine($"[OpenF1] Overtakes: {ex.Message}"); return new(); }

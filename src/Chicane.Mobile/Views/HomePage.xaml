@@ -94,6 +94,7 @@
                              <!-- Row 1: GP Name + Weather -->
                              <Grid ColumnDefinitions="*,Auto">
                                  <Label Grid.Column="0" Text="{Binding MeetingName}"
+       TextTransform="Uppercase"
                                         FontFamily="TitilliumWebBold" FontSize="11"
                                         TextColor="White" LineBreakMode="TailTruncation"
                                         VerticalOptions="Center" />
@@ -198,7 +199,8 @@
                                                 StrokeShape="RoundRectangle 12,12,0,0"
                                                 BackgroundColor="#90111d"
                                                 Padding="10,5">
-                                            <Label Text="{Binding MeetingName}"
+<Label Text="{Binding MeetingName}"
+                                TextTransform="Uppercase"
                                                    FontFamily="TitilliumWebBold" FontSize="13"
                                                    TextColor="White"
                                                    LineBreakMode="TailTruncation" />
