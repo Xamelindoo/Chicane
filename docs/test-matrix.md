@@ -22,14 +22,18 @@
 | TM-09 | Standings salvati in SQLite e consultabili offline dopo primo fetch | Persistence | Si | Si | No | IT-04 | `dotnet test` | Test repository SQLite e verifica manuale offline |
 | TM-10 | Fallback su dati locali quando le API remote non sono raggiungibili | Persistence / Error | Si | Si | No | IT-04 | `dotnet test` | Mock di errore rete, controllo che vengano mostrati i dati SQLite |
 | TM-11 | Elenco team e dettaglio team con statistiche per la categoria attiva | Teams | Si | Si | No | IT-04 | `dotnet test` | Copre anche navigazione verso dettaglio con `teamId` |
-| TM-12 | Live Track Widget: rendering mappa circuito con posizione in tempo reale (SkiaSharp) | Live Track | Si | No | Si | IT-05 | Da eseguire | UI automation complessa; verifica manuale con mock |
-| TM-13 | News Feed: elenco notizie motorsport per categoria, aggiornato da API | News | Si | Si | No | IT-05 | `dotnet test` (mock) | Test del mapping e della gestione stati |
-| TM-14 | Gestione loading, error, empty, success su News e Live Track | UI state | Si | Si | No | IT-05 | `dotnet test` | Stato uniforme con le altre sezioni |
+| TM-12 | Live Track Widget: rendering mappa circuito con posizione in tempo reale (GraphicsView + IDrawable) | Live Track | Si | No | Si | IT-05 | Da eseguire | TrackMapDrawable con dots da `/v1/location`, polling 3s |
+| TM-13 | News Feed: elenco notizie motorsport, aggiornato da API (Rss2Json) | News | Si | Si | No | IT-05 | `dotnet test` (mock) | Test del mapping e della gestione stati |
+| TM-14 | Gestione loading, error, empty, success su News e Live Track | UI state | Si | Si | No | IT-05 | `dotnet test` | ✅ IT-05 completato |
 | TM-15 | Consultazione offline: standings e team già salvati restano visibili senza rete | Device / Persistence | Si | No | Si | IT-06 | Da eseguire | Verifica end‑to‑end della modalità offline di base |
-| TM-16 | Smoke end‑to‑end: navigazione completa tra Home, Standings, Teams, News e cambio categoria | Device | Si | No | Si | IT-06 | Da eseguire | Verifica manuale finale su Android/emulatore |
-| TM-17 | Coerenza stati UI (loading/error/empty/success) su tutte le sezioni MVP | UI state | Si | No | No | IT-06 | Da eseguire | Hardening; nessun errore tecnico grezzo in UI |
-| TM-18 | Tema, rotazione e rendering base non rompono le schermate principali | Device | Si | No | No | IT-06 | Da eseguire | Verifica minimale su Android |
-| TM-19 | Build stabile del progetto dopo hardening | Build | No | Si | No | IT-06 | `dotnet build src/Chicane.Mobile/Chicane.Mobile.csproj` | Check di build finale del MVP |
+| TM-16 | Smoke end‑to‑end: navigazione Home→Schedule→Leaderboards→News→Team→Driver→Live→Settings | Device | Si | No | Si | IT-06 | Da eseguire | Verifica manuale finale su Android |
+| TM-17 | Coerenza stati UI (loading/error/empty/data) su tutte le sezioni | UI state | Si | No | No | IT-06 | ✅ Completato | HomePage, Schedule, Leaderboards, News, TeamDetail, DriverDetail, PastRace, TeamGPSessions, Live, Settings |
+| TM-18 | Header CHICANE sottile e uniforme su tutti i 4 tab + icona ⚙️ | Device | Si | No | No | IT-06 | ✅ Completato | Padding `20,6,20,4`, gear FontSize=20 |
+| TM-19 | Build stabile del progetto dopo hardening | Build | No | Si | No | IT-06 | `dotnet build src/Chicane.Mobile/Chicane.Mobile.csproj` | ✅ 0 errori |
+| TM-20 | LIVE guard: pill countdown non naviga se non in modalità live | Navigation | Si | No | No | IT-06 | ✅ Completato | `if (!IsLive) return;` in NavigateToLiveAsync |
+| TM-21 | Meteo OpenWeather entro 7 giorni con DateTimeKind UTC | Hero Section | Si | No | No | IT-06 | ✅ Completato | UTC normalize + refresh on resume |
+| TM-22 | SettingsPage: cache breakdown (DB/Images/Total) + SVUOTA CACHE cancella tutto | Persistence | Si | No | No | IT-06 | ✅ Completato | ClearAllCacheAsync cancella chicane.db* + img_cache/ |
+| TM-23 | Env: API keys in `env` (gitignored), caricato da OpenAppPackageFileAsync | Security | Si | No | No | IT-06 | ✅ Completato | Env.cs con diagnostic logging `[Env] OK — 4 keys loaded` |
 
 ## 3. Aree minime da coprire
 

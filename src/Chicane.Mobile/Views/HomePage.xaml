@@ -12,7 +12,7 @@
     <Grid RowDefinitions="Auto,*">
 
         <!-- Compact Header -->
-        <Border Grid.Row="0" StrokeThickness="0" Padding="20,12,20,8">
+        <Border Grid.Row="0" StrokeThickness="0" Padding="20,6,20,4">
             <Border.Background>
                 <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
                     <GradientStop Color="#111827" Offset="0" />
@@ -32,13 +32,48 @@
                     <Border.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding OpenSettingsCommand}" />
                     </Border.GestureRecognizers>
-                    <Label Text="&#x2699;" FontSize="24" TextColor="#9CA3AF" VerticalOptions="Center" />
+                    <Label Text="&#x2699;" FontSize="20" TextColor="#9CA3AF" VerticalOptions="Center" />
                 </Border>
             </Grid>
         </Border>
 
+        <!-- Loading -->
+        <VerticalStackLayout Grid.Row="1" IsVisible="{Binding IsBusy}"
+                              VerticalOptions="Center" HorizontalOptions="Center" Spacing="12">
+            <ActivityIndicator IsRunning="{Binding IsBusy}" Color="#E10600" HeightRequest="48" WidthRequest="48" />
+            <Label Text="&#x1F3CE; Loading..."
+                   FontFamily="TitilliumWebRegular" FontSize="12"
+                   TextColor="#9CA3AF" HorizontalOptions="Center" />
+        </VerticalStackLayout>
+
+        <!-- Error -->
+        <VerticalStackLayout Grid.Row="1" IsVisible="{Binding HasError}"
+                              VerticalOptions="Center" HorizontalOptions="Center" Spacing="16" Padding="32">
+            <Label Text="&#x26A0;" FontSize="48" HorizontalOptions="Center" TextColor="#E10600" />
+            <Label Text="{Binding ErrorMessage}"
+                   FontFamily="TitilliumWebSemiBold" FontSize="14"
+                   TextColor="#A0A0A0" HorizontalOptions="Center" HorizontalTextAlignment="Center" />
+            <Button Text="RETRY" BackgroundColor="#E10600" TextColor="#FFFFFF"
+                    FontFamily="TitilliumWebBold" FontSize="12" CornerRadius="4" Padding="24,10"
+                    Command="{Binding LoadCommand}" HorizontalOptions="Center" />
+        </VerticalStackLayout>
+
+        <!-- Empty -->
+        <VerticalStackLayout Grid.Row="1" IsVisible="{Binding IsEmptyState}"
+                              VerticalOptions="Center" HorizontalOptions="Center" Spacing="12" Padding="32">
+            <Label Text="&#x1F3C1;" FontSize="48" HorizontalOptions="Center" />
+            <Label Text="No race data available."
+                   FontFamily="TitilliumWebRegular" FontSize="14"
+                   TextColor="#9CA3AF" HorizontalOptions="Center" />
+            <Button Text="RETRY" BackgroundColor="#E10600" TextColor="#FFFFFF"
+                    FontFamily="TitilliumWebBold" FontSize="12" CornerRadius="4" Padding="24,10"
+                    Command="{Binding LoadCommand}" HorizontalOptions="Center" />
+        </VerticalStackLayout>
+
         <!-- Scrollable Content -->
-        <RefreshView Grid.Row="1" IsRefreshing="{Binding IsRefreshing}" Command="{Binding RefreshCommand}">
+        <RefreshView Grid.Row="1" IsRefreshing="{Binding IsRefreshing}"
+                     Command="{Binding RefreshCommand}"
+                     IsVisible="{Binding HasData}">
         <ScrollView VerticalScrollBarVisibility="Never">
             <VerticalStackLayout Spacing="0" Padding="0,0,0,20">
 
@@ -66,8 +101,8 @@
                                          StrokeShape="RoundRectangle 6" BackgroundColor="#1a2332"
                                          Padding="4,2" VerticalOptions="Center" Margin="6,0,0,0">
                                      <HorizontalStackLayout Spacing="2">
-                                         <Label Text="{Binding WeatherIcon}" FontSize="9" VerticalOptions="Center" />
-                                         <Label FontFamily="TitilliumWebRegular" FontSize="8" TextColor="#9CA3AF"
+                                          <Label Text="{Binding WeatherIcon}" FontSize="12" VerticalOptions="Center" />
+                                          <Label FontFamily="TitilliumWebRegular" FontSize="10" TextColor="#9CA3AF"
                                                 VerticalOptions="Center">
                                              <Label.Text>
                                                  <MultiBinding StringFormat="{}{0} · {1}°">

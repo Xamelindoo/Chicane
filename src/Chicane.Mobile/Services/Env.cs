@@ -10,7 +10,7 @@ public static class Env
     {
         try
         {
-            using var stream = FileSystem.Current.OpenAppPackageFileAsync(".env")
+            using var stream = FileSystem.Current.OpenAppPackageFileAsync("env")
                 .GetAwaiter().GetResult();
             using var reader = new StreamReader(stream);
             string? line;
@@ -23,11 +23,13 @@ public static class Env
                 var key = line[..eq].Trim();
                 var value = line[(eq + 1)..].Trim();
                 _values[key] = value;
+                Debug.WriteLine($"[Env] Loaded: {key}");
             }
+            Debug.WriteLine($"[Env] OK — {_values.Count} keys loaded");
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"[Env] Failed to load .env: {ex.Message}");
+            Debug.WriteLine($"[Env] FAILED: {ex.Message}");
         }
     }
 

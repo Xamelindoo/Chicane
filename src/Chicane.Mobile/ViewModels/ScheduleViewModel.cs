@@ -103,4 +103,10 @@ public partial class ScheduleViewModel : ObservableObject
         HasData = Meetings.Count > 0;
         IsEmptyState = Meetings.Count == 0;
     }
+
+    [RelayCommand]
+    private async Task OpenSettingsAsync()
+    {
+        await Shell.Current.GoToAsync("settings");
+    }
 }

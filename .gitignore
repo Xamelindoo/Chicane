@@ -486,3 +486,5 @@ $RECYCLE.BIN/
 **/.env
 !**/.env.example
 **/Resources/Raw/.env
+**/Resources/Raw/env
+!**/Resources/Raw/env.example

@@ -19,7 +19,8 @@ public class OpenWeatherService : IWeatherService
     {
         try
         {
-            var daysUntil = (eventDate - DateTime.UtcNow).TotalDays;
+            var utcDate = eventDate.Kind == DateTimeKind.Utc ? eventDate : eventDate.ToUniversalTime();
+            var daysUntil = (utcDate - DateTime.UtcNow).TotalDays;
             if (daysUntil > 7) return null;
 
             var query = $"{city},{country}";

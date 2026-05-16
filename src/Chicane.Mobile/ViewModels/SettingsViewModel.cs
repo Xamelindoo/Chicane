@@ -23,16 +23,25 @@ public partial class SettingsViewModel : ObservableObject
     private double cacheSizeMB;
 
     [ObservableProperty]
+    private double dbSizeMB;
+
+    [ObservableProperty]
+    private double imgSizeMB;
+
+    [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ShowClearedMessage))]
     private bool cacheCleared;
 
-    public bool ShowClearedMessage => cacheCleared;
+    public bool ShowClearedMessage => CacheCleared;
 
     [RelayCommand]
     private void Load()
     {
         IsBusy = true;
-        CacheSizeMB = cacheService.GetCacheSizeMB();
+        var (total, db, img) = cacheService.GetCacheInfo();
+        CacheSizeMB = total;
+        DbSizeMB = db;
+        ImgSizeMB = img;
         this.CacheCleared = false;
         IsBusy = false;
     }
@@ -41,9 +50,12 @@ public partial class SettingsViewModel : ObservableObject
     private async Task ClearCacheAsync()
     {
         IsClearing = true;
-        await cacheService.ClearImageCacheAsync();
-        CacheSizeMB = cacheService.GetCacheSizeMB();
-        CacheCleared = true;
+        await cacheService.ClearAllCacheAsync();
+        var (total, db, img) = cacheService.GetCacheInfo();
+        CacheSizeMB = total;
+        DbSizeMB = db;
+        ImgSizeMB = img;
+        this.CacheCleared = true;
         IsClearing = false;
     }
 

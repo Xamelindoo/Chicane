@@ -154,4 +154,10 @@ public partial class LeaderboardsViewModel : ObservableObject
         }
         HasData = Teams.Count > 0 || Drivers.Count > 0;
     }
+
+    [RelayCommand]
+    private async Task OpenSettingsAsync()
+    {
+        await Shell.Current.GoToAsync("settings");
+    }
 }

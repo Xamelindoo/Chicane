@@ -372,6 +372,7 @@ public partial class HomeViewModel : ObservableObject
     [RelayCommand]
     private async Task NavigateToLiveAsync()
     {
+        if (!IsLive) return;
         if (SessionKey <= 0) return;
         await Shell.Current.GoToAsync($"live?sessionKey={SessionKey}");
     }
@@ -442,14 +443,30 @@ public partial class HomeViewModel : ObservableObject
         UpdateCountdown();
     }
 
-    private void StopCountdown()
+    public void StopCountdown()
     {
-        if (countdownTimer is not null)
+        countdownTimer?.Stop();
+    }
+
+    public async Task RefreshWeatherIfStaleAsync()
+    {
+        if (WeatherCondition != "Check later") return;
+        if (UpcomingWeekends.Count == 0) return;
+        try
         {
-            countdownTimer.Stop();
-            countdownTimer.Tick -= OnCountdownTick;
-            countdownTimer = null;
+            var first = UpcomingWeekends[0];
+            var forecast = await weatherService.GetForecastAsync(first.CircuitName, first.Country, first.DateStart);
+            if (forecast is not null)
+            {
+                first.WeatherCondition = forecast.Condition;
+                first.WeatherIcon = forecast.IconGlyph;
+                first.TemperatureC = forecast.TemperatureC;
+                WeatherCondition = forecast.Condition;
+                WeatherIcon = forecast.IconGlyph;
+                TemperatureC = forecast.TemperatureC;
+            }
         }
+        catch { }
     }
 
     private void OnCountdownTick(object? sender, EventArgs e)

@@ -105,6 +105,7 @@ public partial class TeamDetailViewModel : ObservableObject
             BuildRaceGroups();
 
             HasData = true;
+            IsEmptyState = Drivers.Count == 0 && RaceGroups.Count == 0;
         }
         catch (Exception)
         {

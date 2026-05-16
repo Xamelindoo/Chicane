@@ -11,6 +11,7 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
     private readonly HttpClient _http;
     private readonly OpenF1TokenService _token;
     private List<OpenF1Meeting>? _meetingsCache;
+    private int? _meetingsCacheYear;
     private List<OpenF1Session>? _sessionsCache;
     private int? _sessionsCacheYear;
     private Dictionary<int, OpenF1Driver>? _driverCache;
@@ -257,11 +258,12 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
 
     private async Task<List<OpenF1Meeting>> GetMeetingsAsync(int year)
     {
-        if (_meetingsCache is not null)
+        if (_meetingsCache is not null && _meetingsCacheYear == year)
             return _meetingsCache;
 
         _meetingsCache = await GetAsync<List<OpenF1Meeting>>(
             $"https://api.openf1.org/v1/meetings?year={year}");
+        _meetingsCacheYear = year;
         return _meetingsCache ?? new();
     }
 

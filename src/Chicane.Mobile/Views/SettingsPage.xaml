@@ -31,11 +31,28 @@
                         Padding="16" Margin="20,0">
                     <VerticalStackLayout Spacing="10">
                         <Grid ColumnDefinitions="*,Auto">
-                            <Label Grid.Column="0" Text="Used space"
-                                   FontFamily="TitilliumWebRegular" FontSize="14"
+                            <Label Grid.Column="0" Text="Database"
+                                   FontFamily="TitilliumWebRegular" FontSize="13"
+                                   TextColor="#9CA3AF" VerticalOptions="Center" />
+                            <Label Grid.Column="1" Text="{Binding DbSizeMB, StringFormat='{0} MB'}"
+                                   FontFamily="TitilliumWebBold" FontSize="14"
+                                   TextColor="White" VerticalOptions="Center" />
+                        </Grid>
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Grid.Column="0" Text="Images"
+                                   FontFamily="TitilliumWebRegular" FontSize="13"
+                                   TextColor="#9CA3AF" VerticalOptions="Center" />
+                            <Label Grid.Column="1" Text="{Binding ImgSizeMB, StringFormat='{0} MB'}"
+                                   FontFamily="TitilliumWebBold" FontSize="14"
+                                   TextColor="White" VerticalOptions="Center" />
+                        </Grid>
+                        <BoxView HeightRequest="1" Color="#2a3441" />
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Grid.Column="0" Text="Total"
+                                   FontFamily="TitilliumWebBold" FontSize="14"
                                    TextColor="#FFFFFF" VerticalOptions="Center" />
                             <Label Grid.Column="1" Text="{Binding CacheSizeMB, StringFormat='{0} MB'}"
-                                   FontFamily="TitilliumWebBold" FontSize="16"
+                                   FontFamily="TitilliumWebBold" FontSize="18"
                                    TextColor="#E10600" VerticalOptions="Center" />
                         </Grid>
                         <BoxView HeightRequest="1" Color="#2a3441" />

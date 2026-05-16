@@ -20,5 +20,9 @@ public partial class HomePage : ContentPage
         {
             viewModel.LoadCommand.Execute(null);
         }
+        else if (viewModel.HasData)
+        {
+            _ = viewModel.RefreshWeatherIfStaleAsync();
+        }
     }
 }

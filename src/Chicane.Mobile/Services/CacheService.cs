@@ -1,45 +1,65 @@
+using System.Diagnostics;
+
 namespace Chicane.Mobile.Services;
 
 public class CacheService : ICacheService
 {
-    public double GetCacheSizeMB()
+    public (double TotalMB, double DbMB, double ImgMB) GetCacheInfo()
     {
+        double dbBytes = 0, imgBytes = 0;
         try
         {
-            var dbPath = Path.Combine(FileSystem.AppDataDirectory, "chicane.db");
-            var imgCacheDir = Path.Combine(FileSystem.AppDataDirectory, "img_cache");
+            var appDir = FileSystem.AppDataDirectory;
 
-            double totalBytes = 0;
+            // SQLite database + WAL/journal files
+            foreach (var pattern in new[] { "chicane.db", "chicane.db-wal", "chicane.db-shm", "chicane.db-journal" })
+            {
+                var path = Path.Combine(appDir, pattern);
+                if (File.Exists(path))
+                    dbBytes += new FileInfo(path).Length;
+            }
 
-            if (File.Exists(dbPath))
-                totalBytes += new FileInfo(dbPath).Length;
-
+            // Image cache
+            var imgCacheDir = Path.Combine(appDir, "img_cache");
             if (Directory.Exists(imgCacheDir))
             {
                 foreach (var file in Directory.GetFiles(imgCacheDir))
-                    totalBytes += new FileInfo(file).Length;
+                    imgBytes += new FileInfo(file).Length;
             }
 
-            return Math.Round(totalBytes / (1024.0 * 1024.0), 1);
+            Debug.WriteLine($"[Cache] DB={dbBytes / 1024.0:F1}KB  IMG={imgBytes / 1024.0:F1}KB");
         }
         catch
         {
-            return 0;
+            return (0, 0, 0);
         }
+
+        double total = dbBytes + imgBytes;
+        return (Math.Round(total / 1048576.0, 1), Math.Round(dbBytes / 1048576.0, 1), Math.Round(imgBytes / 1048576.0, 1));
     }
 
-    public async Task ClearImageCacheAsync()
+    public async Task ClearAllCacheAsync()
     {
-        var imgCacheDir = Path.Combine(FileSystem.AppDataDirectory, "img_cache");
-        if (Directory.Exists(imgCacheDir))
+        await Task.Run(() =>
         {
-            await Task.Run(() =>
+            var appDir = FileSystem.AppDataDirectory;
+
+            // Delete all DB files (DB + WAL + journal + shm)
+            foreach (var pattern in new[] { "chicane.db", "chicane.db-wal", "chicane.db-shm", "chicane.db-journal" })
+            {
+                var path = Path.Combine(appDir, pattern);
+                try { File.Delete(path); } catch { }
+            }
+
+            // Delete all image cache files
+            var imgCacheDir = Path.Combine(appDir, "img_cache");
+            if (Directory.Exists(imgCacheDir))
             {
                 foreach (var file in Directory.GetFiles(imgCacheDir))
                 {
                     try { File.Delete(file); } catch { }
                 }
-            });
-        }
+            }
+        });
     }
 }

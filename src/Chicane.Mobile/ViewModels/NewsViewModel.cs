@@ -83,4 +83,10 @@ public partial class NewsViewModel : ObservableObject
             await Browser.Default.OpenAsync(new Uri(url), BrowserLaunchMode.SystemPreferred);
         }
     }
+
+    [RelayCommand]
+    private async Task OpenSettingsAsync()
+    {
+        await Shell.Current.GoToAsync("settings");
+    }
 }

@@ -25,6 +25,18 @@
                     Command="{Binding LoadCommand}" HorizontalOptions="Center" />
         </VerticalStackLayout>
 
+        <!-- Empty -->
+        <VerticalStackLayout IsVisible="{Binding IsEmptyState}"
+                              VerticalOptions="Center" HorizontalOptions="Center" Spacing="12" Padding="32">
+            <Label Text="&#x1F3C1;" FontSize="48" HorizontalOptions="Center" />
+            <Label Text="No team data available."
+                   FontFamily="TitilliumWebRegular" FontSize="14"
+                   TextColor="#9CA3AF" HorizontalOptions="Center" />
+            <Button Text="RETRY" BackgroundColor="#E10600" TextColor="#FFFFFF"
+                    FontFamily="TitilliumWebBold" FontSize="12" CornerRadius="4" Padding="24,10"
+                    Command="{Binding LoadCommand}" HorizontalOptions="Center" />
+        </VerticalStackLayout>
+
         <!-- Content -->
         <RefreshView IsRefreshing="{Binding IsRefreshing}" Command="{Binding RefreshCommand}">
         <ScrollView IsVisible="{Binding HasData}">
