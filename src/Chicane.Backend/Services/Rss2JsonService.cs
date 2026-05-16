@@ -22,6 +22,9 @@ public class Rss2JsonService
         {
             ("https://www.skysports.com/rss/12433", "Sky Sports F1"),
             ("https://it.motorsport.com/rss/f1/news", "Motorsport Italia"),
+            ("https://www.formulapassion.it/feed", "FormulaPassion"),
+            ("https://www.fuoritraiettoria.com/feed", "FuoriTraiettoria"),
+            ("https://www.p300.it/feed", "P300.it"),
         };
 
         var results = new List<Dictionary<string, object?>>();
