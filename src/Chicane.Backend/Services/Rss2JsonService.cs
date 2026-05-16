@@ -80,8 +80,8 @@ public class Rss2JsonService
 
     private static readonly string[] _f1Keywords = ["F1", "Formula 1", "Formula One", "FIA", "Grand Prix", "GP",
         "Verstappen", "Norris", "Leclerc", "Hamilton", "Piastri", "Russell", "Sainz", "Alonso",
-        "McLaren", "Ferrari", "Red Bull", "Mercedes", "Aston Martin", "Alpine", "Haas", "Williams",
-        "Racing Bulls", "Audi", "Cadillac"];
+        "circuit", "Monza", "Imola", "Spa", "Silverstone", "Monaco", "Miami GP", "Las Vegas GP",
+        "pit stop", "pole position", "championship", "paddock", "MotoGP", "WEC", "WRC", "Formula E"];
 
     private static bool IsF1Relevant(Dictionary<string, object?> article)
     {
