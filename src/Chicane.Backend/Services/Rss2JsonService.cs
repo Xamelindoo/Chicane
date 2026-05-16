@@ -44,7 +44,7 @@ public class Rss2JsonService
                         ["description"] = SafeString(item, "description"),
                         ["imageUrl"] = SafeString(item, "thumbnail"),
                         ["sourceUrl"] = item.GetProperty("link").GetString() ?? "",
-                        ["publishedAt"] = item.GetProperty("pubDate").GetDateTime(),
+                        ["publishedAt"] = SafeDateTime(item, "pubDate"),
                         ["source"] = label,
                     });
                 }
@@ -61,5 +61,14 @@ public class Rss2JsonService
         if (item.TryGetProperty(key, out var el) && el.ValueKind == JsonValueKind.String)
             return el.GetString() ?? "";
         return "";
+    }
+
+    private static DateTime SafeDateTime(JsonElement item, string key)
+    {
+        if (!item.TryGetProperty(key, out var el)) return DateTime.UtcNow;
+        if (el.ValueKind == JsonValueKind.String && DateTime.TryParse(el.GetString(), out var d))
+            return d;
+        try { return el.GetDateTime(); }
+        catch { return DateTime.UtcNow; }
     }
 }
