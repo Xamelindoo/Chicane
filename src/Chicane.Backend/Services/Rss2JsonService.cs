@@ -20,7 +20,7 @@ public class Rss2JsonService
     {
         var feeds = new (string Url, string Label)[]
         {
-            ("https://www.skysports.com/rss/12040", "Sky Sports F1"),
+            ("https://www.skysports.com/rss/12433", "Sky Sports F1"),
             ("https://it.motorsport.com/rss/f1/news", "Motorsport Italia"),
         };
 
@@ -53,7 +53,10 @@ public class Rss2JsonService
             catch (Exception ex) { _logger.LogWarning(ex, "{Label} failed", label); }
         }
 
-        return results.OrderByDescending(r => (DateTime)(r["publishedAt"]!)).Take(20).ToList();
+        return results
+            .Where(r => IsF1Relevant(r))
+            .OrderByDescending(r => (DateTime)(r["publishedAt"]!))
+            .Take(20).ToList();
     }
 
     private static string SafeString(JsonElement item, string key)
@@ -70,5 +73,18 @@ public class Rss2JsonService
             return d;
         try { return el.GetDateTime(); }
         catch { return DateTime.UtcNow; }
+    }
+
+    private static readonly string[] _f1Keywords = ["F1", "Formula 1", "Formula One", "FIA", "Grand Prix", "GP",
+        "Verstappen", "Norris", "Leclerc", "Hamilton", "Piastri", "Russell", "Sainz", "Alonso",
+        "McLaren", "Ferrari", "Red Bull", "Mercedes", "Aston Martin", "Alpine", "Haas", "Williams",
+        "Racing Bulls", "Audi", "Cadillac"];
+
+    private static bool IsF1Relevant(Dictionary<string, object?> article)
+    {
+        var title = (article["title"] as string) ?? "";
+        var desc = (article["description"] as string) ?? "";
+        var combined = $"{title} {desc}";
+        return _f1Keywords.Any(k => combined.Contains(k, StringComparison.OrdinalIgnoreCase));
     }
 }
