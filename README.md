@@ -2,55 +2,97 @@
  <div align="center">
  
 
-# Chicane: Motorsport Live Companion
- 
-Demo didattica per progettare, pianificare e governare una app `.NET MAUI` Android-first dedicata al motorsport (F1, WEC, MotoGP, ecc.) con agenti AI, skill riusabili e workflow Man-in-the-Loop.
- 
+# Chicane: F1 Live Companion
+
+App `.NET MAUI` Android-first per seguire la Formula 1 in tempo reale: classifiche, calendario, live timing, meteo e news. Progetto didattico sviluppato con agenti AI, skill riusabili e workflow Man-in-the-Loop.
+
  [![.NET MAUI](https://img.shields.io/badge/.NET%20MAUI-Android--first-512BD4?logo=dotnet&logoColor=white)](https://learn.microsoft.com/dotnet/maui/)
  [![Workflow](https://img.shields.io/badge/workflow-Man--in--the--Loop-0F766E)](docs/method/man-in-the-loop.md)
  [![Skills](https://img.shields.io/badge/skills-8%20locali-2563EB)](.agents/skills/)
  [![Docs](https://img.shields.io/badge/docs-spec%20%7C%20plan%20%7C%20architecture%20%7C%20tests-7C3AED)](docs/)
- [![Claude Code](https://img.shields.io/badge/Claude%20Code-symlink%20skills-111827)](.claude/skills/)
- [![Repository](https://img.shields.io/badge/repository-privato-B91C1C?logo=github&logoColor=white)](https://github.com/GreppiDev/maui-project-demo)
- 
+ [![Version](https://img.shields.io/badge/version-1.1.0-E10600?logo=github&logoColor=white)]()
+ [![Backend](https://img.shields.io/badge/backend-ASP.NET%20Core%2010%20%2B%20Redis-512BD4?logo=dotnet&logoColor=white)]()
+ [![HTTPS](https://img.shields.io/badge/HTTPS-DuckDNS%20%2B%20Let's%20Encrypt-0F766E)]()
+
  [Panoramica](#panoramica) ·
+ [Architettura](#architettura) ·
  [Stack Di Skill](#stack-di-skill) ·
  [Workflow](#workflow) ·
- [Strategia Git](#strategia-git) ·
- [Documenti](#documenti) ·
- [Cronologia](#cronologia) ·
- [Come Leggere](#come-leggere)
- 
+ [Versioni](#versioni) ·
+ [Documenti](#documenti)
+
  </div>
- 
+
  ---
 
  
  ## Panoramica
- 
-Questo repository non contiene ancora il codice completo dell'app `Chicane`, ma è un laboratorio didattico per mostrare come usare agenti AI senza perdere controllo su analisi, pianificazione, review, test e documentazione.
- 
-L'app di riferimento è una companion app motorsport `.NET MAUI` Android-first per seguire live dati, classifiche, team, calendario e meteo di F1, WEC, MotoGP e altre serie. Il cuore del repo è il sistema che prepara lo sviluppo:
- 
- | Area | Cosa contiene | Link |
- | --- | --- | --- |
-| Prodotto | PRD e requisiti di `Chicane` | [docs/spec.md](docs/spec.md) |
- | Pianificazione | Iterazioni, architettura e matrice test | [docs/plan.md](docs/plan.md), [docs/architecture.md](docs/architecture.md), [docs/test-matrix.md](docs/test-matrix.md) |
- | Skill | Skill locali per PRD, planning, MAUI, test e workflow | [`.agents/skills/`](.agents/skills/) |
- | Claude Code | Link simbolici alle skill OpenCode senza duplicazione | [`.claude/skills/`](.claude/skills/) |
- | Metodo | Workflow didattico Man-in-the-Loop | [docs/method/man-in-the-loop.md](docs/method/man-in-the-loop.md) |
- | Evidenze | Sessioni, eval, benchmark e refinement | [docs/history/](docs/history/) |
+
+**Chicane** è una companion app Formula 1 completa, con client `.NET MAUI` (Android) e backend `ASP.NET Core 10` su infrastruttura Docker.
+
+L'app offre:
+
+| Funzionalità | Descrizione |
+|-------------|-------------|
+| **Home** | Prossimo evento F1, countdown, meteo, card GP con tracciato, top piloti e team |
+| **Schedule** | Calendario GP futuri e passati, risultati Top 3, sessioni per meeting |
+| **Leaderboard** | Classifica piloti e costruttori con foto e punti |
+| **Live** | Posizioni in tempo reale, mappa tracciato, intervalli, commentario gara |
+| **Driver & Team** | Dettaglio pilota con storico risultati, profilo team con statistiche stagione |
+| **News** | Aggregatore RSS multi-fonte con filtro F1 (Sky Sports, Motorsport, FormulaPassion, FuoriTraiettoria, P300.it) |
+| **Settings** | Gestione cache (DB / immagini), info app |
+
+### Stack
+
+| Layer | Tecnologia |
+|-------|-----------|
+| **Client** | `.NET MAUI` Android, MVVM con CommunityToolkit.Mvvm, SQLite cache-first, Shell navigation |
+| **Backend** | `ASP.NET Core 10` Web API, Docker multi-stage, Redis cache |
+| **Proxy** | NGINX Proxy Manager su LXC separato, DuckDNS + Let's Encrypt SSL |
+| **Infra** | Proxmox VE, 2 LXC Debian 13, Docker Compose, rete locale 192.168.1.x |
+| **Dati** | [OpenF1 API](https://openf1.org/), OpenWeatherMap, RSS2JSON |
 
  
- La cartella [`src/`](src/) è al momento una radice predisposta: il repository documenta soprattutto metodo, skill e progettazione prima dell'implementazione applicativa.
+ ## Architettura
 
- 
+```
+┌──────────────┐     HTTPS      ┌──────────────┐     HTTP      ┌────────────────┐
+│  MAUI Client │ ────────────→  │  NGINX Proxy │ ──────────→  │  ASP.NET Core  │
+│  (Android)   │                │  DuckDNS SSL │              │  Backend :5000  │
+│  SQLite CF   │                │ 192.168.1.201│              │  192.168.1.205  │
+└──────────────┘                └──────────────┘              └───────┬────────┘
+                                                                      │
+                                              ┌───────────────────────┼───────────────┐
+                                              │                       │               │
+                                         ┌────▼─────┐          ┌─────▼──────┐  ┌─────▼──────┐
+                                         │  Redis   │          │  OpenF1    │  │ RSS2JSON + │
+                                         │  Cache   │          │  API       │  │ OpenWeather│
+                                         └──────────┘          └────────────┘  └────────────┘
+```
+
+### Pattern proxy trasparente
+
+Il backend **non** aggrega né trasforma i dati OpenF1. Agisce come **proxy trasparente**:
+
+```
+Client → /api/proxy/drivers?session_key=123 → Backend → Redis cache? → OpenF1 → risposta identica
+```
+
+Il client parla il formato OpenF1 nativo. Il backend aggiunge solo autenticazione e cache Redis condivisa (TTL: 3s live, 30min standings, 1h schedule, 24h results). Zero segreti sul client.
+
+### Cache multi-livello
+
+- **Redis** (condiviso tra tutti i client): TTL variabili per tipo dato
+- **SQLite** (per dispositivo): cache-first locale per dati immutabili (risultati, calendario)
+- **Immagini**: download asincrono con cache locale
+
+
  ## Perché Esiste
- 
- Nel contesto didattico del progetto, l'AI non viene trattata come un generatore automatico di codice. Viene usata come collaboratore dentro un processo controllato.
- 
- Il repository mostra come:
- 
+
+Nel contesto didattico del progetto, l'AI non viene trattata come un generatore automatico di codice. Viene usata come collaboratore dentro un processo controllato.
+
+Il repository mostra come:
+
 - trasformare un'idea di app motorsport in un `PRD` verificabile;
  - derivare dal `PRD` un piano in iterazioni piccole;
  - usare skill specializzate invece di prompt generici;
@@ -61,7 +103,7 @@ L'app di riferimento è una companion app motorsport `.NET MAUI` Android-first p
  
  ## Stack Di Skill
 
- 
+
  | Skill | Badge | Quando usarla |
  | --- | --- | --- |
  | [`find-skills`](.agents/skills/find-skills/) | ![discover](https://img.shields.io/badge/discover-skills-2563EB) | Cercare o installare skill esterne |
@@ -72,11 +114,11 @@ L'app di riferimento è una companion app motorsport `.NET MAUI` Android-first p
  | [`maui-expert`](.agents/skills/maui-expert/) | ![maui](https://img.shields.io/badge/MAUI-MVVM%20%7C%20Shell%20%7C%20XAML-512BD4) | Scrivere o rivedere codice `.NET MAUI` |
  | [`maui-automatic-testing`](.agents/skills/maui-automatic-testing/) | ![tests](https://img.shields.io/badge/testing-ViewModel%20%7C%20Service%20%7C%20Build-B45309) | Definire test automatici realistici per una slice |
  | [`man-in-the-loop-workflow`](.agents/skills/man-in-the-loop-workflow/) | ![workflow](https://img.shields.io/badge/process-Planning%20to%20Git-0F766E) | Governare ogni iterazione con scope, review, test e documentazione |
- 
+
  Le skill reali vivono in [`.agents/skills/`](.agents/skills/). La cartella [`.claude/skills/`](.claude/skills/) contiene link simbolici verso quelle stesse skill, così Claude Code può usarle senza creare doppioni.
- 
+
  ## Workflow
- 
+
  ```mermaid
  flowchart LR
      subgraph Product["Definizione e pianificazione"]
@@ -85,18 +127,40 @@ L'app di riferimento è una companion app motorsport `.NET MAUI` Android-first p
          PRD["maui-prd<br/>docs/spec.md"]
          Plan["prd-to-plan<br/>plan + architecture + test-matrix"]
          Iteration["man-in-the-loop-workflow<br/>iterazione controllata"]
- 
+
          Idea --> PRD --> Plan --> Iteration
      end
- 
+
      subgraph Delivery["Implementazione e chiusura"]
          direction TB
          Build["maui-expert<br/>codice MAUI"]
          Test["maui-automatic-testing<br/>test automatici e manuali"]
          Docs["docs/iterations<br/>chiusura e Git"]
          Next["iterazione successiva"]
- 
+
          Build --> Test --> Docs --> Next
      end
- 
+
      Product --> Delivery
+ ```
+
+
+ ## Versioni
+
+| Versione | Data | Descrizione |
+|----------|------|-------------|
+| **v1.1.0** | Maggio 2026 | Backend ASP.NET Core 10 con proxy trasparente, cache Redis, RSS news multi-fonte, HTTPS DuckDNS, zero segreti sul client |
+| **v1.0.0** | Maggio 2026 | MVP: Home, Schedule, Leaderboard, Live, Driver/Team detail, SQLite cache-first, font custom, UI hardening |
+
+ 
+ ## Documenti
+
+| Area | File | Descrizione |
+|------|------|-------------|
+| Prodotto | [docs/spec.md](docs/spec.md) | PRD e requisiti |
+| Piano | [docs/plan.md](docs/plan.md) | Iterazioni pianificate |
+| Architettura | [docs/architecture.md](docs/architecture.md) | Design dell'app |
+| Test | [docs/test-matrix.md](docs/test-matrix.md) | Matrice dei test |
+| Iterazioni | [docs/iterations/](docs/iterations/) | Log delle iterazioni completate |
+| Metodo | [docs/method/man-in-the-loop.md](docs/method/man-in-the-loop.md) | Workflow didattico |
+| History | [docs/history/](docs/history/) | Sessioni ed eval |
