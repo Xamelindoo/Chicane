@@ -1,166 +1,150 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/kjGBNOdE)
- <div align="center">
- 
+<div align="center">
 
-# Chicane: F1 Live Companion
+# Chicane · F1 Live Companion
 
-App `.NET MAUI` Android-first per seguire la Formula 1 in tempo reale: classifiche, calendario, live timing, meteo e news. Progetto didattico sviluppato con agenti AI, skill riusabili e workflow Man-in-the-Loop.
+[![.NET MAUI](https://img.shields.io/badge/.NET%20MAUI-Android%2014%2B-512BD4?logo=dotnet&logoColor=white)](https://learn.microsoft.com/dotnet/maui/)
+[![ASP.NET Core 10](https://img.shields.io/badge/ASP.NET%20Core-10-512BD4?logo=dotnet&logoColor=white)](https://devblogs.microsoft.com/dotnet/announcing-asp-net-core-in-dotnet-10/)
+[![Redis](https://img.shields.io/badge/Redis-7%20Alpine-DC382D?logo=redis&logoColor=white)](https://redis.io/)
+[![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white)](https://docker.com)
+[![MIT License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
- [![.NET MAUI](https://img.shields.io/badge/.NET%20MAUI-Android--first-512BD4?logo=dotnet&logoColor=white)](https://learn.microsoft.com/dotnet/maui/)
- [![Workflow](https://img.shields.io/badge/workflow-Man--in--the--Loop-0F766E)](docs/method/man-in-the-loop.md)
- [![Skills](https://img.shields.io/badge/skills-8%20locali-2563EB)](.agents/skills/)
- [![Docs](https://img.shields.io/badge/docs-spec%20%7C%20plan%20%7C%20architecture%20%7C%20tests-7C3AED)](docs/)
- [![Version](https://img.shields.io/badge/version-1.1.0-E10600?logo=github&logoColor=white)]()
- [![Backend](https://img.shields.io/badge/backend-ASP.NET%20Core%2010%20%2B%20Redis-512BD4?logo=dotnet&logoColor=white)]()
- [![HTTPS](https://img.shields.io/badge/HTTPS-DuckDNS%20%2B%20Let's%20Encrypt-0F766E)]()
+Your Formula 1 companion. Real-time standings, race calendar, live timing, weather forecasts, and motorsport news in one app.
 
- [Panoramica](#panoramica) ·
- [Architettura](#architettura) ·
- [Stack Di Skill](#stack-di-skill) ·
- [Workflow](#workflow) ·
- [Versioni](#versioni) ·
- [Documenti](#documenti)
+[Features](#-features) ·
+[Architecture](#-architecture) ·
+[Stack](#-stack) ·
+[Setup](#-setup) ·
+[Screenshots](#-screenshots) ·
+[License](#-license)
 
- </div>
+</div>
 
- ---
+---
 
- 
- ## Panoramica
+## 📱 Features
 
-**Chicane** è una companion app Formula 1 completa, con client `.NET MAUI` (Android) e backend `ASP.NET Core 10` su infrastruttura Docker.
+| Tab | Description |
+|-----|-------------|
+| **Home** | Next F1 session with live countdown, circuit weather, and horizontal GP cards showing upcoming race weekends with track images, dates, and locations. Top 3 driver and constructor standings at a glance. |
+| **Schedule** | Full season calendar split into upcoming and past races. Each GP card shows the circuit layout, session times (Practice, Qualifying, Sprint, Race), and podium results for completed weekends. |
+| **Leaderboard** | Driver and constructor championship standings with driver headshots, team colours, and live points. Toggle between pilots and teams with a single tap. |
+| **Live** | Real-time position board during active sessions, track map with driver dots, telemetry per driver (speed, throttle, gear, DRS), and commentary stream from race control. Auto-polls every 3 seconds. |
+| **Driver Detail** | Per-driver profile with full name, team, headshot, points, championship position, and filterable race history across all seasons. |
+| **Team Detail** | Constructor profile with team logo, season stats, current drivers, and race results with podium finishes highlighted. |
+| **News** | Multi-source RSS aggregator pulling from 5 motorsport feeds (Sky Sports F1, Motorsport Italia, FormulaPassion, FuoriTraiettoria, P300.it) with an F1 keyword relevance filter. |
+| **Settings** | Cache management with breakdown by database size, image cache, and total. One-tap cache clearing. |
 
-L'app offre:
-
-| Funzionalità | Descrizione |
-|-------------|-------------|
-| **Home** | Prossimo evento F1, countdown, meteo, card GP con tracciato, top piloti e team |
-| **Schedule** | Calendario GP futuri e passati, risultati Top 3, sessioni per meeting |
-| **Leaderboard** | Classifica piloti e costruttori con foto e punti |
-| **Live** | Posizioni in tempo reale, mappa tracciato, intervalli, commentario gara |
-| **Driver & Team** | Dettaglio pilota con storico risultati, profilo team con statistiche stagione |
-| **News** | Aggregatore RSS multi-fonte con filtro F1 (Sky Sports, Motorsport, FormulaPassion, FuoriTraiettoria, P300.it) |
-| **Settings** | Gestione cache (DB / immagini), info app |
-
-### Stack
-
-| Layer | Tecnologia |
-|-------|-----------|
-| **Client** | `.NET MAUI` Android, MVVM con CommunityToolkit.Mvvm, SQLite cache-first, Shell navigation |
-| **Backend** | `ASP.NET Core 10` Web API, Docker multi-stage, Redis cache |
-| **Proxy** | NGINX Proxy Manager su LXC separato, DuckDNS + Let's Encrypt SSL |
-| **Infra** | Proxmox VE, 2 LXC Debian 13, Docker Compose, rete locale 192.168.1.x |
-| **Dati** | [OpenF1 API](https://openf1.org/), OpenWeatherMap, RSS2JSON |
-
- 
- ## Architettura
+## 🏗 Architecture
 
 ```
-┌──────────────┐     HTTPS      ┌──────────────┐     HTTP      ┌────────────────┐
-│  MAUI Client │ ────────────→  │  NGINX Proxy │ ──────────→  │  ASP.NET Core  │
-│  (Android)   │                │  DuckDNS SSL │              │  Backend :5000  │
-│  SQLite CF   │                │ 192.168.1.201│              │  192.168.1.205  │
-└──────────────┘                └──────────────┘              └───────┬────────┘
-                                                                      │
-                                              ┌───────────────────────┼───────────────┐
-                                              │                       │               │
-                                         ┌────▼─────┐          ┌─────▼──────┐  ┌─────▼──────┐
-                                         │  Redis   │          │  OpenF1    │  │ RSS2JSON + │
-                                         │  Cache   │          │  API       │  │ OpenWeather│
-                                         └──────────┘          └────────────┘  └────────────┘
+┌──────────────────┐        HTTPS         ┌──────────────────┐        HTTP          ┌──────────────────────┐
+│   MAUI Client    │ ──────────────────→  │  NGINX Proxy     │ ──────────────────→  │  ASP.NET Core 10     │
+│   (Android)      │   DuckDNS + Let's    │  Manager         │   192.168.1.205:5000 │  Backend             │
+│                  │   Encrypt SSL        │  192.168.1.201    │                      │                      │
+│ SQLite cache-first│ ←────────────────── │                  │ ←──────────────────  │                      │
+└──────────────────┘                      └──────────────────┘                      └──────────┬───────────┘
+                                                                                                 │
+                                                                          ┌──────────────────────┼───────────────┐
+                                                                          │                      │               │
+                                                                     ┌────▼─────┐          ┌─────▼──────┐  ┌─────▼──────┐
+                                                                     │  Redis   │          │  OpenF1    │  │ RSS2JSON + │
+                                                                     │  Cache   │          │  API       │  │ OpenWeather│
+                                                                     └──────────┘          └────────────┘  └────────────┘
 ```
 
-### Pattern proxy trasparente
+### Transparent proxy
 
-Il backend **non** aggrega né trasforma i dati OpenF1. Agisce come **proxy trasparente**:
+The backend does **not** transform or aggregate OpenF1 data. It acts as a transparent relay:
 
 ```
-Client → /api/proxy/drivers?session_key=123 → Backend → Redis cache? → OpenF1 → risposta identica
+Client → GET /api/proxy/drivers?session_key=123
+         → Backend checks Redis (hit?) → return cached
+         → Redis miss → OpenF1 API → store in Redis → return
 ```
 
-Il client parla il formato OpenF1 nativo. Il backend aggiunge solo autenticazione e cache Redis condivisa (TTL: 3s live, 30min standings, 1h schedule, 24h results). Zero segreti sul client.
+The client speaks **native OpenF1 JSON format** (845-line `OpenF1ApiService` class). The backend adds only authentication and shared caching.
 
-### Cache multi-livello
+### Cache layers
 
-- **Redis** (condiviso tra tutti i client): TTL variabili per tipo dato
-- **SQLite** (per dispositivo): cache-first locale per dati immutabili (risultati, calendario)
-- **Immagini**: download asincrono con cache locale
+| Layer | Technology | Scope | TTL |
+|-------|-----------|-------|-----|
+| **Redis** | Shared LXC container | All devices | 3s live · 30min standings · 1h schedule · 24h results |
+| **SQLite** | Per-device | Single app instance | Cache-first, never re-fetches immutable data |
 
+## 🛠 Stack
 
- ## Perché Esiste
+### Client
+- **.NET MAUI** · Android 14+ target
+- **MVVM** pattern with [CommunityToolkit.Mvvm](https://www.nuget.org/packages/CommunityToolkit.Mvvm/)
+- **Shell** navigation with query parameters
+- **SQLite** via [sqlite-net-pcl](https://www.nuget.org/packages/sqlite-net-pcl/) for local cache
+- **System.Text.Json** for API parsing
+- **GraphicsView** + `IDrawable` for custom track map rendering
+- **RefreshView** + `CollectionView` for pull-to-refresh lists
 
-Nel contesto didattico del progetto, l'AI non viene trattata come un generatore automatico di codice. Viene usata come collaboratore dentro un processo controllato.
+### Backend
+- **ASP.NET Core 10** Web API
+- **Redis** 7 Alpine for shared response caching
+- **Docker** multi-stage build + Docker Compose
+- **NGINX Proxy Manager** for reverse proxy and Let's Encrypt SSL
+- **DuckDNS** dynamic DNS
 
-Il repository mostra come:
+### Infrastructure
+- **Proxmox VE** hypervisor
+- 2 × **LXC Debian 13** containers (backend + NGINX)
+- Router port forwarding (TCP 80/443 → NGINX LXC)
 
-- trasformare un'idea di app motorsport in un `PRD` verificabile;
- - derivare dal `PRD` un piano in iterazioni piccole;
- - usare skill specializzate invece di prompt generici;
- - tenere separati prodotto, architettura, test e implementazione;
- - migliorare le skill con eval, baseline e refinement successivi;
- - mantenere responsabilità umana su decisioni, review, test, merge e push.
+### APIs
+- **[OpenF1](https://openf1.org/)** — race data, standings, sessions, live timing
+- **[OpenWeatherMap](https://openweathermap.org/)** — circuit weather forecasts (≤7 days)
+- **[RSS2JSON](https://rss2json.com/)** — RSS feed aggregation
 
- 
- ## Stack Di Skill
+## 🚀 Setup
 
+### Backend
 
- | Skill | Badge | Quando usarla |
- | --- | --- | --- |
- | [`find-skills`](.agents/skills/find-skills/) | ![discover](https://img.shields.io/badge/discover-skills-2563EB) | Cercare o installare skill esterne |
- | [`skill-creator`](.agents/skills/skill-creator/) | ![creator](https://img.shields.io/badge/create-skill-7C3AED) | Creare, testare e raffinare skill |
- | [`prd`](.agents/skills/prd/) | ![prd](https://img.shields.io/badge/base-PRD-4B5563) | Skill PRD generica usata come confronto |
- | [`maui-prd`](.agents/skills/maui-prd/) | ![spec](https://img.shields.io/badge/output-docs%2Fspec.md-0F766E) | Definire o aggiornare il PRD MAUI |
- | [`prd-to-plan`](.agents/skills/prd-to-plan/) | ![plan](https://img.shields.io/badge/output-plan%20%7C%20architecture%20%7C%20tests-0F766E) | Trasformare il PRD in piano, architettura e test matrix |
- | [`maui-expert`](.agents/skills/maui-expert/) | ![maui](https://img.shields.io/badge/MAUI-MVVM%20%7C%20Shell%20%7C%20XAML-512BD4) | Scrivere o rivedere codice `.NET MAUI` |
- | [`maui-automatic-testing`](.agents/skills/maui-automatic-testing/) | ![tests](https://img.shields.io/badge/testing-ViewModel%20%7C%20Service%20%7C%20Build-B45309) | Definire test automatici realistici per una slice |
- | [`man-in-the-loop-workflow`](.agents/skills/man-in-the-loop-workflow/) | ![workflow](https://img.shields.io/badge/process-Planning%20to%20Git-0F766E) | Governare ogni iterazione con scope, review, test e documentazione |
+```bash
+# Clone repo
+git clone git@github.com:Xamelindoo/Chicane.git
+cd Chicane
 
- Le skill reali vivono in [`.agents/skills/`](.agents/skills/). La cartella [`.claude/skills/`](.claude/skills/) contiene link simbolici verso quelle stesse skill, così Claude Code può usarle senza creare doppioni.
+# Create .env with API keys
+cat > .env << EOF
+OPENF1_USERNAME=your_email
+OPENF1_PASSWORD=your_password
+OPENWEATHER_API_KEY=your_owm_key
+RSS2JSON_API_KEY=your_rss2json_key
+EOF
 
- ## Workflow
+# Deploy with Docker
+docker compose build --no-cache && docker compose up -d
 
- ```mermaid
- flowchart LR
-     subgraph Product["Definizione e pianificazione"]
-         direction TB
-         Idea["Idea app"]
-         PRD["maui-prd<br/>docs/spec.md"]
-         Plan["prd-to-plan<br/>plan + architecture + test-matrix"]
-         Iteration["man-in-the-loop-workflow<br/>iterazione controllata"]
+# Verify
+curl http://localhost:5000/api/proxy/drivers?session_key=11281
+curl http://localhost:5000/api/news
+curl http://localhost:5000/api/weather?city=Monza&country=IT
+```
 
-         Idea --> PRD --> Plan --> Iteration
-     end
+### Client
 
-     subgraph Delivery["Implementazione e chiusura"]
-         direction TB
-         Build["maui-expert<br/>codice MAUI"]
-         Test["maui-automatic-testing<br/>test automatici e manuali"]
-         Docs["docs/iterations<br/>chiusura e Git"]
-         Next["iterazione successiva"]
+```bash
+# Build for Android
+dotnet build src/Chicane.Mobile/Chicane.Mobile.csproj -f net10.0-android
+```
 
-         Build --> Test --> Docs --> Next
-     end
+> **Note**: The client's `MauiProgram.cs` sets the HttpClient base address to `https://chicane-api.duckdns.org/`. Change this to your backend URL for self-hosting.
 
-     Product --> Delivery
- ```
+## 📸 Screenshots
 
+Screenshots coming soon. Place them in `docs/screenshots/`:
+- `home.png` — Home page with countdown and GP cards
+- `schedule.png` — Race calendar
+- `leaderboard.png` — Driver standings
+- `live.png` — Live timing with track map
+- `driver.png` — Driver detail
+- `team.png` — Team detail
+- `news.png` — News feed
 
- ## Versioni
+## 📄 License
 
-| Versione | Data | Descrizione |
-|----------|------|-------------|
-| **v1.1.0** | Maggio 2026 | Backend ASP.NET Core 10 con proxy trasparente, cache Redis, RSS news multi-fonte, HTTPS DuckDNS, zero segreti sul client |
-| **v1.0.0** | Maggio 2026 | MVP: Home, Schedule, Leaderboard, Live, Driver/Team detail, SQLite cache-first, font custom, UI hardening |
-
- 
- ## Documenti
-
-| Area | File | Descrizione |
-|------|------|-------------|
-| Prodotto | [docs/spec.md](docs/spec.md) | PRD e requisiti |
-| Piano | [docs/plan.md](docs/plan.md) | Iterazioni pianificate |
-| Architettura | [docs/architecture.md](docs/architecture.md) | Design dell'app |
-| Test | [docs/test-matrix.md](docs/test-matrix.md) | Matrice dei test |
-| Iterazioni | [docs/iterations/](docs/iterations/) | Log delle iterazioni completate |
-| Metodo | [docs/method/man-in-the-loop.md](docs/method/man-in-the-loop.md) | Workflow didattico |
-| History | [docs/history/](docs/history/) | Sessioni ed eval |
+MIT © 2026 Maximilian Cichello
