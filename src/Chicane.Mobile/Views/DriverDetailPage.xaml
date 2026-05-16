@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:Chicane.Mobile.ViewModels"
+             xmlns:models="clr-namespace:Chicane.Mobile.Models"
+             x:Class="Chicane.Mobile.Views.DriverDetailPage"
+             x:DataType="viewmodels:DriverDetailViewModel"
+             Title="{Binding BroadcastName}"
+             BackgroundColor="#0b1320">
+
+    <Grid RowDefinitions="*">
+
+        <!-- Loading -->
+        <VerticalStackLayout IsVisible="{Binding IsBusy}"
+                             VerticalOptions="Center" HorizontalOptions="Center" Spacing="12">
+             <ActivityIndicator IsRunning="{Binding IsBusy}" Color="#E10600"
+                               HeightRequest="48" WidthRequest="48" />
+            <Label Text="Loading driver..." FontFamily="TitilliumWebRegular" FontSize="12" TextColor="#666666" HorizontalOptions="Center" />
+        </VerticalStackLayout>
+
+        <!-- Error -->
+        <VerticalStackLayout IsVisible="{Binding HasError}"
+                             VerticalOptions="Center" HorizontalOptions="Center" Spacing="16" Padding="32">
+             <Label Text="&#x26A0;" FontSize="48" HorizontalOptions="Center" TextColor="#E10600" />
+            <Label Text="{Binding ErrorMessage}" FontFamily="TitilliumWebSemiBold" FontSize="14" TextColor="#A0A0A0"
+                   HorizontalOptions="Center" HorizontalTextAlignment="Center" />
+            <Button Text="RETRY" BackgroundColor="#E10600" TextColor="#FFFFFF"
+                    FontFamily="TitilliumWebBold" FontSize="12" CornerRadius="4" Padding="24,10"
+                    Command="{Binding LoadCommand}" HorizontalOptions="Center" />
+        </VerticalStackLayout>
+
+        <!-- Content -->
+        <RefreshView IsRefreshing="{Binding IsRefreshing}" Command="{Binding RefreshCommand}">
+        <ScrollView IsVisible="{Binding HasData}" VerticalScrollBarVisibility="Never">
+            <VerticalStackLayout Spacing="0" Padding="0,0,0,20">
+
+                <!-- Gradient Banner -->
+                <Border StrokeThickness="0" HeightRequest="220">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                            <GradientStop Color="{Binding TeamColour}" Offset="0.0" />
+                             <GradientStop Color="#0b1320" Offset="1.0" />
+                        </LinearGradientBrush>
+                    </Border.Background>
+                    <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="6">
+                        <!-- Headshot -->
+                         <Border Stroke="#333333" StrokeThickness="2"
+                                StrokeShape="RoundRectangle 45"
+                                HeightRequest="90" WidthRequest="90"
+                                HorizontalOptions="Center"
+                                BackgroundColor="#131313">
+                            <Image Source="{Binding HeadshotUrl}" Aspect="AspectFill" />
+                        </Border>
+                        <!-- Full Name -->
+                        <Label Text="{Binding FullName}"
+                               FontFamily="TitilliumWebBold" FontSize="22"
+                               TextColor="#FFFFFF"
+                               HorizontalOptions="Center" />
+                        <!-- Broadcast Name -->
+                        <Label Text="{Binding BroadcastName}"
+                               FontFamily="TitilliumWebRegular" FontSize="13"
+                               TextColor="#A0A0A0"
+                               HorizontalOptions="Center" />
+                        <!-- Team Pill -->
+                        <Border StrokeThickness="0"
+                                BackgroundColor="#131313"
+                                StrokeShape="RoundRectangle 20" Padding="14,6"
+                                HorizontalOptions="Center" Margin="0,6,0,0">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding NavigateToTeamCommand}" />
+                            </Border.GestureRecognizers>
+                            <HorizontalStackLayout Spacing="8">
+                                <BoxView WidthRequest="12" HeightRequest="12"
+                                         CornerRadius="6"
+                                         Color="{Binding TeamColour}"
+                                         VerticalOptions="Center" />
+                               <Label Text="{Binding TeamName}"
+                                      FontFamily="TitilliumWebSemiBold" FontSize="13"
+                                      TextColor="#FFFFFF"
+                                       VerticalOptions="Center" />
+                            </HorizontalStackLayout>
+                        </Border>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Stats Grid -->
+                <Border StrokeThickness="1" Stroke="#333333"
+                        StrokeShape="RoundRectangle 10"
+                        BackgroundColor="#131313"
+                        Padding="16,14" Margin="20,12,20,0">
+                    <Grid ColumnDefinitions="*,*,*" ColumnSpacing="12">
+                        <VerticalStackLayout Grid.Column="0" Spacing="4" HorizontalOptions="Center">
+                            <Label Text="{Binding Position, StringFormat='#{0}'}"
+                                   FontFamily="TitilliumWebBold" FontSize="22"
+                                   TextColor="#E10600" HorizontalOptions="Center" />
+                            <Label Text="POSITION" FontFamily="TitilliumWebRegular" FontSize="10"
+                                   TextColor="#666666" HorizontalOptions="Center"
+                                   CharacterSpacing="2" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="1" Spacing="4" HorizontalOptions="Center">
+                            <Label Text="{Binding TotalPoints}"
+                                   FontFamily="TitilliumWebBold" FontSize="22"
+                                   TextColor="#FFFFFF" HorizontalOptions="Center" />
+                            <Label Text="POINTS" FontFamily="TitilliumWebRegular" FontSize="10"
+                                   TextColor="#666666" HorizontalOptions="Center"
+                                   CharacterSpacing="2" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="2" Spacing="4" HorizontalOptions="Center">
+                            <Label Text="{Binding NameAcronym}"
+                                   FontFamily="TitilliumWebBold" FontSize="22"
+                                   TextColor="#FFFFFF" HorizontalOptions="Center" />
+                            <Label Text="CODE" FontFamily="TitilliumWebRegular" FontSize="10"
+                                   TextColor="#666666" HorizontalOptions="Center"
+                                   CharacterSpacing="2" />
+                        </VerticalStackLayout>
+                    </Grid>
+                </Border>
+
+                <!-- Race Results -->
+                <Grid Padding="20,20,20,4" ColumnDefinitions="*,Auto">
+                    <Label Grid.Column="0" Text="RACE RESULTS" FontFamily="TitilliumWebBold" FontSize="13"
+                           TextColor="#FFFFFF" CharacterSpacing="3" VerticalOptions="Center" />
+                    <Border Grid.Column="1" StrokeThickness="1" Stroke="#2a3441"
+                            StrokeShape="RoundRectangle 6" BackgroundColor="#1e293b"
+                            Padding="8,4" VerticalOptions="Center">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding ToggleFilterCommand}" />
+                        </Border.GestureRecognizers>
+                        <HorizontalStackLayout Spacing="4">
+                            <Label Text="{Binding SelectedFilter}" FontFamily="TitilliumWebBold"
+                                   FontSize="11" TextColor="White" VerticalOptions="Center" />
+                            <Label Text="▼" FontSize="9" TextColor="#9CA3AF" VerticalOptions="Center">
+                                <Label.Triggers>
+                                    <DataTrigger TargetType="Label" Binding="{Binding IsFilterExpanded}" Value="True">
+                                        <Setter Property="Text" Value="▲" />
+                                    </DataTrigger>
+                                </Label.Triggers>
+                            </Label>
+                        </HorizontalStackLayout>
+                    </Border>
+                </Grid>
+
+                <!-- Filter Options -->
+                <ScrollView Orientation="Horizontal" Margin="20,0,20,4"
+                            HorizontalScrollBarVisibility="Never"
+                            IsVisible="{Binding IsFilterExpanded}">
+                    <HorizontalStackLayout Spacing="6"
+                                           BindableLayout.ItemsSource="{Binding AvailableFilters}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="x:String">
+                                <Border StrokeThickness="1" Stroke="#2a3441"
+                                        StrokeShape="RoundRectangle 6"
+                                        Padding="10,5" VerticalOptions="Center">
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Setter Property="BackgroundColor" Value="#1e293b" />
+                                            <Style.Triggers>
+                                                <DataTrigger TargetType="Border"
+                                                             Binding="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:DriverDetailViewModel}}, Path=SelectedFilter}"
+                                                             Value="{Binding .}">
+                                                    <Setter Property="BackgroundColor" Value="#E10600" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:DriverDetailViewModel}}, Path=SelectFilterCommand}"
+                                            CommandParameter="{Binding .}" />
+                                    </Border.GestureRecognizers>
+                                    <Label Text="{Binding .}" FontFamily="TitilliumWebBold"
+                                           FontSize="10" TextColor="White" />
+                                </Border>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </HorizontalStackLayout>
+                </ScrollView>
+
+                <!-- Empty State -->
+                <Label Text="No race results yet"
+                       FontFamily="TitilliumWebRegular" FontSize="13"
+                       TextColor="#666666"
+                       HorizontalOptions="Center"
+                       IsVisible="{Binding IsEmptyState}"
+                       Margin="0,8,0,0" />
+
+                <!-- Race Results List -->
+                <CollectionView ItemsSource="{Binding RaceResults}" Margin="0,0,0,0">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:DriverRaceResult">
+                            <Border StrokeThickness="1" Stroke="#2a3441"
+                                    StrokeShape="RoundRectangle 10"
+                                    BackgroundColor="#1e293b"
+                                    Padding="14,12" Margin="16,0,16,6">
+                                <Grid ColumnDefinitions="44,*,Auto" ColumnSpacing="12">
+                                    <!-- Position badge -->
+                                    <Border Grid.Column="0" StrokeThickness="0"
+                                            StrokeShape="RoundRectangle 8"
+                                            Padding="0" HeightRequest="36" WidthRequest="44"
+                                            VerticalOptions="Center">
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Setter Property="BackgroundColor" Value="#90111d" />
+                                                <Style.Triggers>
+                                                    <DataTrigger TargetType="Border" Binding="{Binding Position}" Value="1">
+                                                        <Setter Property="BackgroundColor" Value="#FFD700" />
+                                                    </DataTrigger>
+                                                    <DataTrigger TargetType="Border" Binding="{Binding Position}" Value="2">
+                                                        <Setter Property="BackgroundColor" Value="#C0C0C0" />
+                                                    </DataTrigger>
+                                                    <DataTrigger TargetType="Border" Binding="{Binding Position}" Value="3">
+                                                        <Setter Property="BackgroundColor" Value="#CD7F32" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                        <Label Text="{Binding Position, StringFormat='P{0}'}"
+                                               FontFamily="TitilliumWebBold" FontSize="15"
+                                               TextColor="#FFFFFF"
+                                               VerticalOptions="Center" HorizontalOptions="Center" />
+                                    </Border>
+                                    <!-- Event info -->
+                                    <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="1">
+                                        <Label Text="{Binding SessionName}"
+                                               TextTransform="Uppercase"
+                                               FontFamily="TitilliumWebBold" FontSize="13"
+                                               TextColor="#FFFFFF" />
+                                        <HorizontalStackLayout Spacing="4">
+                                            <Label Text="{Binding CircuitName}"
+                                                   FontFamily="TitilliumWebRegular" FontSize="11"
+                                                   TextColor="#9CA3AF" />
+                                            <Label Text="·" FontSize="11" TextColor="#9CA3AF" />
+                                            <Label Text="{Binding MeetingName}"
+                                                   FontFamily="TitilliumWebRegular" FontSize="11"
+                                                   TextColor="#9CA3AF" LineBreakMode="TailTruncation" />
+                                        </HorizontalStackLayout>
+                                    </VerticalStackLayout>
+                                    <!-- Date -->
+                                    <Label Grid.Column="2"
+                                           Text="{Binding EventDate, StringFormat='{0:dd MMM yyyy}'}"
+                                           FontFamily="TitilliumWebRegular" FontSize="12"
+                                           TextColor="#9CA3AF"
+                                           VerticalOptions="Center" />
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+            </VerticalStackLayout>
+        </ScrollView>
+        </RefreshView>
+    </Grid>
+
+</ContentPage>

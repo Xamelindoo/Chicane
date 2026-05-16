@@ -1,0 +1,504 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:Chicane.Mobile.ViewModels"
+             xmlns:models="clr-namespace:Chicane.Mobile.Models"
+             x:Class="Chicane.Mobile.Views.HomePage"
+             x:DataType="viewmodels:HomeViewModel"
+             Title="Home"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="#0b1320">
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- Compact Header -->
+        <Border Grid.Row="0" StrokeThickness="0" Padding="20,6,20,4">
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                    <GradientStop Color="#111827" Offset="0" />
+                    <GradientStop Color="#1e1b4b" Offset="0.5" />
+                    <GradientStop Color="#4c1d95" Offset="1" />
+                </LinearGradientBrush>
+            </Border.Background>
+            <Grid>
+                <HorizontalStackLayout Spacing="4" HorizontalOptions="Center" VerticalOptions="Center">
+                    <Label Text="&#x1F3C1;" FontSize="14" VerticalOptions="Center" />
+                    <Label Text="CHICANE" FontFamily="OutfitBold" FontSize="20"
+                           FontAttributes="Italic" TextColor="White" VerticalOptions="Center"
+                           CharacterSpacing="2" />
+                </HorizontalStackLayout>
+                <Border StrokeThickness="0" Padding="4" VerticalOptions="Center"
+                        HorizontalOptions="End">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding OpenSettingsCommand}" />
+                    </Border.GestureRecognizers>
+                    <Label Text="&#x2699;" FontSize="20" TextColor="#9CA3AF" VerticalOptions="Center" />
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- Loading -->
+        <VerticalStackLayout Grid.Row="1" IsVisible="{Binding IsBusy}"
+                              VerticalOptions="Center" HorizontalOptions="Center" Spacing="12">
+            <ActivityIndicator IsRunning="{Binding IsBusy}" Color="#E10600" HeightRequest="48" WidthRequest="48" />
+            <Label Text="&#x1F3CE; Loading..."
+                   FontFamily="TitilliumWebRegular" FontSize="12"
+                   TextColor="#9CA3AF" HorizontalOptions="Center" />
+        </VerticalStackLayout>
+
+        <!-- Error -->
+        <VerticalStackLayout Grid.Row="1" IsVisible="{Binding HasError}"
+                              VerticalOptions="Center" HorizontalOptions="Center" Spacing="16" Padding="32">
+            <Label Text="&#x26A0;" FontSize="48" HorizontalOptions="Center" TextColor="#E10600" />
+            <Label Text="{Binding ErrorMessage}"
+                   FontFamily="TitilliumWebSemiBold" FontSize="14"
+                   TextColor="#A0A0A0" HorizontalOptions="Center" HorizontalTextAlignment="Center" />
+            <Button Text="RETRY" BackgroundColor="#E10600" TextColor="#FFFFFF"
+                    FontFamily="TitilliumWebBold" FontSize="12" CornerRadius="4" Padding="24,10"
+                    Command="{Binding LoadCommand}" HorizontalOptions="Center" />
+        </VerticalStackLayout>
+
+        <!-- Empty -->
+        <VerticalStackLayout Grid.Row="1" IsVisible="{Binding IsEmptyState}"
+                              VerticalOptions="Center" HorizontalOptions="Center" Spacing="12" Padding="32">
+            <Label Text="&#x1F3C1;" FontSize="48" HorizontalOptions="Center" />
+            <Label Text="No race data available."
+                   FontFamily="TitilliumWebRegular" FontSize="14"
+                   TextColor="#9CA3AF" HorizontalOptions="Center" />
+            <Button Text="RETRY" BackgroundColor="#E10600" TextColor="#FFFFFF"
+                    FontFamily="TitilliumWebBold" FontSize="12" CornerRadius="4" Padding="24,10"
+                    Command="{Binding LoadCommand}" HorizontalOptions="Center" />
+        </VerticalStackLayout>
+
+        <!-- Scrollable Content -->
+        <RefreshView Grid.Row="1" IsRefreshing="{Binding IsRefreshing}"
+                     Command="{Binding RefreshCommand}"
+                     IsVisible="{Binding HasData}">
+        <ScrollView VerticalScrollBarVisibility="Never">
+            <VerticalStackLayout Spacing="0" Padding="0,0,0,20">
+
+                <!-- Pre-Race -->
+                <VerticalStackLayout IsVisible="{Binding IsPreRace}" Spacing="0">
+
+                     <!-- Next Race Countdown / Live -->
+                     <Border StrokeThickness="1" Stroke="#E10600" StrokeShape="RoundRectangle 12"
+                             Margin="16,14,16,0" Padding="12,6"
+                             BackgroundColor="#1e293b">
+                          <Border.GestureRecognizers>
+                             <TapGestureRecognizer
+                                                   Command="{Binding NavigateToLiveCommand}" />
+                         </Border.GestureRecognizers>
+                         <Grid>
+                         <!-- Pre-Race State -->
+                         <VerticalStackLayout Spacing="3" IsVisible="{Binding IsPreRace}">
+                             <!-- Row 1: GP Name + Weather -->
+                             <Grid ColumnDefinitions="*,Auto">
+                                 <Label Grid.Column="0" Text="{Binding MeetingName}"
+                                        FontFamily="TitilliumWebBold" FontSize="11"
+                                        TextColor="White" LineBreakMode="TailTruncation"
+                                        VerticalOptions="Center" />
+                                 <Border Grid.Column="1" StrokeThickness="1" Stroke="#2a3441"
+                                         StrokeShape="RoundRectangle 6" BackgroundColor="#1a2332"
+                                         Padding="4,2" VerticalOptions="Center" Margin="6,0,0,0">
+                                     <HorizontalStackLayout Spacing="2">
+                                          <Label Text="{Binding WeatherIcon}" FontSize="12" VerticalOptions="Center" />
+                                          <Label FontFamily="TitilliumWebRegular" FontSize="10" TextColor="#9CA3AF"
+                                                VerticalOptions="Center">
+                                             <Label.Text>
+                                                 <MultiBinding StringFormat="{}{0} · {1}°">
+                                                     <Binding Path="WeatherCondition" />
+                                                     <Binding Path="TemperatureC" />
+                                                 </MultiBinding>
+                                             </Label.Text>
+                                         </Label>
+                                     </HorizontalStackLayout>
+                                 </Border>
+                             </Grid>
+                             <!-- Row 2: Session Name + Countdown -->
+                             <Grid ColumnDefinitions="*,Auto">
+                                 <Label Grid.Column="0" Text="{Binding EventName}"
+                                        FontFamily="TitilliumWebBold" FontSize="21"
+                                        TextColor="#E10600" CharacterSpacing="2"
+                                        VerticalOptions="Center" LineBreakMode="TailTruncation" />
+                                 <Label Grid.Column="1" Text="{Binding Countdown}"
+                                        FontFamily="SpaceMonoBold" FontSize="21"
+                                        TextColor="#FCD34D" HorizontalTextAlignment="End"
+                                        VerticalOptions="Center" Margin="10,0,0,0" />
+                             </Grid>
+                             <!-- Row 3: Circuit + Date -->
+                             <Grid ColumnDefinitions="*,Auto">
+                                 <Label Grid.Column="0" Text="{Binding CircuitLocation}"
+                                        FontFamily="TitilliumWebRegular" FontSize="12"
+                                        TextColor="#9CA3AF" VerticalOptions="Center"
+                                        LineBreakMode="TailTruncation" />
+                                 <Label Grid.Column="1" Text="{Binding EventDate, StringFormat='{0:dd MMM · HH:mm}'}"
+                                        FontFamily="TitilliumWebRegular" FontSize="12"
+                                        TextColor="#9CA3AF" HorizontalTextAlignment="End"
+                                        VerticalOptions="Center" Margin="12,0,0,0" />
+                             </Grid>
+                         </VerticalStackLayout>
+
+                         <!-- Live State -->
+                         <VerticalStackLayout Spacing="3" IsVisible="{Binding IsLive}">
+                             <Label Text="{Binding MeetingName}"
+                                    FontFamily="TitilliumWebBold" FontSize="12"
+                                    TextColor="White" LineBreakMode="TailTruncation" />
+                             <Label Text="{Binding SessionName}"
+                                    FontFamily="TitilliumWebBold" FontSize="14"
+                                    TextColor="#E10600" CharacterSpacing="2" />
+                             <HorizontalStackLayout Spacing="8">
+                                 <Label Text="🔴" FontSize="16" VerticalOptions="Center" />
+                                 <Label Text="SEGUI LIVE"
+                                        FontFamily="TitilliumWebBold" FontSize="18"
+                                        TextColor="#E10600" VerticalOptions="Center" />
+                                 <Label Text="{Binding CircuitLocation}"
+                                        FontFamily="TitilliumWebRegular" FontSize="12"
+                                        TextColor="#9CA3AF" VerticalOptions="Center" />
+                             </HorizontalStackLayout>
+                         </VerticalStackLayout>
+                         </Grid>
+                     </Border>
+
+                    <!-- PROSSIME GARE -->
+                    <Grid Padding="20,20,16,8">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding NavigateToScheduleCommand}" />
+                        </Border.GestureRecognizers>
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Grid.Column="0" Text="PROSSIME GARE"
+                                   FontFamily="TitilliumWebBold" FontSize="18"
+                                   TextColor="#E2E8F0" CharacterSpacing="2" />
+                            <Label Grid.Column="1" Text="›" FontSize="22"
+                                   TextColor="#9CA3AF" VerticalOptions="Center" />
+                        </Grid>
+                    </Grid>
+
+                     <!-- Horizontal GP Cards -->
+                     <CollectionView ItemsSource="{Binding UpcomingWeekends}"
+                                     ItemsLayout="HorizontalList"
+                                      HeightRequest="255"
+                                     HorizontalOptions="Center"
+                                     Margin="20,4,16,8"
+                                     HorizontalScrollBarVisibility="Never">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="models:RaceWeekendCard">
+                                <Border StrokeThickness="1" Stroke="#E10600"
+                                        StrokeShape="RoundRectangle 12"
+                                        WidthRequest="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:HomeViewModel}}, Path=ScreenWidth}"
+                                        Padding="0"
+                                        Margin="0,0,0,0">
+                                    <Border.Background>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                            <GradientStop Color="#161f2e" Offset="0" />
+                                            <GradientStop Color="#0f1622" Offset="1" />
+                                        </LinearGradientBrush>
+                                    </Border.Background>
+                                    <VerticalStackLayout Spacing="0">
+                                        <Border StrokeThickness="0"
+                                                StrokeShape="RoundRectangle 12,12,0,0"
+                                                BackgroundColor="#90111d"
+                                                Padding="10,5">
+                                            <Label Text="{Binding MeetingName}"
+                                                   FontFamily="TitilliumWebBold" FontSize="13"
+                                                   TextColor="White"
+                                                   LineBreakMode="TailTruncation" />
+                                        </Border>
+                                        <Image Source="{Binding CircuitImageUrl}"
+                                                HeightRequest="152"
+                                               Aspect="AspectFit"
+                                               Margin="0,6,0,0"
+                                               HorizontalOptions="Center" />
+                                        <Grid Padding="12,12" ColumnSpacing="10">
+                                            <VerticalStackLayout Spacing="3">
+                                                <Label FontFamily="TitilliumWebSemiBold" FontSize="13"
+                                                       TextColor="#E2E8F0">
+                                                    <Label.Text>
+                                                        <MultiBinding StringFormat="{}{0:dd MMM} - {1:dd MMM}">
+                                                            <Binding Path="DateStart" />
+                                                            <Binding Path="DateEnd" />
+                                                        </MultiBinding>
+                                                    </Label.Text>
+                                                </Label>
+                                                <Label FontFamily="TitilliumWebRegular" FontSize="12"
+                                                       TextColor="#9CA3AF">
+                                                    <Label.Text>
+                                                        <MultiBinding StringFormat="{}{0}, {1}">
+                                                            <Binding Path="CircuitName" />
+                                                            <Binding Path="Country" />
+                                                        </MultiBinding>
+                                                    </Label.Text>
+                                                </Label>
+                                            </VerticalStackLayout>
+                                        </Grid>
+                                    </VerticalStackLayout>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+
+                    <!-- CLASSIFICA PILOTI -->
+                    <Border StrokeThickness="1" Stroke="#2a3441" StrokeShape="RoundRectangle 12"
+                            BackgroundColor="#1e293b" Padding="14" Margin="16,0,16,10">
+                        <VerticalStackLayout Spacing="0">
+                            <Grid Padding="0,0,0,8">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding NavigateToLeaderboardsDriversCommand}" />
+                                </Border.GestureRecognizers>
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <Label Grid.Column="0" Text="CLASSIFICA PILOTI"
+                                           FontFamily="TitilliumWebBold" FontSize="16"
+                                           TextColor="#E2E8F0" CharacterSpacing="1" />
+                                    <Label Grid.Column="1" Text="›" FontSize="20"
+                                           TextColor="#9CA3AF" VerticalOptions="Center" />
+                                </Grid>
+                            </Grid>
+                            <VerticalStackLayout BindableLayout.ItemsSource="{Binding TopDrivers}"
+                                                 Spacing="8">
+                                <BindableLayout.ItemTemplate>
+                                    <DataTemplate x:DataType="models:StandingsEntry">
+                                        <Grid ColumnDefinitions="24,32,*,Auto" ColumnSpacing="10">
+                                            <Label Grid.Column="0"
+                                                   Text="{Binding Position, StringFormat='{0}'}"
+                                                   FontFamily="TitilliumWebBold" FontSize="15"
+                                                   VerticalOptions="Center" HorizontalTextAlignment="Center">
+                                                <Label.Triggers>
+                                                    <DataTrigger TargetType="Label" Binding="{Binding Position}" Value="1">
+                                                        <Setter Property="TextColor" Value="#FFD700" />
+                                                    </DataTrigger>
+                                                    <DataTrigger TargetType="Label" Binding="{Binding Position}" Value="2">
+                                                        <Setter Property="TextColor" Value="#C0C0C0" />
+                                                    </DataTrigger>
+                                                    <DataTrigger TargetType="Label" Binding="{Binding Position}" Value="3">
+                                                        <Setter Property="TextColor" Value="#CD7F32" />
+                                                    </DataTrigger>
+                                                </Label.Triggers>
+                                            </Label>
+                                            <!-- Headshot -->
+                                            <Border Grid.Column="1" StrokeThickness="1" Stroke="#2a3441"
+                                                    StrokeShape="RoundRectangle 16"
+                                                    WidthRequest="32" HeightRequest="32"
+                                                    BackgroundColor="#0f172a">
+                                                <Image Source="{Binding HeadshotUrl}"
+                                                       Aspect="AspectFill" />
+                                            </Border>
+                                            <VerticalStackLayout Grid.Column="2" VerticalOptions="Center" Spacing="2">
+                                                <Label Text="{Binding DriverName}"
+                                                       FontFamily="TitilliumWebRegular" FontSize="15"
+                                                       TextColor="White" LineBreakMode="TailTruncation" />
+                                                <Label Text="{Binding TeamName}"
+                                                       FontFamily="TitilliumWebRegular" FontSize="12"
+                                                       TextColor="#9CA3AF" LineBreakMode="TailTruncation" />
+                                            </VerticalStackLayout>
+                                            <Label Grid.Column="3" Text="{Binding Points, StringFormat='{0} pt'}"
+                                                   FontFamily="TitilliumWebBold" FontSize="16"
+                                                   TextColor="White" VerticalOptions="Center" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </BindableLayout.ItemTemplate>
+                            </VerticalStackLayout>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- CLASSIFICA COSTRUTTORI -->
+                    <Border StrokeThickness="1" Stroke="#2a3441" StrokeShape="RoundRectangle 12"
+                            BackgroundColor="#1e293b" Padding="14" Margin="16,0,16,10">
+                        <VerticalStackLayout Spacing="0">
+                            <Grid Padding="0,0,0,8">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding NavigateToLeaderboardsTeamsCommand}" />
+                                </Border.GestureRecognizers>
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <Label Grid.Column="0" Text="CLASSIFICA COSTRUTTORI"
+                                           FontFamily="TitilliumWebBold" FontSize="16"
+                                           TextColor="#E2E8F0" CharacterSpacing="1" />
+                                    <Label Grid.Column="1" Text="›" FontSize="20"
+                                           TextColor="#9CA3AF" VerticalOptions="Center" />
+                                </Grid>
+                            </Grid>
+                            <VerticalStackLayout BindableLayout.ItemsSource="{Binding TopTeams}"
+                                                 Spacing="8">
+                                <BindableLayout.ItemTemplate>
+                                    <DataTemplate x:DataType="models:ConstructorStandingsEntry">
+                                        <Grid ColumnDefinitions="24,32,*,Auto" ColumnSpacing="10">
+                                            <Label Grid.Column="0"
+                                                   Text="{Binding Position, StringFormat='{0}'}"
+                                                   FontFamily="TitilliumWebBold" FontSize="15"
+                                                   VerticalOptions="Center" HorizontalTextAlignment="Center">
+                                                <Label.Triggers>
+                                                    <DataTrigger TargetType="Label" Binding="{Binding Position}" Value="1">
+                                                        <Setter Property="TextColor" Value="#FFD700" />
+                                                    </DataTrigger>
+                                                    <DataTrigger TargetType="Label" Binding="{Binding Position}" Value="2">
+                                                        <Setter Property="TextColor" Value="#C0C0C0" />
+                                                    </DataTrigger>
+                                                    <DataTrigger TargetType="Label" Binding="{Binding Position}" Value="3">
+                                                        <Setter Property="TextColor" Value="#CD7F32" />
+                                                    </DataTrigger>
+                                                </Label.Triggers>
+                                            </Label>
+                                            <!-- Team Logo -->
+                                            <Border Grid.Column="1" StrokeThickness="1" Stroke="#2a3441"
+                                                    StrokeShape="RoundRectangle 16"
+                                                    WidthRequest="32" HeightRequest="32"
+                                                    BackgroundColor="#0f172a" Padding="2">
+                                                <Image Source="{Binding TeamLogo}" Aspect="AspectFit" />
+                                            </Border>
+                                            <Label Grid.Column="2" Text="{Binding TeamName}"
+                                                   FontFamily="TitilliumWebRegular" FontSize="15"
+                                                   TextColor="White" VerticalOptions="Center"
+                                                   LineBreakMode="TailTruncation" />
+                                            <Label Grid.Column="3" Text="{Binding Points, StringFormat='{0} pt'}"
+                                                   FontFamily="TitilliumWebBold" FontSize="16"
+                                                   TextColor="White" VerticalOptions="Center" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </BindableLayout.ItemTemplate>
+                            </VerticalStackLayout>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- TOP NEWS -->
+                    <Border StrokeThickness="1" Stroke="#2a3441" StrokeShape="RoundRectangle 12"
+                            BackgroundColor="#1e293b" Padding="14" Margin="16,0,16,10">
+                        <VerticalStackLayout Spacing="0">
+                            <Grid Padding="0,0,0,8">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding NavigateToNewsCommand}" />
+                                </Border.GestureRecognizers>
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <Label Grid.Column="0" Text="TOP NEWS"
+                                           FontFamily="TitilliumWebBold" FontSize="16"
+                                           TextColor="#E2E8F0" CharacterSpacing="1" />
+                                    <Label Grid.Column="1" Text="›" FontSize="20"
+                                           TextColor="#9CA3AF" VerticalOptions="Center" />
+                                </Grid>
+                            </Grid>
+                            <VerticalStackLayout BindableLayout.ItemsSource="{Binding TopNews}"
+                                                 Spacing="6">
+                                <BindableLayout.ItemTemplate>
+                                    <DataTemplate x:DataType="models:NewsItem">
+                                        <Grid ColumnDefinitions="60,*" ColumnSpacing="10">
+                                            <Border Grid.Column="0" StrokeThickness="1" Stroke="#2a3441"
+                                                    StrokeShape="RoundRectangle 6" WidthRequest="60"
+                                                    HeightRequest="60" BackgroundColor="#0f172a">
+                                                <Image Source="{Binding ImageUrl}" Aspect="AspectFill" />
+                                            </Border>
+                                            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center"
+                                                                 Spacing="2">
+                                                <Label Text="{Binding Title}"
+                                                       FontFamily="TitilliumWebRegular" FontSize="14"
+                                                       TextColor="White" LineBreakMode="TailTruncation"
+                                                       MaxLines="2" />
+                                                <Label Text="{Binding TimeAgo}"
+                                                       FontFamily="TitilliumWebRegular" FontSize="11"
+                                                       TextColor="#9CA3AF" />
+                                            </VerticalStackLayout>
+                                        </Grid>
+                                    </DataTemplate>
+                                </BindableLayout.ItemTemplate>
+                            </VerticalStackLayout>
+                        </VerticalStackLayout>
+                    </Border>
+                </VerticalStackLayout>
+
+                <!-- Live Session -->
+                <VerticalStackLayout IsVisible="{Binding IsLive}" Spacing="12" Padding="16,16,16,20">
+                    <Border StrokeThickness="1" Stroke="#E10600" StrokeShape="RoundRectangle 6"
+                            BackgroundColor="#E10600" Padding="14,6" HorizontalOptions="Center">
+                        <Label Text="{Binding SessionStatus}" FontFamily="TitilliumWebBold" FontSize="14"
+                               TextColor="White" CharacterSpacing="4" />
+                    </Border>
+                    <Label Text="{Binding SessionName}" FontFamily="TitilliumWebBold" FontSize="28"
+                           TextColor="White" HorizontalOptions="Center" />
+                    <Label FontFamily="TitilliumWebRegular" FontSize="36" TextColor="White"
+                           HorizontalOptions="Center">
+                        <Label.Text>
+                            <MultiBinding StringFormat="{}{0}/{1}">
+                                <Binding Path="CurrentLap" /><Binding Path="TotalLaps" />
+                            </MultiBinding>
+                        </Label.Text>
+                    </Label>
+                    <Label Text="LAPS" FontFamily="TitilliumWebRegular" FontSize="11"
+                           TextColor="#9CA3AF" HorizontalOptions="Center" CharacterSpacing="3" />
+                    <CollectionView ItemsSource="{Binding PositionBoard}" Margin="0,12,0,0">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="models:DriverGap">
+                                <Grid ColumnDefinitions="32,*,Auto" Padding="0,4" ColumnSpacing="8">
+                                    <Label Grid.Column="0" Text="{Binding Position}"
+                                           FontFamily="TitilliumWebBold" FontSize="16"
+                                           TextColor="#E10600" VerticalOptions="Center" />
+                                    <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="1">
+                                        <Label Text="{Binding DriverName}" FontFamily="TitilliumWebRegular"
+                                               FontSize="13" TextColor="White" />
+                                        <Label Text="{Binding TeamName}" FontSize="10" TextColor="#9CA3AF" />
+                                    </VerticalStackLayout>
+                                    <Border Grid.Column="2" BackgroundColor="#1a2332" StrokeThickness="0"
+                                            StrokeShape="RoundRectangle 4" Padding="8,3" VerticalOptions="Center">
+                                        <Label Text="{Binding GapDisplay}" FontFamily="TitilliumWebBold"
+                                               FontSize="13" TextColor="White" />
+                                    </Border>
+                                </Grid>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+
+            </VerticalStackLayout>
+        </ScrollView>
+        </RefreshView>
+
+        <!-- Weather Modal -->
+        <Border IsVisible="{Binding ShowWeatherDetail}" BackgroundColor="#F00A0A0A"
+                StrokeThickness="0" VerticalOptions="Fill" HorizontalOptions="Fill">
+            <Border.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding CloseWeatherDetailCommand}" />
+            </Border.GestureRecognizers>
+            <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="0">
+                <Border StrokeThickness="1" Stroke="#2a3441" StrokeShape="RoundRectangle 8"
+                        BackgroundColor="#1e293b" Padding="24,20" WidthRequest="320">
+                    <VerticalStackLayout Spacing="16">
+                        <Label Text="{Binding EventName, StringFormat='{0} WEATHER'}"
+                               FontFamily="TitilliumWebBold" FontSize="15" TextColor="White"
+                               HorizontalOptions="Center" />
+                        <BoxView HeightRequest="1" Color="#2a3441" />
+                        <Label Text="{Binding WeatherForecast.IconGlyph}" FontSize="40"
+                               HorizontalOptions="Center" />
+                        <Label Text="{Binding WeatherForecast.Condition}"
+                               FontFamily="TitilliumWebBold" FontSize="16" TextColor="White"
+                               HorizontalOptions="Center" />
+                        <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" RowSpacing="12"
+                              ColumnSpacing="16" Margin="0,8,0,0">
+                            <VerticalStackLayout Grid.Row="0" Grid.Column="0" Spacing="4">
+                                <Label Text="TEMP" FontSize="9" TextColor="#9CA3AF"
+                                       FontFamily="TitilliumWebBold" CharacterSpacing="2" />
+                                <Label Text="{Binding WeatherForecast.TemperatureC, StringFormat='{0}°C'}"
+                                       FontFamily="TitilliumWebRegular" FontSize="16" TextColor="White" />
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Row="0" Grid.Column="1" Spacing="4">
+                                <Label Text="WIND" FontSize="9" TextColor="#9CA3AF"
+                                       FontFamily="TitilliumWebBold" CharacterSpacing="2" />
+                                <Label Text="{Binding WeatherForecast.WindSpeed, StringFormat='{0:F1} m/s'}"
+                                       FontFamily="TitilliumWebRegular" FontSize="16" TextColor="White" />
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Row="1" Grid.Column="0" Spacing="4">
+                                <Label Text="HUMIDITY" FontSize="9" TextColor="#9CA3AF"
+                                       FontFamily="TitilliumWebBold" CharacterSpacing="2" />
+                                <Label Text="{Binding WeatherForecast.Humidity, StringFormat='{0}%'}"
+                                       FontFamily="TitilliumWebRegular" FontSize="16" TextColor="White" />
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Row="1" Grid.Column="1" Spacing="4">
+                                <Label Text="PRESSURE" FontSize="9" TextColor="#9CA3AF"
+                                       FontFamily="TitilliumWebBold" CharacterSpacing="2" />
+                                <Label Text="{Binding WeatherForecast.Pressure, StringFormat='{0} hPa'}"
+                                       FontFamily="TitilliumWebRegular" FontSize="16" TextColor="White" />
+                            </VerticalStackLayout>
+                        </Grid>
+                        <Button Text="CLOSE" Command="{Binding CloseWeatherDetailCommand}"
+                                BackgroundColor="#E10600" TextColor="White" FontFamily="TitilliumWebBold"
+                                FontSize="12" CornerRadius="6" Padding="0,10" Margin="0,8,0,0" />
+                    </VerticalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+        </Border>
+    </Grid>
+</ContentPage>

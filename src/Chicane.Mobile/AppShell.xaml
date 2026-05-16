@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="Chicane.Mobile.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:views="clr-namespace:Chicane.Mobile.Views"
+    Shell.FlyoutBehavior="Disabled"
+    Shell.TabBarBackgroundColor="#1e293b"
+    Shell.TabBarForegroundColor="#E10600"
+    Shell.TabBarUnselectedColor="#9CA3AF"
+    Shell.TabBarTitleColor="#E10600">
+
+    <TabBar>
+        <ShellContent
+            Title="Home"
+            Icon="icon_home.png"
+            ContentTemplate="{DataTemplate views:HomePage}"
+            Route="home" />
+
+        <ShellContent
+            Title="Schedule"
+            Icon="icon_schedule.png"
+            ContentTemplate="{DataTemplate views:SchedulePage}"
+            Route="schedule" />
+
+        <ShellContent
+            Title="Leaderboards"
+            Icon="icon_leaderboards.png"
+            ContentTemplate="{DataTemplate views:LeaderboardsPage}"
+            Route="leaderboards" />
+
+        <ShellContent
+            Title="News"
+            Icon="icon_news.png"
+            ContentTemplate="{DataTemplate views:NewsPage}"
+            Route="news" />
+    </TabBar>
+
+</Shell>

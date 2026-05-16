@@ -1,204 +1,154 @@
-# Specifica di Progetto - BookScout Mobile
+# Specifica di Progetto - Chicane
+
 
 ## 1. Visione e contesto
 
 ### Problema da risolvere
 
-Chi cerca un libro da mobile spesso deve passare tra risultati poco leggibili, schede incomplete e assenza di continuità tra una ricerca e la successiva. Per un progetto didattico MAUI serve invece una app informativa con navigazione chiara, dati remoti affidabili e persistenza locale essenziale.
+Gli appassionati di motorsport devono spesso consultare molteplici fonti per ottenere countdown precisi, risultati live e classifiche aggiornate. Le app esistenti sono spesso caotiche, piene di pubblicità o con interfacce datate che non trasmettono il feeling tecnologico delle competizioni moderne.
 
 ### Obiettivo del progetto
 
-Realizzare una applicazione `.NET MAUI` Android-first per cercare libri per titolo o autore, consultare un dettaglio completo, salvare preferiti in locale e mantenere una cronologia delle ricerche, con particolare attenzione a qualità della navigazione, chiarezza degli stati UI e separazione pulita tra ViewModel e Service.
+Realizzare Chicane, un'applicazione .NET MAUI ad alte prestazioni, con estetica "Carbon & Neon". L'app offre una visualizzazione immersiva e dinamica per F1, WEC, WRC e MotoGP, con una Hero Section a schermo intero che mostra sempre l'immagine del circuito della prossima gara della categoria selezionata (di default F1). La Hero Section cambia stato tra:
+- **Pre-gara**: mostra countdown, nome evento, meteo, data/ora, nome circuito.
+- **Live**: mostra nome sessione (es. Prove Libere 1, Qualifica, Gara), stato della sessione, dati live (giri, posizioni, tempi, meteo live, ecc.), mappa circuito con posizione in tempo reale.
+
+L'interfaccia è progettata per essere intuitiva: scorrendo verso il basso si accede a statistiche, classifiche, tempi, notizie e altri dati tecnici. La barra inferiore consente di navigare tra Home, Notizie, Scuderie (con possibilità di selezionare una scuderia per vedere stats e news dedicate). Una tendina superiore a scorrimento permette di cambiare categoria motorsport (F1, WEC, MotoGP, ecc.), sempre accessibile. In alto, o in posizione fissa, è presente un countdown globale all'evento motorsport più vicino (di qualsiasi categoria).
 
 ### Utenti target
 
-- lettori occasionali che vogliono consultare rapidamente informazioni su un libro;
-- studenti che cercano libri per autore, titolo o categoria editoriale;
-- appassionati di lettura che desiderano tenere un elenco locale di libri di interesse.
+- Fan accaniti di F1, WEC, WRC e MotoGP che cercano un "muretto box" tascabile.
+- Utenti che desiderano un countdown estetico e preciso per i weekend di gara.
+- Appassionati che necessitano di consultare rapidamente classifiche costruttori, piloti e notizie.
 
 ## 2. Ambito MVP
 
+
 ### Flusso principale da supportare
 
-1. L'utente apre l'app e inserisce una ricerca per titolo o autore.
-2. L'app mostra un elenco di risultati con copertina, titolo e autore.
-3. L'utente apre il dettaglio di un libro e consulta le informazioni estese.
-4. L'utente salva il libro tra i preferiti locali.
-5. L'utente può rivedere preferiti e cronologia ricerche nelle schermate dedicate.
+1. L'utente apre l'app e atterra sulla Hero Section a schermo intero (100vh) della categoria predefinita (F1), con immagine del circuito della prossima gara.
+2. In alto è sempre visibile il countdown globale all'evento motorsport più vicino (di qualsiasi categoria).
+3. La Hero Section mostra:
+	- Se non ci sono sessioni attive: countdown, nome evento, meteo previsto, data/ora, nome circuito.
+	- Se una sessione è in corso: nome sessione (es. Prove Libere 1, Qualifica, Gara), stato, dati live (giri, posizioni, tempi, meteo live), mappa circuito con posizione in tempo reale.
+4. Scorrendo verso il basso si accede a statistiche, classifiche, tempi, notizie e altri dati tecnici.
+5. La barra inferiore permette di navigare tra Home, Notizie, Scuderie (Teams) e altre sezioni.
+6. Nella sezione Scuderie, l'utente può selezionare una scuderia per vedere statistiche, notizie e dettagli dedicati.
+7. Scorrendo verso il basso (pull-down dall'alto) si apre una tendina minimal per cambiare categoria motorsport (F1, WEC, MotoGP, ecc.), con la prima categoria sempre F1.
+
 
 ### Funzionalità obbligatorie
 
-- ricerca libri per titolo o autore tramite API remota;
-- pagina Search unica che integri input di ricerca e lista risultati nello stesso flusso;
-- elenco risultati con copertina, titolo e autore;
-- pagina dettaglio con descrizione, editore, anno, pagine, categorie e ISBN quando disponibili;
-- salvataggio e rimozione dei preferiti in locale;
-- cronologia locale delle ricerche effettuate;
-- gestione esplicita di loading state, error state, empty state e success state per i flussi di ricerca e dettaglio.
+- Dynamic Hero Section: Visualizzazione a schermo intero con immagine circuito, countdown o dati live, meteo, nome evento/sessione, stato sessione.
+- Live Track Widget: Mappa del circuito con indicatore di posizione in tempo reale (Live Mode).
+- Multi-Series Support: Gestione di F1, WEC, WRC e MotoGP con temi colore dedicati (#E10600 per F1, #004225 per WEC, #30839f per WRC, #FF6600 per MotoGP).
+- Data Integration: Consumo di API remote (OpenF1/Ergast) e sistema di Mock per sviluppo offline.
+- Global State Management: CategoryProvider per sincronizzare la serie attiva in tutta l'app.
+- UI States: Gestione esplicita di Loading, Error, Empty e Success.
+- Barra inferiore per navigazione tra Home, Notizie, Scuderie (Teams) e altre sezioni.
+- Sezione Scuderie con possibilità di selezionare una scuderia per vedere stats, notizie e dettagli.
+- Tendina superiore a scorrimento per cambiare categoria motorsport, sempre accessibile.
+- Countdown globale all'evento motorsport più vicino, sempre visibile.
+
 
 ### Funzionalità opzionali future
 
-- fase post-MVP 1: filtri per lingua o categoria e ordinamento per rilevanza, data o autore;
-- fase post-MVP 2: note personali associate ai libri salvati;
-- fase post-MVP 3: scansione ISBN tramite fotocamera;
-- fase post-MVP 4: modalità offline estesa per libri già memorizzati localmente;
-- supporto a provider alternativi come Open Library in una fase successiva, se necessario.
+- fase post-MVP 1: Notifiche push all'inizio di una gara, incidenti o altro.
+- fase post-MVP 2: Widget per la Home (Android/iOS) con il countdown della categoria preferita.
+- fase post-MVP 3: Archivio storico dei risultati delle stagioni precedenti.
+- fase post-MVP 4: Integrazione profili dettagliati dei piloti con statistiche di carriera.
 
 ### Priorità roadmap post-MVP
 
 Il planning successivo dovrà mantenere questo ordine di priorità:
 
-1. filtri e ordinamento;
-2. note personali;
-3. barcode scanner ISBN;
-4. offline mode estesa.
+1. Notifiche pre-gara;
+2. Widget Home Screen;
+3. Archivio storico;
+4. Profili piloti;
+
 
 ### Non-obiettivi
 
-- acquisto o prenotazione dei libri;
-- autenticazione utente o sincronizzazione cloud;
-- recensioni sociali, rating o commenti condivisi;
-- modifica dei dati editoriali remoti;
-- supporto offline completo per ricerche remote nel primo rilascio.
-- parità funzionale iOS rispetto ad Android nel primo rilascio.
+- Streaming video o audio delle gare.
+- Sistemi di scommesse o acquisto biglietti.
+- Social network interno o commenti utenti.
+- Supporto offline per i dati live (richiede connessione attiva).
+- Parità funzionale iOS rispetto ad Android nel primo rilascio.
 
 ## 3. Scenari d'uso principali
 
-### Scenario 1 - Ricerca veloce di un libro
+### Scenario 1 - L'attesa del semaforo verde
 
-Un utente cerca `Pride and Prejudice`, ottiene una lista di risultati con copertine e autori, identifica rapidamente il libro corretto e apre il dettaglio per leggerne descrizione e dati editoriali.
+Un utente apre Chicane tre giorni prima di un GP. La Hero Section visualizza un countdown monumentale in font Monospace su sfondo nero profondo. Sotto il timer, sono visibili le condizioni meteo previste per la pista.
 
-### Scenario 2 - Consultazione approfondita
+### Scenario 2 - Monitoraggio muretto box
 
-Uno studente apre il dettaglio di un libro trovato via ricerca, controlla editore, anno, numero di pagine, categorie e ISBN, poi decide se salvarlo tra i preferiti per ritrovarlo in seguito.
+Durante la gara, l'utente usa l'app per vedere i distacchi (gap) tra i primi 4 piloti senza dover attendere la grafica TV. La mappa del circuito mostra in quale settore si trova attualmente la testa della corsa.
 
-### Scenario 3 - Ripresa di una ricerca recente
+### Scenario 3 - Consultazione classifiche mondiali
 
-Un utente torna sull'app in un secondo momento, apre la schermata History, tocca una ricerca recente e rilancia la consultazione senza dover reinserire manualmente il testo.
-
-### Scenario 4 - Revisione dei libri salvati
-
-Un utente apre la schermata Favorites per rivedere i libri già salvati localmente, consultare di nuovo i dettagli e rimuovere quelli non più interessanti.
+Al termine di un weekend di gara, l'utente apre la sezione Standings per verificare il sorpasso in classifica costruttori, visualizzando i punti totali e il distacco tra le scuderie.
 
 ## 4. Requisiti funzionali
 
-- FR-01: l'app deve consentire la ricerca di libri tramite testo libero per titolo o autore.
-- FR-02: la ricerca deve usare Google Books API come provider base dell'MVP, in particolare `GET /volumes?q={query}` per i risultati e `GET /volumes/{id}` per il dettaglio.
-- FR-03: l'app deve mostrare ogni risultato con almeno copertina, titolo e autore; in assenza della copertina deve mostrare un placeholder o uno stato visivo equivalente.
-- FR-04: selezionando un risultato, l'utente deve poter aprire una pagina dettaglio con informazioni estese disponibili: descrizione, editore, anno o data pubblicazione, numero di pagine, categorie e ISBN.
-- FR-05: l'app deve tollerare risposte API parziali o campi mancanti senza generare errori bloccanti di UI.
-- FR-06: l'utente deve poter aggiungere o rimuovere un libro dai preferiti locali.
-- FR-07: i preferiti devono restare disponibili dopo la chiusura e riapertura dell'app e devono includere una copia locale completa dei principali dati di dettaglio disponibili al momento del salvataggio.
-- FR-08: aprendo un libro dai Favorites, l'app deve mostrare subito i dati locali salvati e, se la rete è disponibile, tentare un refresh remoto in background senza bloccare la consultazione iniziale; se l'aggiornamento riesce, i dati possono aggiornarsi in modo silenzioso, mentre se fallisce deve essere mostrato un messaggio non bloccante.
-- FR-09: l'app deve salvare localmente la cronologia delle ricerche effettuate in forma deduplicata e mostrarla in una schermata dedicata.
-- FR-10: dalla cronologia l'utente deve poter rilanciare una ricerca con un tap, mantenendo l'ordinamento dal più recente al meno recente.
-- FR-11: l'utente deve poter cancellare manualmente l'intera cronologia locale e rimuovere singole voci.
-- FR-12: le schermate che caricano dati remoti devono sempre esporre uno stato tra loading, success, empty o error.
-- FR-13: la navigazione tra Search con risultati integrati, Detail, Favorites e History deve risultare coerente con Shell navigation.
-- FR-14: l'app deve gestire errori di rete o indisponibilità del servizio con messaggi comprensibili e possibilità di retry.
+- FR-01: L'app deve fornire un countdown preciso per la prossima sessione della serie selezionata.
+- FR-02: In modalità Live, l'app deve mostrare Giro Corrente / Giri Totali e i distacchi in secondi (Gaps).
+- FR-03: La UI deve utilizzare esclusivamente font Sans-Serif e Monospace per garantire un look tecnico.
+- FR-04: Il sistema deve permettere lo switch tra F1, WEC e MotoGP aggiornando istantaneamente il CategoryProvider
+- FR-05: Le classifiche devono essere persistite localmente in SQLite per la consultazione offline di base.
+- FR-06: L'utente deve poter forzare il refresh dei dati tramite una gesture di "pull-to-refresh" nelle liste.
+- FR-07: La navigazione deve essere gestita tramite AppShell per garantire fluidità tra le Tab.
+- FR-08: L'app deve mostrare l'intero calendario stagionale per la serie selezionata, distinguendo tra eventi passati (risultati) e futuri.
+- FR-09: Il sistema deve permettere all'utente di programmare un avviso locale per l'inizio delle sessioni di qualifica e gara.
 
 ## 5. Epic, user stories e criteri di accettazione
 
-### EPIC-01 - Ricerca e lista risultati
+### EPIC-01 - La hero section dinamica
 
 **Obiettivo:**
 
-Consentire all'utente di trovare rapidamente libri tramite una query testuale e consultare un elenco chiaro di risultati.
+Fornire un impatto visivo immediato e informativo all'apertura dell'app.
 
 **User stories:**
 
-- Come utente, voglio cercare un libro per titolo o autore così da trovare velocemente i contenuti rilevanti.
-- Come utente, voglio vedere risultati leggibili con copertina e autore così da distinguere i libri corretti.
-- Come utente, voglio feedback chiari durante il caricamento o in caso di errore così da capire cosa sta succedendo.
+- Come utente, voglio vedere quanto manca alla gara o cosa succede in pista appena apro l'app
 
 **Criteri di accettazione:**
 
-- [ ] Inserendo una query valida, l'app avvia una ricerca remota e mostra subito uno stato di caricamento.
-- [ ] Se la ricerca restituisce risultati, la UI mostra una lista con almeno copertina, titolo e autore per ogni elemento.
-- [ ] Se la ricerca non restituisce risultati, la UI mostra uno stato empty esplicito invece di una pagina vuota.
-- [ ] Se la richiesta fallisce, la UI mostra un messaggio di errore e una azione di retry.
+- [ ] Se non ci sono sessioni attive, mostra il Countdown.
+- [ ] Se una sessione è "Live", mostra i dati telemetrici e la mappa del circuito.
+- [ ] Lo sfondo deve essere #0A0A0A con font JetBrains Mono per i numeri.
 
-### EPIC-02 - Dettaglio libro
+### EPIC-02 - Multi-Series Switcher
 
 **Obiettivo:**
 
-Permettere all'utente di consultare tutte le informazioni editoriali utili relative a un libro selezionato.
+Permettere la consultazione fluida di diversi campionati mantenendo la coerenza visiva.
 
 **User stories:**
 
-- Come utente, voglio aprire il dettaglio di un libro così da leggere descrizione e metadati estesi.
-- Come utente, voglio che i campi mancanti siano gestiti bene così da non trovare schermate rotte o incoerenti.
+- Come utente, voglio passare dalla F1 alla MotoGP istantaneamente tramite un menu rapido.
 
 **Criteri di accettazione:**
 
-- [ ] Toccando un risultato, l'utente raggiunge la schermata Detail del libro selezionato.
-- [ ] La schermata mostra descrizione, editore, data pubblicazione, pagine, categorie e ISBN quando disponibili.
-- [ ] Se alcuni campi non sono presenti nella risposta API, la schermata resta leggibile e non mostra errori tecnici.
-- [ ] La schermata dettaglio consente di salvare o rimuovere il libro dai preferiti locali.
-
-### EPIC-03 - Preferiti locali
-
-**Obiettivo:**
-
-Consentire all'utente di mantenere una piccola libreria personale locale dei libri di interesse.
-
-**User stories:**
-
-- Come utente, voglio salvare un libro tra i preferiti così da ritrovarlo facilmente.
-- Come utente, voglio rivedere i miei preferiti anche dopo aver chiuso l'app così da non perdere il mio elenco.
-
-**Criteri di accettazione:**
-
-- [ ] Salvando un libro dai dettagli, il libro compare nella schermata Favorites.
-- [ ] Chiudendo e riaprendo l'app, i preferiti precedentemente salvati restano disponibili.
-- [ ] Aprendo un libro dalla schermata Favorites, i dati di dettaglio principali salvati localmente sono consultabili senza dipendere da una nuova chiamata remota.
-- [ ] Se la rete è disponibile, l'apertura di un libro dai Favorites può aggiornare in background i dati remoti senza bloccare la visualizzazione iniziale.
-- [ ] Se il refresh remoto fallisce, la schermata resta utilizzabile e mostra un feedback di errore non bloccante.
-- [ ] Se il refresh remoto riesce, il contenuto può aggiornarsi senza richiedere conferma esplicita all'utente.
-- [ ] L'utente può rimuovere un libro dai preferiti senza effetti collaterali sugli altri dati locali.
-
-### EPIC-04 - Cronologia ricerche
-
-**Obiettivo:**
-
-Permettere all'utente di riprendere rapidamente ricerche recenti senza reinserire ogni volta il testo.
-
-**User stories:**
-
-- Come utente, voglio vedere le ricerche recenti così da riprendere velocemente un argomento già consultato.
-- Come utente, voglio rilanciare una ricerca dalla cronologia con un solo tap così da velocizzare l'uso ripetuto dell'app.
-
-**Criteri di accettazione:**
-
-- [ ] Ogni ricerca completata aggiorna la cronologia locale.
-- [ ] Se una query già presente viene ripetuta, la cronologia non crea un duplicato ma riporta la voce in cima.
-- [ ] La schermata History mostra le query recenti in ordine dal più recente al meno recente.
-- [ ] Toccando una voce della cronologia, l'app rilancia la stessa ricerca e mostra i risultati aggiornati.
-- [ ] L'utente può cancellare tutta la cronologia con una azione esplicita.
-- [ ] L'utente può rimuovere una singola voce della cronologia senza svuotare l'intero elenco.
+- [ ] Il menu pull-down superiore deve contenere le icone delle serie disponibili.
+- [ ] Il cambio serie deve modificare l'accent color globale dell'applicazione.
 
 ## 6. Requisiti non funzionali
 
 ### UX e stati UI
 
-- L'utente deve poter raggiungere la ricerca e il primo elenco risultati con un flusso semplice e senza passaggi ridondanti.
-- Nel MVP la ricerca e la lista risultati condividono la stessa schermata per ridurre passaggi e cambi di contesto.
-- Le schermate Search, Results e Detail non devono mai restare in uno stato ambiguo: devono mostrare chiaramente loading, empty, error o success.
-- Le immagini remote non devono compromettere la leggibilità del layout quando sono assenti, lente o non disponibili.
+- L'interfaccia deve evitare elementi decorativi inutili, privilegiando la leggibilità dei dati tecnici.
+- Rispetto rigoroso della palette "Carbon & Neon" ( #0A0A0A, #E10600, Pure White).
 
 ### Prestazioni percepite
 
-- Dopo l'avvio di una ricerca, la UI deve reagire immediatamente mostrando un indicatore di caricamento o uno stato equivalente.
-- In condizioni di rete normali, i risultati della prima pagina dovrebbero diventare consultabili in pochi secondi.
-- Lo scrolling della lista risultati deve restare fluido su dispositivi Android di fascia media usati in contesto didattico.
+- Il passaggio tra le Tab della Shell deve essere istantaneo.
 
 ### Affidabilità e gestione errori
 
-- Le eccezioni di rete o parsing non devono emergere come crash del flusso principale.
-- I messaggi di errore devono essere comprensibili e orientati all'azione, ad esempio riprovare la ricerca.
-- Le risposte JSON con campi mancanti o opzionali devono essere gestite in modo difensivo.
-- Il refresh remoto in background dai Favorites non deve bloccare la schermata né degradare la consultazione dei dati già salvati localmente.
-- In caso di fallimento del refresh remoto dai Favorites, il feedback utente deve essere visibile ma non invasivo.
+- In caso di API offline, l'app deve mostrare gli ultimi dati salvati in SQLite con un avviso di "Offline Mode".
 
 ### Privacy e dati
 
@@ -210,42 +160,33 @@ Permettere all'utente di riprendere rapidamente ricerche recenti senza reinserir
 ## 7. Vincoli tecnici di progetto
 
 - App `.NET MAUI` con target principale Android; iOS opzionale e secondario.
+- Persistenza locale con SQLite per classifiche, team e calendario;
 - Architettura MVVM.
 - Navigazione basata su Shell.
 - `CommunityToolkit.Mvvm` per la gestione dei ViewModel.
-- `HttpClient` asincrono per le chiamate remote.
+- `HttpClient` asincrono per le chiamate remote alel API.
 - `System.Text.Json` per il parsing delle risposte API.
-- Persistenza locale con SQLite per favoriti e cronologia; `Preferences` solo per esigenze leggere eventuali.
+- Persistenza locale con SQLite per classifiche, team e calendario;
 - Gestione esplicita di `IsBusy`, error state, empty state e presenza dati nei ViewModel.
 - Nessuna logica REST o business logic nei code-behind.
-- Search e risultati nello stesso flusso di pagina; Detail, Favorites e History come viste dedicate.
-- La UI deve essere pensata per `SearchBar`, `CollectionView`, `ScrollView`, `Grid`, `Image`, `Label`, `SwipeView` e gesture semplici, coerenti con le schermate previste.
+- La UI deve essere ottimizzata per la visualizzazione di dati tabellari e grafici (telemetria).
+- Flusso di navigazione: Home (Hero), Standings, Teams e News come viste dedicate gestite da Shell.
 
 ## 8. Metriche di successo
 
-- Un utente alla prima apertura riesce a eseguire il flusso `ricerca -> risultati -> dettaglio` senza spiegazioni aggiuntive e con al massimo 3 interazioni principali dopo il launch.
-- I flussi MVP `ricerca`, `apertura dettaglio`, `salvataggio preferito` e `riapertura da cronologia` risultano completabili senza crash in una sessione manuale di prova.
-- Preferiti e cronologia persistono correttamente dopo il riavvio dell'app in tutti i test manuali del flusso principale.
+- Accesso ai dati live entro 2 secondi dall'apertura in condizioni di rete ottimali.
+- Completamento della navigazione tra Home e Standings in meno di 2 tap.
+- Persistenza corretta dei dati di classifica dopo il riavvio dell'applicazione.
 
 ## 9. Rischi, dipendenze e questioni aperte
 
 ### Rischi
 
-- I dati restituiti da Google Books possono essere incompleti o incoerenti tra volumi diversi.
-- Le copertine remote possono essere assenti, lente o di qualità variabile.
-- I dettagli locali salvati nei preferiti possono diventare non allineati rispetto a eventuali aggiornamenti futuri del provider remoto.
-- Il refresh remoto in background dai Favorites può introdurre divergenze temporanee tra dati locali già mostrati e dati remoti aggiornati.
-- L'espansione verso barcode scanner e offline mode può introdurre complessità tecnica e nuove dipendenze non desiderate nel MVP.
-
-### Dipendenze
-
-- Disponibilità di Google Books API e connettività Internet per ricerca e dettaglio nel MVP.
-- Disponibilità di un layer di persistenza SQLite affidabile per i dati locali.
-- Eventuale uso di Open Library come alternativa solo se il provider principale non risultasse adeguato ai requisiti didattici.
+- Latenza delle API pubbliche durante i picchi di traffico dei weekend di gara.
 
 ### Questioni aperte o `TBD`
 
-Al momento non risultano ulteriori `TBD` di prodotto aperti nello spec. Eventuali dettagli residui appartengono alla fase di planning e architettura.
+TBD: Definizione di un modello dati astratto (RaceSession) che possa mappare uniformemente formati diversi come i GP di F1 e le gare di durata (WEC).
 
 ## 10. Passaggio al planning
 
