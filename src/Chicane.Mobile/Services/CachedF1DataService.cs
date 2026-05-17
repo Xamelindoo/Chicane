@@ -58,7 +58,6 @@ public class CachedF1DataService : IF1DataService
             var standings = await _primary.GetStandingsAsync(categoryId);
             if (standings.Count > 0)
             {
-                // Save to SQLite immediately (with remote URLs)
                 var records = standings.Select(s => StorageMapper.ToRecord(s, categoryId)).ToList();
                 await _standingsRepo.UpsertAsync(categoryId, records);
 

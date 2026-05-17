@@ -35,7 +35,6 @@ public class ImageCacheService
         if (string.IsNullOrEmpty(ext)) ext = ".jpg";
         var localPath = Path.Combine(_cacheDir, $"{hash}{ext}");
 
-        // Return cached file if it already exists
         if (File.Exists(localPath))
             return localPath;
 
