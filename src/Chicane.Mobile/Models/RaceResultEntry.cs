@@ -7,7 +7,6 @@ public class RaceResultEntry
     public string DriverAcronym { get; init; } = string.Empty;
     public string TeamName { get; init; } = string.Empty;
     public string TimeOrDnf { get; init; } = string.Empty;
-    public int Points { get; init; }
     public bool IsFastestLap { get; init; }
     public bool IsDnf { get; init; }
     public bool IsDns { get; init; }
