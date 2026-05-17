@@ -39,7 +39,6 @@ public class CachedTeamsService : ITeamsService
     {
         try
         {
-            // Check SQLite cache first
             var cached = await _teamsRepo.GetByCategoryAsync(categoryId);
             if (cached.Count > 0)
                 return cached.Select(StorageMapper.ToDomain).ToList();
@@ -80,7 +79,6 @@ public class CachedTeamsService : ITeamsService
                 teams = await _mock.GetTeamsAsync(categoryId);
             }
 
-            // Write to cache
             var records = teams.Select(t => StorageMapper.ToRecord(t, categoryId)).ToList();
             await _teamsRepo.UpsertAsync(categoryId, records);
             return teams;
@@ -150,7 +148,6 @@ public class CachedTeamsService : ITeamsService
                     var teamDrivers = driverStandings.Where(d => d.TeamName == teamName).ToList();
                     var color = ResolveTeamColor(teamName, realColors);
 
-                    // Populate race results from cached session results
                     var raceResults = new List<TeamRaceResult>();
                     var pastRaces = (await _openF1.GetPastRacesAsync(categoryId))
                         .Where(r => r.EventDate < DateTime.UtcNow);

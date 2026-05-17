@@ -55,7 +55,6 @@ public class CachedScheduleService : IRaceCalendarService
     /// </summary>
     public async Task<PastRaceDetail> GetPastRaceDetailAsync(int sessionKey, string categoryId)
     {
-        // Check if results are already cached for this session
         var cached = await _sessionRepo.GetBySessionKeyAsync(sessionKey);
         if (cached.Count > 0)
         {
@@ -72,7 +71,6 @@ public class CachedScheduleService : IRaceCalendarService
 
         if (detail.Results.Count > 0)
         {
-            // Save to SQLite immediately
             var records = detail.Results
                 .Select(r => StorageMapper.ToRecord(r, sessionKey))
                 .ToList();

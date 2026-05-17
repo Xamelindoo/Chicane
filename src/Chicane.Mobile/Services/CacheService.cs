@@ -44,14 +44,12 @@ public class CacheService : ICacheService
         {
             var appDir = FileSystem.AppDataDirectory;
 
-            // Delete all DB files (DB + WAL + journal + shm)
             foreach (var pattern in new[] { "chicane.db", "chicane.db-wal", "chicane.db-shm", "chicane.db-journal" })
             {
                 var path = Path.Combine(appDir, pattern);
                 try { File.Delete(path); } catch { }
             }
 
-            // Delete all image cache files
             var imgCacheDir = Path.Combine(appDir, "img_cache");
             if (Directory.Exists(imgCacheDir))
             {

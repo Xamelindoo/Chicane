@@ -762,7 +762,6 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
         {
             var data = await GetAsync<List<OpenF1Interval>>(
                 $"https://chicane-api.duckdns.org/api/proxy/intervals?session_key={sessionKey}");
-            // Group by driver, take latest for each
             return (data ?? new())
                 .GroupBy(i => i.DriverNumber)
                 .Select(g => g.MaxBy(i => i.Date)!)
@@ -778,7 +777,6 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
         {
             var data = await GetAsync<List<OpenF1Location>>(
                 $"https://chicane-api.duckdns.org/api/proxy/location?session_key={sessionKey}");
-            // Group by driver, take latest for each
             return (data ?? new())
                 .GroupBy(l => l.DriverNumber)
                 .Select(g => g.MaxBy(l => l.Date)!)
