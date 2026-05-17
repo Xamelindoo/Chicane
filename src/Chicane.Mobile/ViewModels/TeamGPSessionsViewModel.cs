@@ -84,7 +84,6 @@ public partial class TeamGPSessionsViewModel : ObservableObject
             var firstSession = allSessions.FirstOrDefault();
             MeetingName = teamResults.FirstOrDefault()?.EventName
                 ?? firstSession?.SessionName ?? "GP Sessions";
-            TotalPoints = teamResults.Sum(r => r.TotalPoints);
 
             Sessions.Clear();
             var teamDict = teamResults.ToDictionary(r => r.SessionKey);

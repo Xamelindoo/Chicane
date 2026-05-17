@@ -41,12 +41,6 @@
                         <Label Text="{Binding MeetingName}"
                                FontFamily="TitilliumWebBold" FontSize="16"
                                TextColor="White" HorizontalOptions="Center" />
-                        <HorizontalStackLayout HorizontalOptions="Center" Spacing="4">
-                            <Label Text="{Binding TotalPoints}" FontFamily="TitilliumWebBold" FontSize="20"
-                                   TextColor="#E10600" VerticalOptions="Center" />
-                            <Label Text="pts" FontFamily="TitilliumWebRegular" FontSize="13"
-                                   TextColor="#9CA3AF" VerticalOptions="Center" />
-                        </HorizontalStackLayout>
                     </VerticalStackLayout>
                 </Border>
 
@@ -117,9 +111,6 @@
                                             <Label Text="{Binding Driver1Code}"
                                                    FontFamily="TitilliumWebRegular" FontSize="12"
                                                    TextColor="White" VerticalOptions="Center" />
-                                            <Label Text="{Binding Driver1Points, StringFormat='{0} pts'}"
-                                                   FontFamily="TitilliumWebBold" FontSize="12"
-                                                   TextColor="#E10600" VerticalOptions="Center" />
                                         </HorizontalStackLayout>
                                         <Label Text="·" FontSize="12" TextColor="#9CA3AF" VerticalOptions="Center" />
                                         <HorizontalStackLayout Spacing="4">
@@ -148,9 +139,6 @@
                                             <Label Text="{Binding Driver2Code}"
                                                    FontFamily="TitilliumWebRegular" FontSize="12"
                                                    TextColor="White" VerticalOptions="Center" />
-                                            <Label Text="{Binding Driver2Points, StringFormat='{0} pts'}"
-                                                   FontFamily="TitilliumWebBold" FontSize="12"
-                                                   TextColor="#E10600" VerticalOptions="Center" />
                                         </HorizontalStackLayout>
                                     </HorizontalStackLayout>
                                 </VerticalStackLayout>
