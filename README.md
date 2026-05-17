@@ -157,9 +157,11 @@ dotnet build src/Chicane.Mobile/Chicane.Mobile.csproj -f net10.0-android
 ## 📸 Screenshots
 
 <div align="center">
-  <img src="docs/screenshots/Chicane_Home.jpg" alt="Home" width="32%">
-  <img src="docs/screenshots/Chicane_Schedule.jpg" alt="Schedule" width="32%">
-  <img src="docs/screenshots/Chicane_Leaderboard.jpg" alt="Leaderboard" width="32%">
+
+| Home — Live countdown, GP cards, weather, standings | Schedule — Race calendar, session times, podium results | Leaderboard — Driver & constructor standings |
+|:---:|:---:|:---:|
+| <img src="docs/screenshots/Chicane_Home.jpg" alt="Home" width="280"> | <img src="docs/screenshots/Chicane_Schedule.jpg" alt="Schedule" width="280"> | <img src="docs/screenshots/Chicane_Leaderboard.jpg" alt="Leaderboard" width="280"> |
+
 </div>
 
 ## 📄 License
