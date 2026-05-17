@@ -164,6 +164,12 @@ dotnet build src/Chicane.Mobile/Chicane.Mobile.csproj -f net10.0-android
 
 > **Note**: The client's `MauiProgram.cs` sets the HttpClient base address to `https://chicane-api.duckdns.org/`. Change this to your backend URL for self-hosting.
 
+## ☕ Support the Project
+
+Chicane is and will always be a free, independent, and open-source project built out of pure passion for motorsport and software architecture. If you appreciate the quality of the .NET MAUI application, the backend design, or want to help cover the infrastructure and hosting costs of the Proxmox API Gateway, you can support my work by buying me a coffee!
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/L3L41ZQ7CR)
+
 ## 📄 License
 
 MIT © 2026 Maximilian Cichello
