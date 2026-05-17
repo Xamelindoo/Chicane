@@ -10,16 +10,34 @@
 
 Your Formula 1 companion. Real-time standings, race calendar, live timing, weather forecasts, and motorsport news in one app.
 
+[Why Chicane?](#-why-chicane) ·
 [Features](#-features) ·
 [Architecture](#-architecture) ·
 [Stack](#-stack) ·
 [Setup](#-setup) ·
-[Screenshots](#-screenshots) ·
 [License](#-license)
 
 </div>
 
 ---
+
+## 🏁 Why Chicane?
+
+The official Formula 1 app comes with **ads**, **mandatory accounts**, and a **bloated UI** that burns battery and data. Chicane is the opposite:
+
+| | Official F1 App | Chicane |
+|---|---|---|
+| **Open source** | ❌ Closed source | ✅ Every line visible |
+| **Ads** | ❌ Full-screen video ads | ✅ Zero ads |
+| **Account required** | ❌ Must sign up | ✅ No account, no login |
+| **Offline** | ❌ Needs constant connection | ✅ Cache-first SQLite |
+| **Self-hostable** | ❌ Impossible | ✅ Docker Compose, 2 commands |
+| **Data privacy** | ❌ Tracks everything | ✅ No telemetry, no analytics |
+| **Size** | ❌ 400+ MB | ✅ Lean APK, no bloat |
+| **Track WiFi** | ❌ Barely loads | ✅ Works on spotty circuits |
+| **Code quality** | ❌ Black box | ✅ MVVM, clean architecture |
+
+Chicane is built for **real F1 fans** who want data — not a marketing funnel. It's **open source**, **self-hostable**, and **respects your privacy**. No accounts, no ads, no nonsense.
 
 ## 📱 Features
 
