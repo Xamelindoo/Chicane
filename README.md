@@ -54,6 +54,16 @@ Chicane is built for **real F1 fans** who want data — not a marketing funnel. 
 | **News** | Multi-source RSS aggregator pulling from 5 motorsport feeds (Sky Sports F1, Motorsport Italia, FormulaPassion, FuoriTraiettoria, P300.it) with an F1 keyword relevance filter. |
 | **Settings** | Cache management with breakdown by database size, image cache, and total. One-tap cache clearing. |
 
+## 📸 Screenshots
+
+<div align="center">
+
+| Home — Live countdown, GP cards, weather, standings | Schedule — Race calendar, session times, podium results | Leaderboard — Driver & constructor standings |
+|:---:|:---:|:---:|
+| <img src="docs/screenshots/Chicane_Home.jpg" alt="Home" width="280"> | <img src="docs/screenshots/Chicane_Schedule.jpg" alt="Schedule" width="280"> | <img src="docs/screenshots/Chicane_Leaderboard.jpg" alt="Leaderboard" width="280"> |
+
+</div>
+
 ## 🏗 Architecture
 
 ```
@@ -153,16 +163,6 @@ dotnet build src/Chicane.Mobile/Chicane.Mobile.csproj -f net10.0-android
 ```
 
 > **Note**: The client's `MauiProgram.cs` sets the HttpClient base address to `https://chicane-api.duckdns.org/`. Change this to your backend URL for self-hosting.
-
-## 📸 Screenshots
-
-<div align="center">
-
-| Home — Live countdown, GP cards, weather, standings | Schedule — Race calendar, session times, podium results | Leaderboard — Driver & constructor standings |
-|:---:|:---:|:---:|
-| <img src="docs/screenshots/Chicane_Home.jpg" alt="Home" width="280"> | <img src="docs/screenshots/Chicane_Schedule.jpg" alt="Schedule" width="280"> | <img src="docs/screenshots/Chicane_Leaderboard.jpg" alt="Leaderboard" width="280"> |
-
-</div>
 
 ## 📄 License
 
