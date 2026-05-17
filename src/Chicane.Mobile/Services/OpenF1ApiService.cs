@@ -237,9 +237,8 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
         try
         {
             var year = DateTime.UtcNow.Year;
-            var sessions = await GetAsync<List<OpenF1Session>>(
-                $"https://chicane-api.duckdns.org/api/proxy/sessions?year={year}");
-            if (sessions is null || sessions.Count == 0)
+            var sessions = await GetSessionsAsync(year);
+            if (sessions.Count == 0)
                 return DefaultEvent();
 
             var next = sessions
