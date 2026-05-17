@@ -138,7 +138,7 @@
                                            FontFamily="TitilliumWebBold" FontSize="14"
                                            TextColor="White" LineBreakMode="TailTruncation" />
                                     <!-- Drivers stacked vertically -->
-                                    <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="4">
+                                    <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="4">
                                         <!-- Driver 1 -->
                                         <Border Grid.Row="0" Grid.Column="0" StrokeThickness="0"
                                                 StrokeShape="RoundRectangle 4" Padding="4,2" VerticalOptions="Center">
@@ -165,6 +165,13 @@
                                                Text="{Binding Driver1Code}"
                                                FontFamily="TitilliumWebRegular" FontSize="13"
                                                TextColor="White" VerticalOptions="Center" Margin="8,0,0,0" />
+                                        <HorizontalStackLayout Grid.Row="0" Grid.Column="2" Spacing="3"
+                                                               VerticalOptions="Center" HorizontalOptions="End">
+                                            <Label Text="{Binding Driver1Points}" FontFamily="TitilliumWebBold"
+                                                   FontSize="14" TextColor="#E10600" />
+                                            <Label Text="pts" FontFamily="TitilliumWebRegular" FontSize="10"
+                                                   TextColor="#9CA3AF" />
+                                        </HorizontalStackLayout>
                                         <!-- Driver 2 -->
                                         <Border Grid.Row="1" Grid.Column="0" StrokeThickness="0"
                                                 StrokeShape="RoundRectangle 4" Padding="4,2" VerticalOptions="Center">
@@ -191,11 +198,18 @@
                                                Text="{Binding Driver2Code}"
                                                FontFamily="TitilliumWebRegular" FontSize="13"
                                                TextColor="White" VerticalOptions="Center" Margin="8,0,0,0" />
+                                        <HorizontalStackLayout Grid.Row="1" Grid.Column="2" Spacing="3"
+                                                               VerticalOptions="Center" HorizontalOptions="End">
+                                            <Label Text="{Binding Driver2Points}" FontFamily="TitilliumWebBold"
+                                                   FontSize="14" TextColor="#E10600" />
+                                            <Label Text="pts" FontFamily="TitilliumWebRegular" FontSize="10"
+                                                   TextColor="#9CA3AF" />
+                                        </HorizontalStackLayout>
                                         <!-- Separator -->
-                                        <BoxView Grid.Row="2" Grid.ColumnSpan="2" HeightRequest="1"
+                                        <BoxView Grid.Row="2" Grid.ColumnSpan="3" HeightRequest="1"
                                                  Color="#2a3441" Margin="0,4,0,4" />
-                                        <!-- Circuit -->
-                                        <Label Grid.Row="3" Grid.ColumnSpan="2"
+                                        <!-- Circuit + Total -->
+                                        <Label Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
                                                VerticalOptions="Center">
                                             <Label.Text>
                                                 <MultiBinding StringFormat="{}{0}, {1}">
@@ -212,6 +226,13 @@
                                                 </Style>
                                             </Label.Style>
                                         </Label>
+                                        <HorizontalStackLayout Grid.Row="3" Grid.Column="2" Spacing="4"
+                                                               VerticalOptions="Center" HorizontalOptions="End">
+                                            <Label Text="{Binding TotalPoints}" FontFamily="TitilliumWebBold"
+                                                   FontSize="18" TextColor="#E10600" />
+                                            <Label Text="pts" FontFamily="TitilliumWebRegular" FontSize="11"
+                                                   TextColor="#9CA3AF" />
+                                        </HorizontalStackLayout>
                                     </Grid>
                                 </VerticalStackLayout>
                             </Border>

@@ -175,11 +175,14 @@ public class CachedTeamsService : ITeamsService
                                 Driver1Name = teamResults.Count > 0 ? teamResults[0].DriverName : "",
                                 Driver1Code = teamResults.Count > 0 ? teamResults[0].DriverAcronym : "",
                                 Driver1Position = teamResults.Count > 0 ? teamResults[0].Position : 0,
+                                Driver1Points = teamResults.Count > 0 ? teamResults[0].Points : 0,
                                 Driver1BestLap = teamResults.Count > 0 && teamResults[0].IsFastestLap ? teamResults[0].TimeOrDnf : null,
                                 Driver2Name = teamResults.Count > 1 ? teamResults[1].DriverName : "",
                                 Driver2Code = teamResults.Count > 1 ? teamResults[1].DriverAcronym : "",
                                 Driver2Position = teamResults.Count > 1 ? teamResults[1].Position : 0,
+                                Driver2Points = teamResults.Count > 1 ? teamResults[1].Points : 0,
                                 Driver2BestLap = teamResults.Count > 1 && teamResults[1].IsFastestLap ? teamResults[1].TimeOrDnf : null,
+                                TotalPoints = teamResults.Sum(r => r.Points),
                             });
                         }
                     }

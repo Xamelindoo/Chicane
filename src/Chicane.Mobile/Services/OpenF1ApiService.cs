@@ -534,6 +534,9 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
             var teamStds = await GetAsync<List<OpenF1ChampionshipTeam>>(
                 $"https://chicane-api.duckdns.org/api/proxy/championship_teams?session_key={sessionKey}");
 
+            var driverPoints = (driverStds ?? new())
+                .ToDictionary(d => d.DriverNumber, d => (int)d.PointsCurrent);
+
             var sorted = results
                 .OrderBy(r => r.Dnf || r.Dsq ? 1 : 0)
                 .ThenBy(r => r.Dnf || r.Dsq ? (string?)DriverName(r.DriverNumber) : null)
@@ -554,6 +557,7 @@ public class OpenF1ApiService : IF1DataService, IRaceCalendarService
                         DriverAcronym = NameAcronym(r.DriverNumber),
                         TeamName = DriverTeam(r.DriverNumber),
                         TimeOrDnf = time,
+                        Points = driverPoints.TryGetValue(r.DriverNumber, out var pts) ? pts : 0,
                         IsDnf = r.Dnf,
                         IsDns = r.Dns,
                         IsDsq = r.Dsq,
