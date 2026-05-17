@@ -176,58 +176,59 @@ public partial class HomeViewModel : ObservableObject
             CircuitMapUrl = GetCircuitMapUrl(raceEvent.Circuit.Country);
             HasCircuitMap = !string.IsNullOrWhiteSpace(CircuitMapUrl);
 
+            var weekendsTask = cachedSchedule.GetUpcomingWeekendsAsync(3);
+            var newsTask = Task.Run(() => newsService.GetNewsAsync("f1"));
+            var standingsTask = Task.Run(() => f1DataService.GetStandingsAsync("f1"));
+            var ctorTask = Task.Run(() => f1DataService.GetConstructorStandingsAsync("f1"));
+            var weatherTask = LoadWeatherAsync(raceEvent);
+
+            await Task.WhenAll(weekendsTask, newsTask, standingsTask, ctorTask, weatherTask);
+
             UpcomingWeekends.Clear();
-            foreach (var w in await cachedSchedule.GetUpcomingWeekendsAsync(3))
+            foreach (var w in weekendsTask.Result)
                 UpcomingWeekends.Add(w);
 
             if (UpcomingWeekends.Count > 0)
+            {
+                var first = UpcomingWeekends[0];
+                var forecast = await weatherService.GetForecastAsync(first.CircuitName, first.Country, first.DateStart);
+                if (forecast is not null)
                 {
-                    var first = UpcomingWeekends[0];
-                    var forecast = await weatherService.GetForecastAsync(first.CircuitName, first.Country, first.DateStart);
-                    if (forecast is not null)
-                    {
-                        first.WeatherCondition = forecast.Condition;
-                        first.WeatherIcon = forecast.IconGlyph;
-                        first.TemperatureC = forecast.TemperatureC;
-                        WeatherCondition = forecast.Condition;
-                        WeatherIcon = forecast.IconGlyph;
-                        TemperatureC = forecast.TemperatureC;
-                    }
-                    else
-                    {
-                        first.WeatherCondition = "Check later";
-                        first.WeatherIcon = "\u26A0";
-                        WeatherCondition = "Check later";
-                        WeatherIcon = "\u26A0";
-                    }
+                    first.WeatherCondition = forecast.Condition;
+                    first.WeatherIcon = forecast.IconGlyph;
+                    first.TemperatureC = forecast.TemperatureC;
+                    WeatherCondition = forecast.Condition;
+                    WeatherIcon = forecast.IconGlyph;
+                    TemperatureC = forecast.TemperatureC;
                 }
+                else
+                {
+                    first.WeatherCondition = "Check later";
+                    first.WeatherIcon = "\u26A0";
+                    WeatherCondition = "Check later";
+                    WeatherIcon = "\u26A0";
+                }
+            }
 
             TopNews.Clear();
-            foreach (var n in (await newsService.GetNewsAsync("f1")).Take(4))
+            foreach (var n in newsTask.Result.Take(4))
                 TopNews.Add(n);
             CircuitImage = raceEvent.Circuit.ImageUrl;
 
-            await LoadWeatherAsync(raceEvent);
-            var standings = await f1DataService.GetStandingsAsync("f1");
             Standings.Clear();
-            foreach (var entry in standings)
-            {
+            foreach (var entry in standingsTask.Result)
                 Standings.Add(entry);
-            }
 
-            var constructorStandings = await f1DataService.GetConstructorStandingsAsync("f1");
             ConstructorStandings.Clear();
-            foreach (var entry in constructorStandings)
-            {
+            foreach (var entry in ctorTask.Result)
                 ConstructorStandings.Add(entry);
-            }
 
             TopDrivers.Clear();
-            foreach (var d in standings.Take(3))
+            foreach (var d in standingsTask.Result.Take(3))
                 TopDrivers.Add(d);
 
             TopTeams.Clear();
-            foreach (var t in constructorStandings.Take(3))
+            foreach (var t in ctorTask.Result.Take(3))
                 TopTeams.Add(t);
 
             System.Diagnostics.Debug.WriteLine($"[Home] TopDrivers={TopDrivers.Count} TopTeams={TopTeams.Count}");

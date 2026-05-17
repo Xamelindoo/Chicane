@@ -99,12 +99,21 @@ public class CachedScheduleService : IRaceCalendarService
 
     /// <summary>
     /// Returns upcoming GP weekend cards for the Home page horizontal scroll.
-    /// Always fetches fresh data — Redis on the backend handles shared caching (TTL 1h).
-    /// Circuit images are downloaded live by the MAUI Image control.
+    /// Cache-first from SQLite; re-fetches only if cached data has no circuit images.
     /// </summary>
     public async Task<List<RaceWeekendCard>> GetUpcomingWeekendsAsync(int count = 3)
     {
-        return await _openF1.GetUpcomingWeekendsAsync(count);
+        var cached = await _weekendRepo.GetAllAsync();
+        if (cached.Count > 0 && cached.Any(r => !string.IsNullOrWhiteSpace(r.CircuitImageUrl)))
+            return cached.Select(StorageMapper.ToDomain).Take(count).ToList();
+
+        var weekends = await _openF1.GetUpcomingWeekendsAsync(count);
+        if (weekends.Count > 0)
+        {
+            var records = weekends.Select(StorageMapper.ToRecord).ToList();
+            await _weekendRepo.UpsertAsync(records);
+        }
+        return weekends;
     }
 
     // -------- Internal: generic cache-first helper for schedule lists --------
