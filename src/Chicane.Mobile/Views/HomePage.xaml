@@ -81,19 +81,14 @@
                 <VerticalStackLayout IsVisible="{Binding IsPreRace}" Spacing="0">
 
                      <!-- Next Race Countdown / Live -->
-                     <Border StrokeThickness="1" Stroke="#E10600" StrokeShape="RoundRectangle 12"
-                             Margin="16,14,16,0" Padding="12,6"
+                      <Border StrokeThickness="1" Stroke="#E10600" StrokeShape="RoundRectangle 12"
+                              Margin="16,14,16,14" Padding="12,6"
                              BackgroundColor="#1e293b">
                           <Border.GestureRecognizers>
                              <TapGestureRecognizer
                                                    Command="{Binding NavigateToLiveCommand}" />
                          </Border.GestureRecognizers>
                          <Grid>
-                         <!-- Circuit background -->
-                         <Image Source="{Binding CircuitImageUrl}"
-                                Opacity="0.07"
-                                Aspect="AspectFill"
-                                InputTransparent="True" />
                          <!-- Pre-Race State -->
                          <VerticalStackLayout Spacing="3" IsVisible="{Binding IsPreRace}">
                              <!-- Row 1: GP Name + Weather -->
@@ -173,7 +168,8 @@
                         <Grid ColumnDefinitions="*,Auto">
                             <Label Grid.Column="0" Text="UPCOMING RACES"
                                    FontFamily="TitilliumWebBold" FontSize="18"
-                                   TextColor="#E2E8F0" CharacterSpacing="2" />
+                                   TextColor="#E2E8F0" CharacterSpacing="2"
+                                   VerticalOptions="Center" />
                             <Label Grid.Column="1" Text="›" FontSize="22"
                                    TextColor="#9CA3AF" VerticalOptions="Center" />
                         </Grid>
