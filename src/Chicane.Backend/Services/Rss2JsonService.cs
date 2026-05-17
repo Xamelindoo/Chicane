@@ -78,16 +78,23 @@ public class Rss2JsonService
         catch { return DateTime.UtcNow; }
     }
 
-    private static readonly string[] _f1Keywords = ["F1", "Formula 1", "Formula One", "FIA", "Grand Prix", "GP",
+    private static readonly string[] _f1Keywords = ["F1", "Formula 1", "Formula One", "FIA", "Grand Prix",
         "Verstappen", "Norris", "Leclerc", "Hamilton", "Piastri", "Russell", "Sainz", "Alonso",
         "Monza", "Imola", "Spa-Francorchamps", "Silverstone", "Monaco", "Miami GP", "Las Vegas GP",
         "pit stop", "pole position", "championship", "paddock", "qualifying", "free practice"];
+
+    private static readonly string[] _excludeKeywords = ["MotoGP", "Moto2", "Moto3", "MotoE", "Superbike",
+        "TCR", "WEC", "WRC", "Formula E", "IndyCar", "NASCAR", "DTM", "GT World", "Rally"];
 
     private static bool IsF1Relevant(Dictionary<string, object?> article)
     {
         var title = (article["title"] as string) ?? "";
         var desc = (article["description"] as string) ?? "";
         var combined = $"{title} {desc}";
+
+        if (_excludeKeywords.Any(k => combined.Contains(k, StringComparison.OrdinalIgnoreCase)))
+            return false;
+
         return _f1Keywords.Any(k => combined.Contains(k, StringComparison.OrdinalIgnoreCase));
     }
 }

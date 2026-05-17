@@ -82,7 +82,7 @@
 
                      <!-- Next Race Countdown / Live -->
                       <Border StrokeThickness="1" Stroke="#E10600" StrokeShape="RoundRectangle 12"
-                              Margin="16,14,16,14" Padding="12,6"
+                              Margin="16,14,16,6" Padding="12,6"
                              BackgroundColor="#1e293b">
                           <Border.GestureRecognizers>
                              <TapGestureRecognizer
@@ -161,7 +161,7 @@
                      </Border>
 
                     <!-- PROSSIME GARE -->
-                    <Grid Padding="20,20,16,8">
+                    <Grid Padding="20,8,16,8">
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding NavigateToScheduleCommand}" />
                         </Border.GestureRecognizers>
@@ -170,7 +170,7 @@
                                    FontFamily="TitilliumWebBold" FontSize="18"
                                    TextColor="#E2E8F0" CharacterSpacing="2"
                                    VerticalOptions="Center" />
-                            <Label Grid.Column="1" Text="›" FontSize="22"
+                            <Label Grid.Column="1" Text="›" FontSize="18"
                                    TextColor="#9CA3AF" VerticalOptions="Center" />
                         </Grid>
                     </Grid>

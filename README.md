@@ -10,6 +10,8 @@
 
 Your Formula 1 companion. Real-time standings, race calendar, live timing, weather forecasts, and motorsport news in one app.
 
+> **Disclaimer** · Chicane is an independent, open-source project. It is not affiliated with, endorsed by, or associated with Formula 1, the FIA, any Formula 1 team, driver, or sponsor. All trademarks and copyrights belong to their respective owners. This project is non-commercial and built for educational and personal use only.
+
 [Why Chicane?](#-why-chicane) ·
 [Features](#-features) ·
 [Architecture](#-architecture) ·
