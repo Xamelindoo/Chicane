@@ -175,11 +175,14 @@ public class CachedTeamsService : ITeamsService
                                 Driver1Name = teamResults.Count > 0 ? teamResults[0].DriverName : "",
                                 Driver1Code = teamResults.Count > 0 ? teamResults[0].DriverAcronym : "",
                                 Driver1Position = teamResults.Count > 0 ? teamResults[0].Position : 0,
+                                Driver1Points = teamResults.Count > 0 ? RacePoints(teamResults[0].Position, race.EventName) : 0,
                                 Driver1BestLap = teamResults.Count > 0 && teamResults[0].IsFastestLap ? teamResults[0].TimeOrDnf : null,
                                 Driver2Name = teamResults.Count > 1 ? teamResults[1].DriverName : "",
                                 Driver2Code = teamResults.Count > 1 ? teamResults[1].DriverAcronym : "",
                                 Driver2Position = teamResults.Count > 1 ? teamResults[1].Position : 0,
+                                Driver2Points = teamResults.Count > 1 ? RacePoints(teamResults[1].Position, race.EventName) : 0,
                                 Driver2BestLap = teamResults.Count > 1 && teamResults[1].IsFastestLap ? teamResults[1].TimeOrDnf : null,
+                                TotalPoints = teamResults.Sum(r => RacePoints(r.Position, race.EventName)),
                             });
                         }
                     }
@@ -283,5 +286,19 @@ public class CachedTeamsService : ITeamsService
         "Audi" => "team_audi_transparent.png",
         "Cadillac" => "team_cadillac_transparent.png",
         _ => "",
+    };
+
+    private static int RacePoints(int position, string sessionName) => sessionName switch
+    {
+        "SPRINT" => position switch
+        {
+            1 => 8, 2 => 7, 3 => 6, 4 => 5, 5 => 4, 6 => 3, 7 => 2, 8 => 1, _ => 0
+        },
+        _ => position switch
+        {
+            1 => 25, 2 => 18, 3 => 15, 4 => 12, 5 => 10,
+            6 => 8, 7 => 6, 8 => 4, 9 => 2, 10 => 1,
+            _ => 0
+        }
     };
 }
