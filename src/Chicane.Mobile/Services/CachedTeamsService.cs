@@ -175,14 +175,11 @@ public class CachedTeamsService : ITeamsService
                                 Driver1Name = teamResults.Count > 0 ? teamResults[0].DriverName : "",
                                 Driver1Code = teamResults.Count > 0 ? teamResults[0].DriverAcronym : "",
                                 Driver1Position = teamResults.Count > 0 ? teamResults[0].Position : 0,
-                                Driver1Points = teamResults.Count > 0 ? F1Points(teamResults[0].Position) : 0,
                                 Driver1BestLap = teamResults.Count > 0 && teamResults[0].IsFastestLap ? teamResults[0].TimeOrDnf : null,
                                 Driver2Name = teamResults.Count > 1 ? teamResults[1].DriverName : "",
                                 Driver2Code = teamResults.Count > 1 ? teamResults[1].DriverAcronym : "",
                                 Driver2Position = teamResults.Count > 1 ? teamResults[1].Position : 0,
-                                Driver2Points = teamResults.Count > 1 ? F1Points(teamResults[1].Position) : 0,
                                 Driver2BestLap = teamResults.Count > 1 && teamResults[1].IsFastestLap ? teamResults[1].TimeOrDnf : null,
-                                TotalPoints = teamResults.Sum(r => F1Points(r.Position)),
                             });
                         }
                     }
@@ -286,13 +283,5 @@ public class CachedTeamsService : ITeamsService
         "Audi" => "team_audi_transparent.png",
         "Cadillac" => "team_cadillac_transparent.png",
         _ => "",
-    };
-
-    /// <summary>F1 2026 points system: 25-18-15-12-10-8-6-4-2-1 for positions 1-10.</summary>
-    private static int F1Points(int position) => position switch
-    {
-        1 => 25, 2 => 18, 3 => 15, 4 => 12, 5 => 10,
-        6 => 8, 7 => 6, 8 => 4, 9 => 2, 10 => 1,
-        _ => 0
     };
 }

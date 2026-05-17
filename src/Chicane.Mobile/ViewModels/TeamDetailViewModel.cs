@@ -142,8 +142,6 @@ public partial class TeamDetailViewModel : ObservableObject
         foreach (var g in groups)
         {
             var first = g.First();
-            var d1Points = g.Sum(r => r.Driver1Points);
-            var d2Points = g.Sum(r => r.Driver2Points);
             var raceSessions = g.Where(r => r.SessionName.Contains("Race", StringComparison.OrdinalIgnoreCase) && !r.SessionName.Contains("Sprint"));
             var mainResult = raceSessions.FirstOrDefault() ?? first;
             RaceGroups.Add(new RaceGroupCard
@@ -151,16 +149,13 @@ public partial class TeamDetailViewModel : ObservableObject
                 MeetingName = g.Key,
                 MeetingKey = mainResult.MeetingKey,
                 EventDate = first.EventDate,
-                TotalPoints = g.Sum(r => r.TotalPoints),
                 CircuitName = mainResult.CircuitName,
                 Country = mainResult.Country,
                 Driver1Name = first.Driver1Name,
                 Driver1Code = first.Driver1Code,
-                Driver1Points = d1Points,
                 Driver1Position = mainResult.Driver1Position,
                 Driver2Name = first.Driver2Name,
                 Driver2Code = first.Driver2Code,
-                Driver2Points = d2Points,
                 Driver2Position = mainResult.Driver2Position,
             });
         }
