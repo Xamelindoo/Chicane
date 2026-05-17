@@ -56,7 +56,7 @@
                                    TextColor="#E10600" VerticalOptions="Center" />
                         </Grid>
                         <BoxView HeightRequest="1" Color="#2a3441" />
-                        <Button Text="SVUOTA CACHE"
+                        <Button Text="CLEAR CACHE"
                                 BackgroundColor="#E10600" TextColor="#FFFFFF"
                                 FontFamily="TitilliumWebBold" FontSize="12"
                                 CornerRadius="8" Padding="16,10" HeightRequest="40"

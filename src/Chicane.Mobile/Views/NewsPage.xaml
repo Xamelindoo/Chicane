@@ -76,7 +76,7 @@
                          x:DataType="viewmodels:NewsViewModel"
                         Margin="0,0,0,0">
             <CollectionView.Header>
-                <Label Text="ULTIME NOTIZIE"
+                <Label Text="LATEST NEWS"
                        FontFamily="TitilliumWebBold"
                        FontSize="16"
                        TextColor="#E2E8F0"

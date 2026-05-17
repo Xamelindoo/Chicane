@@ -89,6 +89,11 @@
                                                    Command="{Binding NavigateToLiveCommand}" />
                          </Border.GestureRecognizers>
                          <Grid>
+                         <!-- Circuit background -->
+                         <Image Source="{Binding CircuitImageUrl}"
+                                Opacity="0.07"
+                                Aspect="AspectFill"
+                                InputTransparent="True" />
                          <!-- Pre-Race State -->
                          <VerticalStackLayout Spacing="3" IsVisible="{Binding IsPreRace}">
                              <!-- Row 1: GP Name + Weather -->
@@ -149,7 +154,7 @@
                                     TextColor="#E10600" CharacterSpacing="2" />
                              <HorizontalStackLayout Spacing="8">
                                  <Label Text="🔴" FontSize="16" VerticalOptions="Center" />
-                                 <Label Text="SEGUI LIVE"
+                                 <Label Text="FOLLOW LIVE"
                                         FontFamily="TitilliumWebBold" FontSize="18"
                                         TextColor="#E10600" VerticalOptions="Center" />
                                  <Label Text="{Binding CircuitLocation}"
@@ -166,7 +171,7 @@
                             <TapGestureRecognizer Command="{Binding NavigateToScheduleCommand}" />
                         </Border.GestureRecognizers>
                         <Grid ColumnDefinitions="*,Auto">
-                            <Label Grid.Column="0" Text="PROSSIME GARE"
+                            <Label Grid.Column="0" Text="UPCOMING RACES"
                                    FontFamily="TitilliumWebBold" FontSize="18"
                                    TextColor="#E2E8F0" CharacterSpacing="2" />
                             <Label Grid.Column="1" Text="›" FontSize="22"
@@ -247,7 +252,7 @@
                                     <TapGestureRecognizer Command="{Binding NavigateToLeaderboardsDriversCommand}" />
                                 </Border.GestureRecognizers>
                                 <Grid ColumnDefinitions="*,Auto">
-                                    <Label Grid.Column="0" Text="CLASSIFICA PILOTI"
+                                    <Label Grid.Column="0" Text="DRIVER STANDINGS"
                                            FontFamily="TitilliumWebBold" FontSize="16"
                                            TextColor="#E2E8F0" CharacterSpacing="1" />
                                     <Label Grid.Column="1" Text="›" FontSize="20"
@@ -310,7 +315,7 @@
                                     <TapGestureRecognizer Command="{Binding NavigateToLeaderboardsTeamsCommand}" />
                                 </Border.GestureRecognizers>
                                 <Grid ColumnDefinitions="*,Auto">
-                                    <Label Grid.Column="0" Text="CLASSIFICA COSTRUTTORI"
+                                    <Label Grid.Column="0" Text="CONSTRUCTOR STANDINGS"
                                            FontFamily="TitilliumWebBold" FontSize="16"
                                            TextColor="#E2E8F0" CharacterSpacing="1" />
                                     <Label Grid.Column="1" Text="›" FontSize="20"

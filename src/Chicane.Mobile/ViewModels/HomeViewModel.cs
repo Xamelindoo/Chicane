@@ -133,7 +133,7 @@ public partial class HomeViewModel : ObservableObject
     private int sessionKey;
 
     [ObservableProperty]
-    private string liveLabel = "SEGUI LIVE";
+    private string liveLabel = "FOLLOW LIVE";
 
     public ObservableCollection<DriverGap> PositionBoard { get; } = new();
     public ObservableCollection<StandingsEntry> Standings { get; } = new();
@@ -347,7 +347,7 @@ public partial class HomeViewModel : ObservableObject
     {
         if (WeatherForecast is null)
         {
-            ErrorMessage = "Previsioni non disponibili";
+            ErrorMessage = "Forecast not available";
             return;
         }
         if (WeatherForecast.IsApproximate)
