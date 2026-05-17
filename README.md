@@ -156,14 +156,13 @@ dotnet build src/Chicane.Mobile/Chicane.Mobile.csproj -f net10.0-android
 
 ## 📸 Screenshots
 
-Screenshots coming soon. Place them in `docs/screenshots/`:
-- `home.png` — Home page with countdown and GP cards
-- `schedule.png` — Race calendar
-- `leaderboard.png` — Driver standings
-- `live.png` — Live timing with track map
-- `driver.png` — Driver detail
-- `team.png` — Team detail
-- `news.png` — News feed
+<div align="center">
+
+| Home — Live countdown, GP cards, weather, standings | Schedule — Race calendar, session times, podium results | Leaderboard — Driver & constructor standings |
+|:---:|:---:|:---:|
+| <img src="docs/screenshots/Chicane_Home.jpg" alt="Home" width="280"> | <img src="docs/screenshots/Chicane_Schedule.jpg" alt="Schedule" width="280"> | <img src="docs/screenshots/Chicane_Leaderboard.jpg" alt="Leaderboard" width="280"> |
+
+</div>
 
 ## 📄 License
 
