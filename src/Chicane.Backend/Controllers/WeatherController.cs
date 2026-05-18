@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using System.Text.Json;
 using Chicane.Backend.Services;
-using Chicane.Backend;
 
 namespace Chicane.Backend.Controllers;
 
@@ -28,7 +27,7 @@ public class WeatherController : ControllerBase
             eventDate = DateTime.UtcNow.AddDays(7);
 
         var forecast = await _weather.GetForecastAsync(city, country, eventDate);
-        var result = JsonSerializer.Serialize(forecast, JsonConfig.CamelCaseOpts);
+        var result = JsonSerializer.Serialize(forecast, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
 
         await _cache.SetStringAsync(cacheKey, result, new DistributedCacheEntryOptions
         {
