@@ -1,6 +1,0 @@
-@Chicane.Backend_HostAddress = http://localhost:5205
-
-GET {{Chicane.Backend_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
